@@ -1,7 +1,7 @@
-# Métodos analiticos (ITAM, 2022)
+# Métodos analíticos (ITAM, 2022)
 Notas y material para el curso de Métodos Analíticos (Ciencia de Datos, ITAM).
 
-- [Notas](https://metodos-analiticos-2022.netlify.app/). Estas notas son producidas
+- [Notas](https://felipegonzalez.github.io/metodos-analiticos-mcd-2022/). Estas notas son producidas
 en un contenedor (con [imagen base de rocker](https://www.rocker-project.org), y limitado a unos 8G de memoria)  construido con el Dockerfile del repositorio. Para usarlo puedes hacer:
 
 ```
