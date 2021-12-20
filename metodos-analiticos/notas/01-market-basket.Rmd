@@ -83,7 +83,8 @@ articulos_frec <- canastas_tbl |>
 articulos_frec |>
     mutate(across(where(is_double), ~ round(.x, 3))) |> 
     DT::datatable()
-qplot(articulos_frec$prop, binwidth = 0.01) + 
+ggplot(articulos_frec, aes(x = prop)) +
+    geom_histogram(binwidth = 0.01) + 
     xlab("Proporción de canastas") + ylab("Número de artículos")
 ```
 
