@@ -1,0 +1,32 @@
+# Workflow derived from https://github.com/r-lib/actions/tree/master/examples
+# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+on:
+  push:
+    branches: [main]
+
+name: bookdown
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    container: felipexgonzalez/metodos-analiticos-2022:latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Cache bookdown results
+        uses: actions/cache@v2
+        with:
+          path: metodos-analiticos/notas/_bookdown_files
+          key: bookdown-${{ hashFiles('**/*Rmd') }}
+          restore-keys: bookdown-
+
+      - name: Build book
+        run: Rscript -e 'bookdown::render_book("metodos-analiticos/notas/index.Rmd", quiet = TRUE)'
+
+      - name: Deploy to GitHub pages 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: metodos-analiticos/notas/_book
