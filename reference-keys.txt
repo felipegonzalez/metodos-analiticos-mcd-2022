@@ -1,0 +1,17 @@
+introducción
+frecuentes
+datos-de-canastas
+conjuntos-frecuentes
+monotonicidad-de-conjuntos-frecuentes
+algoritmo-a-priori
+modelos-simples-para-análisis-de-canastas
+soporte-teórico-y-conjuntos-frecuentes
+reglas-de-asociación
+dificultades-en-el-análisis-de-canastas
+otras-medidas-de-calidad-de-reglas
+selección-de-reglas
+búsqueda-de-reglas-especializadas
+visualización-de-asociaciones
+ejemplo-canastas
+otras-aplicaciones
+ejercicios

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Métodos analíticos, ITAM 2022</title>
+  <meta name="description" content="Notas para métodos analíticos 2022" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Métodos analíticos, ITAM 2022" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Notas para métodos analíticos 2022" />
+  <meta name="github-repo" content="felipexgonzalez/metodos-analiticos-mcd-2022" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Métodos analíticos, ITAM 2022" />
+  
+  <meta name="twitter:description" content="Notas para métodos analíticos 2022" />
+  
+
+<meta name="author" content="Felipe González" />
+
+
+<meta name="date" content="2021-12-20" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="frecuentes.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.20/datatables.js"></script>
+<link href="libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Métodos Analíticos</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introducción</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#temario"><i class="fa fa-check"></i>Temario</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="frecuentes.html"><a href="frecuentes.html"><i class="fa fa-check"></i><b>2</b> Análisis de conjuntos frecuentes</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="frecuentes.html"><a href="frecuentes.html#datos-de-canastas"><i class="fa fa-check"></i><b>2.1</b> Datos de canastas</a></li>
+<li class="chapter" data-level="2.2" data-path="frecuentes.html"><a href="frecuentes.html#conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.2</b> Conjuntos frecuentes</a></li>
+<li class="chapter" data-level="2.3" data-path="frecuentes.html"><a href="frecuentes.html#monotonicidad-de-conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.3</b> Monotonicidad de conjuntos frecuentes</a></li>
+<li class="chapter" data-level="2.4" data-path="frecuentes.html"><a href="frecuentes.html#algoritmo-a-priori"><i class="fa fa-check"></i><b>2.4</b> Algoritmo a-priori</a></li>
+<li class="chapter" data-level="2.5" data-path="frecuentes.html"><a href="frecuentes.html#modelos-simples-para-análisis-de-canastas"><i class="fa fa-check"></i><b>2.5</b> Modelos simples para análisis de canastas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-3"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#modelo-de-artículos-independientes"><i class="fa fa-check"></i>Modelo de artículos independientes</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="frecuentes.html"><a href="frecuentes.html#soporte-teórico-y-conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.6</b> Soporte teórico y conjuntos frecuentes</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-4"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="frecuentes.html"><a href="frecuentes.html#reglas-de-asociación"><i class="fa fa-check"></i><b>2.7</b> Reglas de asociación</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-5"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-6"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.8" data-path="frecuentes.html"><a href="frecuentes.html#dificultades-en-el-análisis-de-canastas"><i class="fa fa-check"></i><b>2.8</b> Dificultades en el análisis de canastas</a></li>
+<li class="chapter" data-level="2.9" data-path="frecuentes.html"><a href="frecuentes.html#otras-medidas-de-calidad-de-reglas"><i class="fa fa-check"></i><b>2.9</b> Otras medidas de calidad de reglas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#hyper-lift-bajo-hipótesis-de-independencia"><i class="fa fa-check"></i>Hyper-lift bajo hipótesis de independencia</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#hyper-lift-para-datos-de-canastas"><i class="fa fa-check"></i>Hyper-lift para datos de canastas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.10" data-path="frecuentes.html"><a href="frecuentes.html#selección-de-reglas"><i class="fa fa-check"></i><b>2.10</b> Selección de reglas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-canastas-grandes"><i class="fa fa-check"></i>Ejemplo: canastas grandes</a></li>
+</ul></li>
+<li class="chapter" data-level="2.11" data-path="frecuentes.html"><a href="frecuentes.html#búsqueda-de-reglas-especializadas"><i class="fa fa-check"></i><b>2.11</b> Búsqueda de reglas especializadas</a></li>
+<li class="chapter" data-level="2.12" data-path="frecuentes.html"><a href="frecuentes.html#visualización-de-asociaciones"><i class="fa fa-check"></i><b>2.12</b> Visualización de asociaciones</a>
+<ul>
+<li class="chapter" data-level="2.12.1" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-canastas"><i class="fa fa-check"></i><b>2.12.1</b> Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.13" data-path="frecuentes.html"><a href="frecuentes.html#otras-aplicaciones"><i class="fa fa-check"></i><b>2.13</b> Otras aplicaciones</a></li>
+<li class="chapter" data-level="2.14" data-path="frecuentes.html"><a href="frecuentes.html#ejercicios"><i class="fa fa-check"></i><b>2.14</b> Ejercicios</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/felipegonzalez/metodos-analiticos-mcd-2022" target="blank">Repositorio de Github</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Métodos analíticos, ITAM 2022</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">Métodos analíticos, ITAM 2022</h1>
+<p class="author"><em>Felipe González</em></p>
+<p class="date"><em>2021-12-20</em></p>
+</div>
+<div id="introducción" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Introducción</h1>
+<p>Este curso trata sobre diversas técnicas de análisis de datos, en su mayoría diseñadas
+para escalar a datos grandes. El enfoque del curso se concentra más en el entendimiento y
+aplicación de los algoritmos y los métodos, y menos en las herramientas para implementarlos.</p>
+<div id="temario" class="section level2 unnumbered">
+<h2>Temario</h2>
+<ol style="list-style-type: decimal">
+<li>Análisis de conjuntos frecuentes
+<ul>
+<li>Algoritmo a-priori</li>
+<li>Market basket analysis</li>
+</ul></li>
+<li>Búsqueda de elementos similares
+<ul>
+<li>Minhashing para documentos</li>
+<li>Locality Sensitive Hashing (LSH)</li>
+</ul></li>
+<li>Aplicaciones de LSH
+<ul>
+<li>Joins de similitud aproximados</li>
+</ul></li>
+<li>Conteo probabilístico
+<ul>
+<li>Algoritmo de Flajolet-Martin</li>
+<li>Hyperloglog</li>
+</ul></li>
+<li>Sistemas de recomendación 1
+<ul>
+<li>Recomendación por contenido y filtros colaborativos</li>
+<li>Factorización de matrices y dimensiones latentes</li>
+</ul></li>
+<li>Reducción de dimensionalidad: DVS
+<ul>
+<li>Descomposición en valores singulares</li>
+<li>Componentes principales</li>
+</ul></li>
+<li>Sistemas de recomendación 2
+<ul>
+<li>Métodos basados en similitud</li>
+<li>Mínimos cuadrados alternados</li>
+<li>Descenso en gradiente estocástico</li>
+<li>Retroalimentación implícita</li>
+</ul></li>
+<li>Recuperación de información
+<ul>
+<li>Índices invertidos</li>
+<li>Modelo de espacio vectorial</li>
+<li>Normalización y similitud</li>
+<li>Indexado semántico latente</li>
+</ul></li>
+<li>Análisis de redes 1
+<ul>
+<li>Medidas de centralidad y pagerank</li>
+</ul></li>
+<li>Análisis de redes 2
+<ul>
+<li>Clustering y comunidades</li>
+</ul></li>
+<li>Modelos de lenguaje 1
+<ul>
+<li>N-gramas y conteos</li>
+<li>Aplicaciones</li>
+</ul></li>
+<li>Modelos de lenguaje 2
+<ul>
+<li>Representación de palabras (embeddings)</li>
+<li>Modelos de redes neuronales</li>
+</ul></li>
+<li>Aplicaciones de modelos de lenguaje
+<ul>
+<li>Corrección de ortografía</li>
+<li>Reconocimiento de idioma</li>
+<li>Clasificación de textos</li>
+</ul></li>
+<li>Experimentación y algoritmos de tragamonedas
+<ul>
+<li>Experimentación y contrafactuales</li>
+<li>Algoritmos de tragamonedas</li>
+<li>Tragamonedas bayesianos</li>
+</ul></li>
+</ol>
+<ul>
+<li><p>Las notas del curso están R, y en algunos casos usamos python o línea de comandos. Puedes usar python también para hacer tareas y ejercicios.</p></li>
+<li><p>Nuestro texto básico es <span class="citation">(<a href="#ref-mmd" role="doc-biblioref">Leskovec, Rajaraman, and Ullman 2014</a>)</span>. Referencias básicas adicionales son
+<span class="citation">(<a href="#ref-jurafsky" role="doc-biblioref">Jurafsky and Martin 2000</a>)</span> (para procesamiento de lenguaje natural), y <a href="https://therinspark.com/">sparklyr</a> para
+utlizar la interfaz de R a <a href="https://spark.apache.org">Spark</a>.</p></li>
+</ul>
+
+</div>
+</div>
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-jurafsky" class="csl-entry">
+Jurafsky, Daniel, and James H. Martin. 2000. <em>Speech and Language Processing: An Introduction to Natural Language Processing, Computational Linguistics, and Speech Recognition</em>. 1st ed. Upper Saddle River, NJ, USA: Prentice Hall PTR.
+</div>
+<div id="ref-mmd" class="csl-entry">
+Leskovec, Jure, Anand Rajaraman, and Jeffrey David Ullman. 2014. <em>Mining of Massive Datasets</em>. 2nd ed. New York, NY, USA: Cambridge University Press. <a href="http://www.mmds.org">http://www.mmds.org</a>.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="frecuentes.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/felipegonzalez/metodos-analiticos-mcd-2022/edit/master/notas/index.Rmd",
+"text": "Editar"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
