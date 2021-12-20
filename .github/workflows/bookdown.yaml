@@ -23,7 +23,8 @@ jobs:
           restore-keys: bookdown-
 
       - name: Build book
-        run: Rscript -e 'bookdown::render_book("metodos-analiticos/notas/index.Rmd", quiet = TRUE)'
+        working-directory: ./metodos-analiticos/notas
+        run: Rscript -e 'bookdown::render_book("index.Rmd", quiet = TRUE)'
 
       - name: Deploy to GitHub pages 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
