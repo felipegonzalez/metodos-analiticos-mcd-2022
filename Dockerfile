@@ -40,6 +40,8 @@ USER root
 RUN ${PYTHON_VENV_PATH}/bin/activate && \
     pip install -r requirements.txt 
 
+RUN apt-get install -y --no-install-recommends rsync
+
 COPY --chown=rstudio:rstudio rstudio-prefs.json /home/rstudio/.config/rstudio/rstudio-prefs.json
 
 
