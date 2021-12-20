@@ -1,0 +1,5 @@
+*.rds
+*.log
+_book/
+_bookdown_files/
+

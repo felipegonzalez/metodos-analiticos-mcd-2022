@@ -1,0 +1,73 @@
+--- 
+title: "Métodos analíticos, ITAM 2022"
+author: "Felipe González"
+email: felipexgonzalez@gmail.com
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [referencias.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: felipexgonzalez/metodos-analiticos-mcd-2022
+description: "Notas para métodos analíticos 2022"
+---
+
+# Introducción 
+
+Este curso trata sobre diversas técnicas de análisis de datos, en su mayoría diseñadas
+para escalar a datos grandes. El enfoque del curso se concentra más en el entendimiento y 
+aplicación de los algoritmos y los métodos, y menos en las herramientas para implementarlos. 
+
+## Temario {-}
+
+1. Análisis de conjuntos frecuentes
+    - Algoritmo a-priori
+    - Market basket analysis
+2. Búsqueda de elementos similares
+    - Minhashing para documentos
+    - Locality Sensitive Hashing (LSH)
+3. Aplicaciones de LSH
+    - Joins de similitud aproximados 
+4. Conteo probabilístico
+    - Algoritmo de Flajolet-Martin
+    - Hyperloglog
+5. Sistemas de recomendación 1
+    - Recomendación por contenido y filtros colaborativos
+    - Factorización de matrices y dimensiones latentes
+6. Reducción de dimensionalidad: DVS
+    - Descomposición en valores singulares
+    - Componentes principales
+7. Sistemas de recomendación 2
+    - Métodos basados en similitud
+    - Mínimos cuadrados alternados
+    - Descenso en gradiente estocástico
+    - Retroalimentación implícita
+8. Recuperación de información
+    - Índices invertidos
+    - Modelo de espacio vectorial
+    - Normalización y similitud
+    - Indexado semántico latente
+9. Análisis de redes 1
+    - Medidas de centralidad y pagerank
+10. Análisis de redes 2
+    - Clustering y comunidades
+11. Modelos de lenguaje 1
+    - N-gramas y conteos
+    - Aplicaciones
+12. Modelos de lenguaje 2
+    - Representación de palabras (embeddings)
+    - Modelos de redes neuronales
+13. Aplicaciones de modelos de lenguaje
+    - Corrección de ortografía
+    - Reconocimiento de idioma
+    - Clasificación de textos
+14. Experimentación y algoritmos de tragamonedas
+    - Experimentación y contrafactuales
+    - Algoritmos de tragamonedas
+    - Tragamonedas bayesianos
+
+- Las notas del curso están R, y en algunos casos usamos python o línea de comandos. Puedes usar python también para hacer tareas y ejercicios. 
+
+- Nuestro texto básico es [@mmd]. Referencias básicas adicionales son
+[@jurafsky] (para procesamiento de lenguaje natural), y [sparklyr](https://therinspark.com/) para
+utlizar la interfaz de R a [Spark](https://spark.apache.org). 
