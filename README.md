@@ -2,7 +2,7 @@
 Notas y material para el curso de Métodos Analíticos (Ciencia de Datos, ITAM).
 
 - [Notas](https://metodos-analiticos-2022.netlify.app/). Estas notas son producidas
-en un contenedor (con [imagen base de rocker](https://www.rocker-project.org, y limitado a unos 8G de memoria)  construido con el Dockerfile del repositorio. Para usarlo puedes hacer:
+en un contenedor (con [imagen base de rocker](https://www.rocker-project.org), y limitado a unos 8G de memoria)  construido con el Dockerfile del repositorio. Para usarlo puedes hacer:
 
 ```
 docker run --rm -p 8787:8787 -e PASSWORD=mipass -v /tu/carpeta/local:/home/rstudio felipexgonzalez/metodos-analiticos-2022:latest
