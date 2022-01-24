@@ -334,8 +334,8 @@ vemos que todos parecen estar más o menos igual de lejos unos de otros:</p>
 de la izquierda. Sin embargo,
 si agregamos variables ruidosas, la estructura no es clara y es difícil
 de recuperar:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="intro.html#cb8-1" aria-hidden="true" tabindex="-1"></a>distancias_pares <span class="ot">&lt;-</span> datos_1 <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>id, <span class="sc">-</span>grupo) <span class="sc">|&gt;</span> <span class="fu">dist</span>() <span class="sc">|&gt;</span> <span class="fu">as.numeric</span>()</span>
-<span id="cb8-2"><a href="intro.html#cb8-2" aria-hidden="true" tabindex="-1"></a>g_2 <span class="ot">&lt;-</span> <span class="fu">qplot</span>(distancias_pares, <span class="at">bins =</span> <span class="dv">30</span>)</span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="intro.html#cb8-1" aria-hidden="true" tabindex="-1"></a>distancias_pares_2 <span class="ot">&lt;-</span> datos_1 <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>id, <span class="sc">-</span>grupo) <span class="sc">|&gt;</span> <span class="fu">dist</span>() <span class="sc">|&gt;</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb8-2"><a href="intro.html#cb8-2" aria-hidden="true" tabindex="-1"></a>g_2 <span class="ot">&lt;-</span> <span class="fu">qplot</span>(distancias_pares_2, <span class="at">bins =</span> <span class="dv">30</span>)</span>
 <span id="cb8-3"><a href="intro.html#cb8-3" aria-hidden="true" tabindex="-1"></a>g_1 <span class="sc">+</span> g_2</span></code></pre></div>
 <p><img src="00-introduccion_files/figure-html/unnamed-chunk-7-1.png" width="576" /></p>
 <p>Si usamos un método simple de clustering, no recuperamos los grupos originales:</p>

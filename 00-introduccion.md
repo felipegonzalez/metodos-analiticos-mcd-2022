@@ -130,8 +130,8 @@ de recuperar:
 
 
 ```r
-distancias_pares <- datos_1 |> select(-id, -grupo) |> dist() |> as.numeric()
-g_2 <- qplot(distancias_pares, bins = 30)
+distancias_pares_2 <- datos_1 |> select(-id, -grupo) |> dist() |> as.numeric()
+g_2 <- qplot(distancias_pares_2, bins = 30)
 g_1 + g_2
 ```
 
