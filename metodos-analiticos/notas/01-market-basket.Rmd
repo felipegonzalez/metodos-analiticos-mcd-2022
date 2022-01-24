@@ -1,5 +1,13 @@
 # Análisis de conjuntos frecuentes {#frecuentes}
 
+```{r, include = FALSE}
+ggplot2::theme_set(ggplot2::theme_minimal(base_size = 13))
+cbb_palette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+scale_colour_discrete <- function(...) {
+  ggplot2::scale_colour_manual(..., values = cbb_palette)
+}
+```
+
 Una de las tareas más antiguas de la minería de datos
 es la búsqueda de **conjuntos frecuentes en canastas**, o un 
 análisis derivado que se llama **análisis de reglas de asociación**.
@@ -58,7 +66,7 @@ en comparación al número total de artículos existentes:
 sprintf("Número de canastas: %s", length(lista_mb))
 num_items <- sapply(lista_mb, length)
 sprintf("Promedio de artículos por canasta: %.3f", mean(num_items))
-qplot(num_items, binwidth=1)  
+qplot(num_items, binwidth = 1)
 ```
 
 Podemos hacer una tabla con las canastas y
@@ -74,14 +82,14 @@ canastas_tbl$articulos[[1]]
 
 ```{r, fig.width=4, fig.asp=0.7}
 num_canastas <- nrow(canastas_tbl)
-articulos_frec <- canastas_tbl |> 
-    unnest(cols = articulos) |> 
+articulos_frec <- canastas_tbl |>
+    unnest(cols = articulos) |>
     group_by(articulos) |>
     summarise(n  = n()) |>
     mutate(prop = n / num_canastas) |>
     arrange(desc(n))
 articulos_frec |>
-    mutate(across(where(is_double), ~ round(.x, 3))) |> 
+    mutate(across(where(is_double), ~ round(.x, 3))) |>
     DT::datatable()
 ggplot(articulos_frec, aes(x = prop)) +
     geom_histogram(binwidth = 0.01) + 
