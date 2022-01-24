@@ -1,4 +1,4 @@
-introducción
+intro
 frecuentes
 datos-de-canastas
 conjuntos-frecuentes

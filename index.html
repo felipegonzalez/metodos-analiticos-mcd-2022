@@ -24,7 +24,7 @@
 <meta name="author" content="Felipe González" />
 
 
-<meta name="date" content="2021-12-21" />
+<meta name="date" content="2022-01-24" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -32,7 +32,7 @@
   
   
 
-<link rel="next" href="frecuentes.html"/>
+<link rel="next" href="intro.html"/>
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -171,9 +171,21 @@ div.csl-indent {
 <li><a href="./">Métodos Analíticos</a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Introducción</a>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Temario</a>
 <ul>
-<li class="chapter" data-level="" data-path="index.html"><a href="index.html#temario"><i class="fa fa-check"></i>Temario</a></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#evaluación"><i class="fa fa-check"></i>Evaluación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introducción</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#simlitud-en-dimensión-alta"><i class="fa fa-check"></i>Simlitud en dimensión alta</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#medidas-de-distancia-o-similitud"><i class="fa fa-check"></i>Medidas de distancia o similitud</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#tipos-de-soluciones"><i class="fa fa-check"></i>Tipos de soluciones</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#proyección-y-búsqueda-de-marginales-interesantes"><i class="fa fa-check"></i>Proyección y búsqueda de marginales interesantes</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#proyecciones-globales"><i class="fa fa-check"></i>Proyecciones globales</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#descripción-de-estructura-local"><i class="fa fa-check"></i>Descripción de estructura local</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#inmersiones-embeddings"><i class="fa fa-check"></i>Inmersiones (embeddings)</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="2" data-path="frecuentes.html"><a href="frecuentes.html"><i class="fa fa-check"></i><b>2</b> Análisis de conjuntos frecuentes</a>
 <ul>
@@ -237,15 +249,13 @@ div.csl-indent {
 <div id="header">
 <h1 class="title">Métodos analíticos, ITAM 2022</h1>
 <p class="author"><em>Felipe González</em></p>
-<p class="date"><em>2021-12-21</em></p>
+<p class="date"><em>2022-01-24</em></p>
 </div>
-<div id="introducción" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Introducción</h1>
+<div id="temario" class="section level1 unnumbered">
+<h1>Temario</h1>
 <p>Este curso trata sobre diversas técnicas de análisis de datos, en su mayoría diseñadas
 para escalar a datos grandes. El enfoque del curso se concentra más en el entendimiento y
 aplicación de los algoritmos y los métodos, y menos en las herramientas para implementarlos.</p>
-<div id="temario" class="section level2 unnumbered">
-<h2>Temario</h2>
 <ol style="list-style-type: decimal">
 <li>Análisis de conjuntos frecuentes
 <ul>
@@ -255,16 +265,7 @@ aplicación de los algoritmos y los métodos, y menos en las herramientas para i
 <li>Búsqueda de elementos similares
 <ul>
 <li>Minhashing para documentos</li>
-<li>Locality Sensitive Hashing (LSH)</li>
-</ul></li>
-<li>Aplicaciones de LSH
-<ul>
-<li>Joins de similitud aproximados</li>
-</ul></li>
-<li>Conteo probabilístico
-<ul>
-<li>Algoritmo de Flajolet-Martin</li>
-<li>Hyperloglog</li>
+<li>Locality Sensitive Hashing (LSH), joins aproximados</li>
 </ul></li>
 <li>Sistemas de recomendación 1
 <ul>
@@ -305,27 +306,28 @@ aplicación de los algoritmos y los métodos, y menos en las herramientas para i
 </ul></li>
 <li>Modelos de lenguaje 2
 <ul>
-<li>Representación de palabras (embeddings)</li>
-<li>Modelos de redes neuronales</li>
+<li>Inmersiones de palabras</li>
+<li>Modelos básicos de redes neuronales</li>
 </ul></li>
 <li>Aplicaciones de modelos de lenguaje
 <ul>
-<li>Corrección de ortografía</li>
-<li>Reconocimiento de idioma</li>
+<li>Corrección de ortografía, reconocimiento de idiomas</li>
 <li>Clasificación de textos</li>
 </ul></li>
-<li>Experimentación y algoritmos de tragamonedas
-<ul>
-<li>Experimentación y contrafactuales</li>
-<li>Algoritmos de tragamonedas</li>
-<li>Tragamonedas bayesianos</li>
-</ul></li>
+<li>Métodos generales de clustering</li>
 </ol>
 <ul>
 <li><p>Las notas del curso están R, y en algunos casos usamos python o línea de comandos. Puedes usar python también para hacer tareas y ejercicios.</p></li>
 <li><p>Nuestro texto básico es <span class="citation">(<a href="#ref-mmd" role="doc-biblioref">Leskovec, Rajaraman, and Ullman 2014</a>)</span>. Referencias básicas adicionales son
 <span class="citation">(<a href="#ref-jurafsky" role="doc-biblioref">Jurafsky and Martin 2000</a>)</span> (para procesamiento de lenguaje natural), y <a href="https://therinspark.com/">sparklyr</a> para
 utlizar la interfaz de R a <a href="https://spark.apache.org">Spark</a>.</p></li>
+</ul>
+<div id="evaluación" class="section level2 unnumbered">
+<h2>Evaluación</h2>
+<ul>
+<li>Tareas semanales (30%)</li>
+<li>Examen teórico parcial (35%)</li>
+<li>Trabajo final (35%)</li>
 </ul>
 
 </div>
@@ -345,7 +347,7 @@ Leskovec, Jure, Anand Rajaraman, and Jeffrey David Ullman. 2014. <em>Mining of M
         </div>
       </div>
 
-<a href="frecuentes.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="intro.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
