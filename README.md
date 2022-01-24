@@ -1,3 +1,5 @@
+[![bookdown](https://github.com/felipegonzalez/metodos-analiticos-mcd-2022/actions/workflows/bookdown.yaml/badge.svg)](https://github.com/felipegonzalez/metodos-analiticos-mcd-2022/actions/workflows/bookdown.yaml)
+
 # Métodos analíticos (ITAM, 2022)
 Notas y material para el curso de Métodos Analíticos (Ciencia de Datos, ITAM).
 
