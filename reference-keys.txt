@@ -15,3 +15,10 @@ visualización-de-asociaciones
 ejemplo-canastas
 otras-aplicaciones
 ejercicios
+similitud
+similitud-de-conjuntos
+representación-de-documentos-como-conjuntos
+representación-matricial
+minhash-y-reducción-probabilística-de-dimensionalidad
+agrupando-textos-de-similitud-alta
+ejemplo-tweets
