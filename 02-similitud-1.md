@@ -378,7 +378,6 @@ sea posible obtener una buena aproximación de la similitud.
 
 La idea básica es la siguiente:
 
-- Supongamos que numeramos las tejas 1, 2, \ldots, N.
 - Escogemos una función al azar (una función _hash_) que mapea cadenas cortas a un número grande de enteros, de manera existe muy baja probabilidad de colisiones, y no hay correlación entre las cadenas y el valor al que son mapeados.
 - Si un documento tiene tejas $T$, aplicamos la función hash a cada teja de $T$, y calculamos el mínimo de estos valores hash. 
 - Repetimos este proceso para varias funciones hash fijas, por ejemplo $k= 5$
@@ -451,7 +450,7 @@ minhash_1
 ```
 
 Consideramos este _minhash_ como un descriptor del documento. Generalmente
-usamos más de un descriptor. En el siguiente ejemplo usamos tres funciones
+usamos más de un descriptor. En el siguiente ejemplo usamos 4 funciones
 hash creadas de manera independiente:
 
 
@@ -486,12 +485,12 @@ minhashes coincidan.
 ¿Cuál es la probabilidad de que la firma coincida para un documento?
 
 \BeginKnitrBlock{resumen}<div class="resumen">Sea $h$ una función _hash_ escogida escogida al azar, y $a$ y $b$ dos documentos dados
-dadas. Entonces
-$$P(minhash_h(a) = minhash_h(b)) = sim(a, b)$$
+dadas. Denotamos como $f_h$ la función minhash asociada a $h$. Entonces
+$$P(f_h(a) = f_h(b)) = sim(a, b)$$
 donde $sim$ es la similitud de Jaccard basada en las tejas usadas.
 Sean $h_1, h_2, \ldots h_n$ funciones _hash_ escogidas al azar de
 manera independiente. Si $n$ es grande, entonces por la ley de los grandes números
-$$sim(a,b) \approx \frac{|h_j : minhash_{h_j}{\pi_j}(a) = minhash_{h_j}(b)|}{n},$$
+$$sim(a,b) \approx \frac{|h_j : f_{h_j}{\pi_j}(a) = f_{h_j}(b)|}{n},$$
 es decir, la similitud de Jaccard es aproximadamente la proporción 
 de elementos de las firmas que coinciden.</div>\EndKnitrBlock{resumen}
 
@@ -570,7 +569,7 @@ docs_firmas
 ```
 
 Ahora agrupamos documentos que comparten alguna firma. A los grupos
-que coinciden en cada firma les lammamos _cubetas_:
+que coinciden en cada firma les llamamos _cubetas_:
 
 
 ```r
@@ -763,3 +762,185 @@ pares_tbl
 
 Ahora buscaremos tweets similares en una colección de un [dataset de
 kaggle](https://www.kaggle.com/rgupta09/world-cup-2018-tweets/home?utm_medium=email&utm_source=mailchimp&utm_campaign=datanotes-20180823).
+
+
+```r
+ruta <- "../datos/FIFA.csv"
+if(!file.exists(ruta)){
+    fifa <- read_csv("https://fifatweets.s3.amazonaws.com/FIFA.csv")
+    write_csv(fifa, "../datos/FIFA.csv")
+} else {
+    fifa <- read_csv(ruta)
+}
+```
+
+```
+## Rows: 530000 Columns: 16
+```
+
+```
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## chr  (9): lang, Source, Orig_Tweet, Tweet, Hashtags, UserMentionNames, UserM...
+## dbl  (6): ID, len, Likes, RTs, Followers, Friends
+## dttm (1): Date
+```
+
+```
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+```r
+tw <- fifa$Tweet
+tw[1:10]
+```
+
+```
+##  [1] "Only two goalkeepers have saved three penalties in penalty shoot out Ricardo vs"                         
+##  [2] "scores the winning penalty to send into the quarter finals where they will face Russia"                  
+##  [3] "Tonight we have big game"                                                                                
+##  [4] "We get stronger Turn the music up now We got that power power"                                           
+##  [5] "Only two goalkeepers have saved three penalties in penalty shoot out Ricardo vs"                         
+##  [6] "We re looking strong going into the knockout stage We caught up with ahead of"                           
+##  [7] "am happy for winning Especially since you know we colluded and all Russia eliminates Spain after penalty"
+##  [8] "When you see me When we feel the same feeling Power power"                                               
+##  [9] "Kasper Schmeichel takes the final award of the day"                                                      
+## [10] "After Years Global Puma Ambassador LG Mobile Ambassador CocaCola WorldCup Kookmin Bank UNICEF"
+```
+
+
+```r
+set.seed(9192)
+num_tweets <- 100000
+system.time(tejas_doc <- calcular_tejas(tw[1:num_tweets], k = 5))
+```
+
+```
+##    user  system elapsed 
+##   3.171   0.058   3.230
+```
+
+```r
+tejas_tbl <- tibble(doc_id = 1:num_tweets, tejas = tejas_doc)
+hash_f <- map(1:50, ~ generar_hash())
+system.time(
+  docs_firmas <- tejas_tbl |> 
+  mutate(firma = map(tejas, \(lista) map_int(hash_f, \(h) min(h(lista))))) |> 
+  select(doc_id, firma)) 
+```
+
+```
+##    user  system elapsed 
+##   27.78    0.02   27.80
+```
+
+```r
+docs_firmas
+```
+
+```
+## # A tibble: 100,000 × 2
+##    doc_id firma     
+##     <int> <list>    
+##  1      1 <int [50]>
+##  2      2 <int [50]>
+##  3      3 <int [50]>
+##  4      4 <int [50]>
+##  5      5 <int [50]>
+##  6      6 <int [50]>
+##  7      7 <int [50]>
+##  8      8 <int [50]>
+##  9      9 <int [50]>
+## 10     10 <int [50]>
+## # … with 99,990 more rows
+```
+La firma de minhashes del primer documento es por ejemplo:
+
+
+```r
+docs_firmas$firma[1]
+```
+
+```
+## [[1]]
+##  [1] -1953455759 -2112001395 -2031432865 -2108080560 -2095602723 -2118858341
+##  [7] -2099337985 -1978298401 -2092751862 -2097330616 -1897306653 -2139645671
+## [13] -1981364640 -2081406116 -2127003388 -2138613184 -2146084782 -2082312909
+## [19] -2083329993 -2001255852 -2091106849 -2091293600 -2120806067 -2095725804
+## [25] -2143199361 -2091159512 -2124095195 -2038461037 -2109684884 -2073791594
+## [31] -2129542593 -1904599938 -2118234795 -2056298394 -2105031889 -2113931139
+## [37] -2134167293 -2140440957 -1717523835 -2144768923 -2138027225 -2084388635
+## [43] -2110278901 -2135431955 -2139423769 -2130397390 -2097742891 -2105787557
+## [49] -2101425996 -1941363605
+```
+Y probaremos primero hacer cubetas con algunas las firmas:
+
+
+```r
+docs_firmas <- docs_firmas |> 
+  mutate(cubeta_nombre = map_chr(firma, \(x) paste(x[1:3], collapse = "-")))
+docs_cubetas_tbl <- 
+  docs_firmas |> 
+  group_by(cubeta_nombre) |> 
+  summarise(docs = list(doc_id)) |> 
+  mutate(num_docs = map_int(docs, length)) |> 
+  filter(num_docs > 1)
+```
+
+Y examinamos ahora algunas de las cubetas:
+
+
+```r
+docs_ejemplo <- docs_cubetas_tbl$docs[[125]]
+tw[docs_ejemplo]
+```
+
+```
+## [1] "We got That power power" "We got That power power"
+## [3] "We got That power power"
+```
+
+```r
+docs_ejemplo <- docs_cubetas_tbl$docs[[1658]]
+length(docs_ejemplo)
+```
+
+```
+## [1] 406
+```
+
+```r
+tw[docs_ejemplo][1:10]
+```
+
+```
+##  [1] "short story involving Nigeria Argentina and France"
+##  [2] "short story involving Nigeria Argentina and France"
+##  [3] "short story involving Nigeria Argentina and France"
+##  [4] "short story involving Nigeria Argentina and France"
+##  [5] "short story involving Nigeria Argentina and France"
+##  [6] "short story involving Nigeria Argentina and France"
+##  [7] "short story involving Nigeria Argentina and France"
+##  [8] "short story involving Nigeria Argentina and France"
+##  [9] "short story involving Nigeria Argentina and France"
+## [10] "short story involving Nigeria Argentina and France"
+```
+
+
+
+```r
+docs_ejemplo <- docs_cubetas_tbl$docs[[4958]]
+tw[docs_ejemplo]
+```
+
+```
+## [1] "The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures yo"                             
+## [2] "The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures yo"                             
+## [3] "The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures yo"                             
+## [4] "The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures you can watch the highlights on"
+## [5] "The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures you can watch the highlights on"
+```
+
+Con este método, podemos extraer pares de muy alta similitud (cercano a duplicados) de forma eficiente en colecciones grandes de texto.

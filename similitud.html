@@ -24,7 +24,7 @@
 <meta name="author" content="Felipe González" />
 
 
-<meta name="date" content="2022-01-31" />
+<meta name="date" content="2022-02-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -533,7 +533,6 @@ son las “variables,” y los casos son las columnas) con los que
 sea posible obtener una buena aproximación de la similitud.</p>
 <p>La idea básica es la siguiente:</p>
 <ul>
-<li>Supongamos que numeramos las tejas 1, 2, , N.</li>
 <li>Escogemos una función al azar (una función <em>hash</em>) que mapea cadenas cortas a un número grande de enteros, de manera existe muy baja probabilidad de colisiones, y no hay correlación entre las cadenas y el valor al que son mapeados.</li>
 <li>Si un documento tiene tejas <span class="math inline">\(T\)</span>, aplicamos la función hash a cada teja de <span class="math inline">\(T\)</span>, y calculamos el mínimo de estos valores hash.</li>
 <li>Repetimos este proceso para varias funciones hash fijas, por ejemplo <span class="math inline">\(k= 5\)</span></li>
@@ -578,7 +577,7 @@ documento.</li>
 <span id="cb134-2"><a href="similitud.html#cb134-2" aria-hidden="true" tabindex="-1"></a>minhash_1</span></code></pre></div>
 <pre><code>## [1] -1866546594</code></pre>
 <p>Consideramos este <em>minhash</em> como un descriptor del documento. Generalmente
-usamos más de un descriptor. En el siguiente ejemplo usamos tres funciones
+usamos más de un descriptor. En el siguiente ejemplo usamos 4 funciones
 hash creadas de manera independiente:</p>
 <div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="similitud.html#cb136-1" aria-hidden="true" tabindex="-1"></a>hashes <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">~</span> <span class="fu">generar_hash</span>())</span>
 <span id="cb136-2"><a href="similitud.html#cb136-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -604,12 +603,12 @@ minhashes coincidan.</p>
 
 <div class="resumen">
 Sea <span class="math inline">\(h\)</span> una función <em>hash</em> escogida escogida al azar, y <span class="math inline">\(a\)</span> y <span class="math inline">\(b\)</span> dos documentos dados
-dadas. Entonces
-<span class="math display">\[P(minhash_h(a) = minhash_h(b)) = sim(a, b)\]</span>
+dadas. Denotamos como <span class="math inline">\(f_h\)</span> la función minhash asociada a <span class="math inline">\(h\)</span>. Entonces
+<span class="math display">\[P(f_h(a) = f_h(b)) = sim(a, b)\]</span>
 donde <span class="math inline">\(sim\)</span> es la similitud de Jaccard basada en las tejas usadas.
 Sean <span class="math inline">\(h_1, h_2, \ldots h_n\)</span> funciones <em>hash</em> escogidas al azar de
 manera independiente. Si <span class="math inline">\(n\)</span> es grande, entonces por la ley de los grandes números
-<span class="math display">\[sim(a,b) \approx \frac{|h_j : minhash_{h_j}{\pi_j}(a) = minhash_{h_j}(b)|}{n},\]</span>
+<span class="math display">\[sim(a,b) \approx \frac{|h_j : f_{h_j}{\pi_j}(a) = f_{h_j}(b)|}{n},\]</span>
 es decir, la similitud de Jaccard es aproximadamente la proporción
 de elementos de las firmas que coinciden.
 </div>
@@ -676,7 +675,7 @@ acabamos de construir.</p>
 ## 5      5 -2106131386 -2093452194 -2127642881 -1984764210
 ## 6      6 -2115397946 -2087727654 -2074217109 -1986993146</code></pre>
 <p>Ahora agrupamos documentos que comparten alguna firma. A los grupos
-que coinciden en cada firma les lammamos <em>cubetas</em>:</p>
+que coinciden en cada firma les llamamos <em>cubetas</em>:</p>
 <div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="similitud.html#cb140-1" aria-hidden="true" tabindex="-1"></a>cubetas_tbl <span class="ot">&lt;-</span> docs_firmas <span class="sc">|&gt;</span> <span class="fu">pivot_longer</span>(<span class="fu">contains</span>(<span class="st">&quot;firma_&quot;</span>), <span class="st">&quot;n_firma&quot;</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb140-2"><a href="similitud.html#cb140-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cubeta =</span> <span class="fu">paste</span>(n_firma, value)) <span class="sc">|&gt;</span> </span>
 <span id="cb140-3"><a href="similitud.html#cb140-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cubeta) <span class="sc">|&gt;</span> </span>
@@ -802,6 +801,110 @@ podemos también combinar firmas para formar cubetas donde las dos firmas coinci
 <h2><span class="header-section-number">3.6</span> Ejemplo: tweets</h2>
 <p>Ahora buscaremos tweets similares en una colección de un <a href="https://www.kaggle.com/rgupta09/world-cup-2018-tweets/home?utm_medium=email&amp;utm_source=mailchimp&amp;utm_campaign=datanotes-20180823">dataset de
 kaggle</a>.</p>
+<div class="sourceCode" id="cb159"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb159-1"><a href="similitud.html#cb159-1" aria-hidden="true" tabindex="-1"></a>ruta <span class="ot">&lt;-</span> <span class="st">&quot;../datos/FIFA.csv&quot;</span></span>
+<span id="cb159-2"><a href="similitud.html#cb159-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(ruta)){</span>
+<span id="cb159-3"><a href="similitud.html#cb159-3" aria-hidden="true" tabindex="-1"></a>    fifa <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://fifatweets.s3.amazonaws.com/FIFA.csv&quot;</span>)</span>
+<span id="cb159-4"><a href="similitud.html#cb159-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write_csv</span>(fifa, <span class="st">&quot;../datos/FIFA.csv&quot;</span>)</span>
+<span id="cb159-5"><a href="similitud.html#cb159-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb159-6"><a href="similitud.html#cb159-6" aria-hidden="true" tabindex="-1"></a>    fifa <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(ruta)</span>
+<span id="cb159-7"><a href="similitud.html#cb159-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>## Rows: 530000 Columns: 16</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr  (9): lang, Source, Orig_Tweet, Tweet, Hashtags, UserMentionNames, UserM...
+## dbl  (6): ID, len, Likes, RTs, Followers, Friends
+## dttm (1): Date</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode" id="cb163"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb163-1"><a href="similitud.html#cb163-1" aria-hidden="true" tabindex="-1"></a>tw <span class="ot">&lt;-</span> fifa<span class="sc">$</span>Tweet</span>
+<span id="cb163-2"><a href="similitud.html#cb163-2" aria-hidden="true" tabindex="-1"></a>tw[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div>
+<pre><code>##  [1] &quot;Only two goalkeepers have saved three penalties in penalty shoot out Ricardo vs&quot;                         
+##  [2] &quot;scores the winning penalty to send into the quarter finals where they will face Russia&quot;                  
+##  [3] &quot;Tonight we have big game&quot;                                                                                
+##  [4] &quot;We get stronger Turn the music up now We got that power power&quot;                                           
+##  [5] &quot;Only two goalkeepers have saved three penalties in penalty shoot out Ricardo vs&quot;                         
+##  [6] &quot;We re looking strong going into the knockout stage We caught up with ahead of&quot;                           
+##  [7] &quot;am happy for winning Especially since you know we colluded and all Russia eliminates Spain after penalty&quot;
+##  [8] &quot;When you see me When we feel the same feeling Power power&quot;                                               
+##  [9] &quot;Kasper Schmeichel takes the final award of the day&quot;                                                      
+## [10] &quot;After Years Global Puma Ambassador LG Mobile Ambassador CocaCola WorldCup Kookmin Bank UNICEF&quot;</code></pre>
+<div class="sourceCode" id="cb165"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb165-1"><a href="similitud.html#cb165-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">9192</span>)</span>
+<span id="cb165-2"><a href="similitud.html#cb165-2" aria-hidden="true" tabindex="-1"></a>num_tweets <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
+<span id="cb165-3"><a href="similitud.html#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[<span class="dv">1</span><span class="sc">:</span>num_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
+<pre><code>##    user  system elapsed 
+##   3.171   0.058   3.230</code></pre>
+<div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="similitud.html#cb167-1" aria-hidden="true" tabindex="-1"></a>tejas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> <span class="dv">1</span><span class="sc">:</span>num_tweets, <span class="at">tejas =</span> tejas_doc)</span>
+<span id="cb167-2"><a href="similitud.html#cb167-2" aria-hidden="true" tabindex="-1"></a>hash_f <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="sc">~</span> <span class="fu">generar_hash</span>())</span>
+<span id="cb167-3"><a href="similitud.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
+<span id="cb167-4"><a href="similitud.html#cb167-4" aria-hidden="true" tabindex="-1"></a>  docs_firmas <span class="ot">&lt;-</span> tejas_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb167-5"><a href="similitud.html#cb167-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
+<span id="cb167-6"><a href="similitud.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
+<pre><code>##    user  system elapsed 
+##   27.78    0.02   27.80</code></pre>
+<div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="similitud.html#cb169-1" aria-hidden="true" tabindex="-1"></a>docs_firmas</span></code></pre></div>
+<pre><code>## # A tibble: 100,000 × 2
+##    doc_id firma     
+##     &lt;int&gt; &lt;list&gt;    
+##  1      1 &lt;int [50]&gt;
+##  2      2 &lt;int [50]&gt;
+##  3      3 &lt;int [50]&gt;
+##  4      4 &lt;int [50]&gt;
+##  5      5 &lt;int [50]&gt;
+##  6      6 &lt;int [50]&gt;
+##  7      7 &lt;int [50]&gt;
+##  8      8 &lt;int [50]&gt;
+##  9      9 &lt;int [50]&gt;
+## 10     10 &lt;int [50]&gt;
+## # … with 99,990 more rows</code></pre>
+<p>La firma de minhashes del primer documento es por ejemplo:</p>
+<div class="sourceCode" id="cb171"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb171-1"><a href="similitud.html#cb171-1" aria-hidden="true" tabindex="-1"></a>docs_firmas<span class="sc">$</span>firma[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>## [[1]]
+##  [1] -1953455759 -2112001395 -2031432865 -2108080560 -2095602723 -2118858341
+##  [7] -2099337985 -1978298401 -2092751862 -2097330616 -1897306653 -2139645671
+## [13] -1981364640 -2081406116 -2127003388 -2138613184 -2146084782 -2082312909
+## [19] -2083329993 -2001255852 -2091106849 -2091293600 -2120806067 -2095725804
+## [25] -2143199361 -2091159512 -2124095195 -2038461037 -2109684884 -2073791594
+## [31] -2129542593 -1904599938 -2118234795 -2056298394 -2105031889 -2113931139
+## [37] -2134167293 -2140440957 -1717523835 -2144768923 -2138027225 -2084388635
+## [43] -2110278901 -2135431955 -2139423769 -2130397390 -2097742891 -2105787557
+## [49] -2101425996 -1941363605</code></pre>
+<p>Y probaremos primero hacer cubetas con algunas las firmas:</p>
+<div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="similitud.html#cb173-1" aria-hidden="true" tabindex="-1"></a>docs_firmas <span class="ot">&lt;-</span> docs_firmas <span class="sc">|&gt;</span> </span>
+<span id="cb173-2"><a href="similitud.html#cb173-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cubeta_nombre =</span> <span class="fu">map_chr</span>(firma, \(x) <span class="fu">paste</span>(x[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="at">collapse =</span> <span class="st">&quot;-&quot;</span>)))</span>
+<span id="cb173-3"><a href="similitud.html#cb173-3" aria-hidden="true" tabindex="-1"></a>docs_cubetas_tbl <span class="ot">&lt;-</span> </span>
+<span id="cb173-4"><a href="similitud.html#cb173-4" aria-hidden="true" tabindex="-1"></a>  docs_firmas <span class="sc">|&gt;</span> </span>
+<span id="cb173-5"><a href="similitud.html#cb173-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cubeta_nombre) <span class="sc">|&gt;</span> </span>
+<span id="cb173-6"><a href="similitud.html#cb173-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">docs =</span> <span class="fu">list</span>(doc_id)) <span class="sc">|&gt;</span> </span>
+<span id="cb173-7"><a href="similitud.html#cb173-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">num_docs =</span> <span class="fu">map_int</span>(docs, length)) <span class="sc">|&gt;</span> </span>
+<span id="cb173-8"><a href="similitud.html#cb173-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(num_docs <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div>
+<p>Y examinamos ahora algunas de las cubetas:</p>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="similitud.html#cb174-1" aria-hidden="true" tabindex="-1"></a>docs_ejemplo <span class="ot">&lt;-</span> docs_cubetas_tbl<span class="sc">$</span>docs[[<span class="dv">125</span>]]</span>
+<span id="cb174-2"><a href="similitud.html#cb174-2" aria-hidden="true" tabindex="-1"></a>tw[docs_ejemplo]</span></code></pre></div>
+<pre><code>## [1] &quot;We got That power power&quot; &quot;We got That power power&quot;
+## [3] &quot;We got That power power&quot;</code></pre>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="similitud.html#cb176-1" aria-hidden="true" tabindex="-1"></a>docs_ejemplo <span class="ot">&lt;-</span> docs_cubetas_tbl<span class="sc">$</span>docs[[<span class="dv">1658</span>]]</span>
+<span id="cb176-2"><a href="similitud.html#cb176-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(docs_ejemplo)</span></code></pre></div>
+<pre><code>## [1] 406</code></pre>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="similitud.html#cb178-1" aria-hidden="true" tabindex="-1"></a>tw[docs_ejemplo][<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div>
+<pre><code>##  [1] &quot;short story involving Nigeria Argentina and France&quot;
+##  [2] &quot;short story involving Nigeria Argentina and France&quot;
+##  [3] &quot;short story involving Nigeria Argentina and France&quot;
+##  [4] &quot;short story involving Nigeria Argentina and France&quot;
+##  [5] &quot;short story involving Nigeria Argentina and France&quot;
+##  [6] &quot;short story involving Nigeria Argentina and France&quot;
+##  [7] &quot;short story involving Nigeria Argentina and France&quot;
+##  [8] &quot;short story involving Nigeria Argentina and France&quot;
+##  [9] &quot;short story involving Nigeria Argentina and France&quot;
+## [10] &quot;short story involving Nigeria Argentina and France&quot;</code></pre>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="similitud.html#cb180-1" aria-hidden="true" tabindex="-1"></a>docs_ejemplo <span class="ot">&lt;-</span> docs_cubetas_tbl<span class="sc">$</span>docs[[<span class="dv">4958</span>]]</span>
+<span id="cb180-2"><a href="similitud.html#cb180-2" aria-hidden="true" tabindex="-1"></a>tw[docs_ejemplo]</span></code></pre></div>
+<pre><code>## [1] &quot;The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures yo&quot;                             
+## [2] &quot;The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures yo&quot;                             
+## [3] &quot;The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures yo&quot;                             
+## [4] &quot;The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures you can watch the highlights on&quot;
+## [5] &quot;The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures you can watch the highlights on&quot;</code></pre>
+<p>Con este método, podemos extraer pares de muy alta similitud (cercano a duplicados) de forma eficiente en colecciones grandes de texto.</p>
 
 </div>
 </div>
