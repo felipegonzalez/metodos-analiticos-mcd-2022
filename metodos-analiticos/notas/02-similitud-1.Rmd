@@ -255,7 +255,6 @@ sea posible obtener una buena aproximación de la similitud.
 
 La idea básica es la siguiente:
 
-- Supongamos que numeramos las tejas 1, 2, \ldots, N.
 - Escogemos una función al azar (una función _hash_) que mapea cadenas cortas a un número grande de enteros, de manera existe muy baja probabilidad de colisiones, y no hay correlación entre las cadenas y el valor al que son mapeados.
 - Si un documento tiene tejas $T$, aplicamos la función hash a cada teja de $T$, y calculamos el mínimo de estos valores hash. 
 - Repetimos este proceso para varias funciones hash fijas, por ejemplo $k= 5$
@@ -298,7 +297,7 @@ minhash_1
 ```
 
 Consideramos este _minhash_ como un descriptor del documento. Generalmente
-usamos más de un descriptor. En el siguiente ejemplo usamos tres funciones
+usamos más de un descriptor. En el siguiente ejemplo usamos 4 funciones
 hash creadas de manera independiente:
 
 
@@ -321,12 +320,12 @@ minhashes coincidan.
 
 ```{block2, type = 'resumen'}
 Sea $h$ una función _hash_ escogida escogida al azar, y $a$ y $b$ dos documentos dados
-dadas. Entonces
-$$P(minhash_h(a) = minhash_h(b)) = sim(a, b)$$
+dadas. Denotamos como $f_h$ la función minhash asociada a $h$. Entonces
+$$P(f_h(a) = f_h(b)) = sim(a, b)$$
 donde $sim$ es la similitud de Jaccard basada en las tejas usadas.
 Sean $h_1, h_2, \ldots h_n$ funciones _hash_ escogidas al azar de
 manera independiente. Si $n$ es grande, entonces por la ley de los grandes números
-$$sim(a,b) \approx \frac{|h_j : minhash_{h_j}{\pi_j}(a) = minhash_{h_j}(b)|}{n},$$
+$$sim(a,b) \approx \frac{|h_j : f_{h_j}{\pi_j}(a) = f_{h_j}(b)|}{n},$$
 es decir, la similitud de Jaccard es aproximadamente la proporción 
 de elementos de las firmas que coinciden.
 ```
@@ -395,7 +394,7 @@ docs_firmas
 ```
 
 Ahora agrupamos documentos que comparten alguna firma. A los grupos
-que coinciden en cada firma les lammamos _cubetas_:
+que coinciden en cada firma les llamamos _cubetas_:
 
 ```{r}
 cubetas_tbl <- docs_firmas |> pivot_longer(contains("firma_"), "n_firma") |> 
@@ -473,3 +472,63 @@ pares_tbl
 
 Ahora buscaremos tweets similares en una colección de un [dataset de
 kaggle](https://www.kaggle.com/rgupta09/world-cup-2018-tweets/home?utm_medium=email&utm_source=mailchimp&utm_campaign=datanotes-20180823).
+
+```{r}
+ruta <- "../datos/FIFA.csv"
+if(!file.exists(ruta)){
+    fifa <- read_csv("https://fifatweets.s3.amazonaws.com/FIFA.csv")
+    write_csv(fifa, "../datos/FIFA.csv")
+} else {
+    fifa <- read_csv(ruta)
+}
+tw <- fifa$Tweet
+tw[1:10]
+```
+
+```{r firmas_strdoc}
+set.seed(9192)
+num_tweets <- 100000
+system.time(tejas_doc <- calcular_tejas(tw[1:num_tweets], k = 5))
+tejas_tbl <- tibble(doc_id = 1:num_tweets, tejas = tejas_doc)
+hash_f <- map(1:50, ~ generar_hash())
+system.time(
+  docs_firmas <- tejas_tbl |> 
+  mutate(firma = map(tejas, \(lista) map_int(hash_f, \(h) min(h(lista))))) |> 
+  select(doc_id, firma)) 
+docs_firmas
+```
+La firma de minhashes del primer documento es por ejemplo:
+
+```{r}
+docs_firmas$firma[1]
+```
+Y probaremos primero hacer cubetas con algunas las firmas:
+
+```{r}
+docs_firmas <- docs_firmas |> 
+  mutate(cubeta_nombre = map_chr(firma, \(x) paste(x[1:3], collapse = "-")))
+docs_cubetas_tbl <- 
+  docs_firmas |> 
+  group_by(cubeta_nombre) |> 
+  summarise(docs = list(doc_id)) |> 
+  mutate(num_docs = map_int(docs, length)) |> 
+  filter(num_docs > 1)
+```
+
+Y examinamos ahora algunas de las cubetas:
+
+```{r}
+docs_ejemplo <- docs_cubetas_tbl$docs[[125]]
+tw[docs_ejemplo]
+docs_ejemplo <- docs_cubetas_tbl$docs[[1658]]
+length(docs_ejemplo)
+tw[docs_ejemplo][1:10]
+```
+
+
+```{r}
+docs_ejemplo <- docs_cubetas_tbl$docs[[4958]]
+tw[docs_ejemplo]
+```
+
+Con este método, podemos extraer pares de muy alta similitud (cercano a duplicados) de forma eficiente en colecciones grandes de texto.
