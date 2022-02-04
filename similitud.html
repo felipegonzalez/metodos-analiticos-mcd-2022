@@ -233,6 +233,9 @@ div.csl-indent {
 <li class="chapter" data-level="3.4" data-path="similitud.html"><a href="similitud.html#minhash-y-reducción-probabilística-de-dimensionalidad"><i class="fa fa-check"></i><b>3.4</b> Minhash y reducción probabilística de dimensionalidad</a></li>
 <li class="chapter" data-level="3.5" data-path="similitud.html"><a href="similitud.html#agrupando-textos-de-similitud-alta"><i class="fa fa-check"></i><b>3.5</b> Agrupando textos de similitud alta</a></li>
 <li class="chapter" data-level="3.6" data-path="similitud.html"><a href="similitud.html#ejemplo-tweets"><i class="fa fa-check"></i><b>3.6</b> Ejemplo: tweets</a></li>
+<li class="chapter" data-level="3.7" data-path="similitud.html"><a href="similitud.html#verificar-si-un-nuevo-elemento-es-duplicado"><i class="fa fa-check"></i><b>3.7</b> Verificar si un nuevo elemento es duplicado</a></li>
+<li class="chapter" data-level="3.8" data-path="similitud.html"><a href="similitud.html#controlando-la-sensibilidad-y-umbral-de-similitud"><i class="fa fa-check"></i><b>3.8</b> Controlando la sensibilidad y umbral de similitud</a></li>
+<li class="chapter" data-level="3.9" data-path="similitud.html"><a href="similitud.html#distancia-euclideana-y-lsh"><i class="fa fa-check"></i><b>3.9</b> Distancia euclideana y LSH</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
@@ -833,7 +836,7 @@ kaggle</a>.</p>
 <span id="cb165-2"><a href="similitud.html#cb165-2" aria-hidden="true" tabindex="-1"></a>num_tweets <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
 <span id="cb165-3"><a href="similitud.html#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[<span class="dv">1</span><span class="sc">:</span>num_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   2.831   0.032   2.863</code></pre>
+##   3.193   0.031   3.226</code></pre>
 <div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="similitud.html#cb167-1" aria-hidden="true" tabindex="-1"></a>tejas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> <span class="dv">1</span><span class="sc">:</span>num_tweets, <span class="at">tejas =</span> tejas_doc)</span>
 <span id="cb167-2"><a href="similitud.html#cb167-2" aria-hidden="true" tabindex="-1"></a>hash_f <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="sc">~</span> <span class="fu">generar_hash</span>())</span>
 <span id="cb167-3"><a href="similitud.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
@@ -841,7 +844,7 @@ kaggle</a>.</p>
 <span id="cb167-5"><a href="similitud.html#cb167-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
 <span id="cb167-6"><a href="similitud.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##  25.770   0.005  25.784</code></pre>
+##  27.744   0.018  27.764</code></pre>
 <div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="similitud.html#cb169-1" aria-hidden="true" tabindex="-1"></a>docs_firmas</span></code></pre></div>
 <pre><code>## # A tibble: 100,000 × 2
 ##    doc_id firma     
@@ -869,35 +872,28 @@ kaggle</a>.</p>
 ## [37] -2134167293 -2140440957 -1717523835 -2144768923 -2138027225 -2084388635
 ## [43] -2110278901 -2135431955 -2139423769 -2130397390 -2097742891 -2105787557
 ## [49] -2101425996 -1941363605</code></pre>
-<p>Y probaremos primero hacer cubetas con algunas las firmas:</p>
+<p>Y probaremos primero hacer cubetas con algunas las firmas (las cuatro primeras por ejemplo):</p>
 <div class="sourceCode" id="cb173"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb173-1"><a href="similitud.html#cb173-1" aria-hidden="true" tabindex="-1"></a>docs_firmas <span class="ot">&lt;-</span> docs_firmas <span class="sc">|&gt;</span> </span>
 <span id="cb173-2"><a href="similitud.html#cb173-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cubeta_nombre =</span> <span class="fu">map_chr</span>(firma, \(x) <span class="fu">paste</span>(x[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="at">collapse =</span> <span class="st">&quot;-&quot;</span>)))</span>
 <span id="cb173-3"><a href="similitud.html#cb173-3" aria-hidden="true" tabindex="-1"></a>docs_cubetas_tbl <span class="ot">&lt;-</span> </span>
 <span id="cb173-4"><a href="similitud.html#cb173-4" aria-hidden="true" tabindex="-1"></a>  docs_firmas <span class="sc">|&gt;</span> </span>
 <span id="cb173-5"><a href="similitud.html#cb173-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cubeta_nombre) <span class="sc">|&gt;</span> </span>
 <span id="cb173-6"><a href="similitud.html#cb173-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">docs =</span> <span class="fu">list</span>(doc_id)) <span class="sc">|&gt;</span> </span>
-<span id="cb173-7"><a href="similitud.html#cb173-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">num_docs =</span> <span class="fu">map_int</span>(docs, length)) <span class="sc">|&gt;</span> </span>
-<span id="cb173-8"><a href="similitud.html#cb173-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(num_docs <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div>
+<span id="cb173-7"><a href="similitud.html#cb173-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">num_docs =</span> <span class="fu">map_int</span>(docs, length)) </span>
+<span id="cb173-8"><a href="similitud.html#cb173-8" aria-hidden="true" tabindex="-1"></a>docs_cubetas_filt_tbl <span class="ot">&lt;-</span> docs_cubetas_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb173-9"><a href="similitud.html#cb173-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(num_docs <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code></pre></div>
 <p>Y examinamos ahora algunas de las cubetas:</p>
-<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="similitud.html#cb174-1" aria-hidden="true" tabindex="-1"></a>docs_ejemplo <span class="ot">&lt;-</span> docs_cubetas_tbl<span class="sc">$</span>docs[[<span class="dv">125</span>]]</span>
+<div class="sourceCode" id="cb174"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="similitud.html#cb174-1" aria-hidden="true" tabindex="-1"></a>docs_ejemplo <span class="ot">&lt;-</span> docs_cubetas_filt_tbl<span class="sc">$</span>docs[[<span class="dv">125</span>]]</span>
 <span id="cb174-2"><a href="similitud.html#cb174-2" aria-hidden="true" tabindex="-1"></a>tw[docs_ejemplo]</span></code></pre></div>
 <pre><code>## [1] &quot;We got That power power&quot; &quot;We got That power power&quot;
 ## [3] &quot;We got That power power&quot;</code></pre>
-<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="similitud.html#cb176-1" aria-hidden="true" tabindex="-1"></a>docs_ejemplo <span class="ot">&lt;-</span> docs_cubetas_tbl<span class="sc">$</span>docs[[<span class="dv">1658</span>]]</span>
+<div class="sourceCode" id="cb176"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="similitud.html#cb176-1" aria-hidden="true" tabindex="-1"></a>docs_ejemplo <span class="ot">&lt;-</span> docs_cubetas_filt_tbl<span class="sc">$</span>docs[[<span class="dv">1658</span>]]</span>
 <span id="cb176-2"><a href="similitud.html#cb176-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(docs_ejemplo)</span></code></pre></div>
 <pre><code>## [1] 406</code></pre>
-<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="similitud.html#cb178-1" aria-hidden="true" tabindex="-1"></a>tw[docs_ejemplo][<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div>
-<pre><code>##  [1] &quot;short story involving Nigeria Argentina and France&quot;
-##  [2] &quot;short story involving Nigeria Argentina and France&quot;
-##  [3] &quot;short story involving Nigeria Argentina and France&quot;
-##  [4] &quot;short story involving Nigeria Argentina and France&quot;
-##  [5] &quot;short story involving Nigeria Argentina and France&quot;
-##  [6] &quot;short story involving Nigeria Argentina and France&quot;
-##  [7] &quot;short story involving Nigeria Argentina and France&quot;
-##  [8] &quot;short story involving Nigeria Argentina and France&quot;
-##  [9] &quot;short story involving Nigeria Argentina and France&quot;
-## [10] &quot;short story involving Nigeria Argentina and France&quot;</code></pre>
-<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="similitud.html#cb180-1" aria-hidden="true" tabindex="-1"></a>docs_ejemplo <span class="ot">&lt;-</span> docs_cubetas_tbl<span class="sc">$</span>docs[[<span class="dv">4958</span>]]</span>
+<div class="sourceCode" id="cb178"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="similitud.html#cb178-1" aria-hidden="true" tabindex="-1"></a>tw[docs_ejemplo][<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span></code></pre></div>
+<pre><code>## [1] &quot;short story involving Nigeria Argentina and France&quot;
+## [2] &quot;short story involving Nigeria Argentina and France&quot;</code></pre>
+<div class="sourceCode" id="cb180"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb180-1"><a href="similitud.html#cb180-1" aria-hidden="true" tabindex="-1"></a>docs_ejemplo <span class="ot">&lt;-</span> docs_cubetas_filt_tbl<span class="sc">$</span>docs[[<span class="dv">4958</span>]]</span>
 <span id="cb180-2"><a href="similitud.html#cb180-2" aria-hidden="true" tabindex="-1"></a>tw[docs_ejemplo]</span></code></pre></div>
 <pre><code>## [1] &quot;The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures yo&quot;                             
 ## [2] &quot;The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures yo&quot;                             
@@ -905,7 +901,440 @@ kaggle</a>.</p>
 ## [4] &quot;The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures you can watch the highlights on&quot;
 ## [5] &quot;The keeps on serving us more and more drama If you missed any of the great moments from todays fixtures you can watch the highlights on&quot;</code></pre>
 <p>Con este método, podemos extraer pares de muy alta similitud (cercano a duplicados) de forma eficiente en colecciones grandes de texto.</p>
+</div>
+<div id="verificar-si-un-nuevo-elemento-es-duplicado" class="section level2" number="3.7">
+<h2><span class="header-section-number">3.7</span> Verificar si un nuevo elemento es duplicado</h2>
+<p>Si tenemos un nuevo entrada, podemos checar si es duplicado calculando su firma, formando
+la cubetas,
+y revisando si cae en alguna de las cubetas conocidas. Nótese que tenemos que guardar
+las funciones hash que usamos para aplicar a los nuevos datos, y repetir
+el proceso exactamente como procesamos los datos originales. Por ejemplo:</p>
+<div class="sourceCode" id="cb182"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb182-1"><a href="similitud.html#cb182-1" aria-hidden="true" tabindex="-1"></a>nuevos_tweets <span class="ot">&lt;-</span> <span class="dv">150000</span><span class="sc">:</span><span class="dv">150005</span></span>
+<span id="cb182-2"><a href="similitud.html#cb182-2" aria-hidden="true" tabindex="-1"></a>tw[nuevos_tweets]</span></code></pre></div>
+<pre><code>## [1] &quot;It should sound the song that was on the Show of the great fountain of Dubai Please play of&quot;                              
+## [2] &quot;PARK CHANYEOL Please play of&quot;                                                                                             
+## [3] &quot;What Game Congratulations to on reaching the quarter finals with but commiserations to Marcos&quot;                            
+## [4] &quot;For the fans of the vs rivalry Mbappe Cristiano Ronaldo fan has ended Messis dream of winning the&quot;                        
+## [5] &quot;Messi How far Suarez could not make it to the quarterfinals you know what to do Suarez Roger&quot;                             
+## [6] &quot;Got few daubes all right had to put him in when was painting low Thankfully painting finished another bit later after the&quot;</code></pre>
+<div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="similitud.html#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_nuevas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[nuevos_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.000   0.000   0.001</code></pre>
+<div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="similitud.html#cb186-1" aria-hidden="true" tabindex="-1"></a>tejas_nuevas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> nuevos_tweets, <span class="at">tejas =</span> tejas_nuevas_doc)</span>
+<span id="cb186-2"><a href="similitud.html#cb186-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
+<span id="cb186-3"><a href="similitud.html#cb186-3" aria-hidden="true" tabindex="-1"></a>  docs_nuevas_firmas <span class="ot">&lt;-</span> tejas_nuevas_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb186-4"><a href="similitud.html#cb186-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
+<span id="cb186-5"><a href="similitud.html#cb186-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.008   0.000   0.008</code></pre>
+<div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="similitud.html#cb188-1" aria-hidden="true" tabindex="-1"></a>docs_nuevas_firmas</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 2
+##   doc_id firma     
+##    &lt;int&gt; &lt;list&gt;    
+## 1 150000 &lt;int [50]&gt;
+## 2 150001 &lt;int [50]&gt;
+## 3 150002 &lt;int [50]&gt;
+## 4 150003 &lt;int [50]&gt;
+## 5 150004 &lt;int [50]&gt;
+## 6 150005 &lt;int [50]&gt;</code></pre>
+<div class="sourceCode" id="cb190"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb190-1"><a href="similitud.html#cb190-1" aria-hidden="true" tabindex="-1"></a>docs_nuevas_firmas <span class="ot">&lt;-</span> docs_nuevas_firmas <span class="sc">|&gt;</span> </span>
+<span id="cb190-2"><a href="similitud.html#cb190-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cubeta_nombre =</span> <span class="fu">map_chr</span>(firma, \(x) <span class="fu">paste</span>(x[<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>], <span class="at">collapse =</span> <span class="st">&quot;-&quot;</span>)))</span>
+<span id="cb190-3"><a href="similitud.html#cb190-3" aria-hidden="true" tabindex="-1"></a>docs_cubetas_nuevas_tbl <span class="ot">&lt;-</span> </span>
+<span id="cb190-4"><a href="similitud.html#cb190-4" aria-hidden="true" tabindex="-1"></a>  docs_nuevas_firmas <span class="sc">|&gt;</span> </span>
+<span id="cb190-5"><a href="similitud.html#cb190-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cubeta_nombre) <span class="sc">|&gt;</span> </span>
+<span id="cb190-6"><a href="similitud.html#cb190-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">docs =</span> <span class="fu">list</span>(doc_id)) <span class="sc">|&gt;</span> </span>
+<span id="cb190-7"><a href="similitud.html#cb190-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">num_docs =</span> <span class="fu">map_int</span>(docs, length)) </span>
+<span id="cb190-8"><a href="similitud.html#cb190-8" aria-hidden="true" tabindex="-1"></a>docs_cubetas_nuevas_tbl</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 3
+##   cubeta_nombre                       docs      num_docs
+##   &lt;chr&gt;                               &lt;list&gt;       &lt;int&gt;
+## 1 -2041983150--2147447475--2129777399 &lt;int [1]&gt;        1
+## 2 -2051683951--2053274679--2125528528 &lt;int [1]&gt;        1
+## 3 -2108824716--2032083428--2137254712 &lt;int [1]&gt;        1
+## 4 -2113147634--2140751096--2058622652 &lt;int [1]&gt;        1
+## 5 -2139603446--2140751096--2090996001 &lt;int [1]&gt;        1
+## 6 -2142045021--2054826468--2129777399 &lt;int [1]&gt;        1</code></pre>
+<p>Y ahora podemos hacer un semi-join con las cubetas:</p>
+<div class="sourceCode" id="cb192"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb192-1"><a href="similitud.html#cb192-1" aria-hidden="true" tabindex="-1"></a>cand_duplicados_tbl <span class="ot">&lt;-</span> docs_cubetas_nuevas_tbl <span class="sc">|&gt;</span> <span class="fu">semi_join</span>(docs_cubetas_tbl <span class="sc">|&gt;</span> <span class="fu">select</span>(cubeta_nombre))</span></code></pre></div>
+<pre><code>## Joining, by = &quot;cubeta_nombre&quot;</code></pre>
+<div class="sourceCode" id="cb194"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb194-1"><a href="similitud.html#cb194-1" aria-hidden="true" tabindex="-1"></a>cand_duplicados_tbl</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 3
+##   cubeta_nombre                       docs      num_docs
+##   &lt;chr&gt;                               &lt;list&gt;       &lt;int&gt;
+## 1 -2041983150--2147447475--2129777399 &lt;int [1]&gt;        1
+## 2 -2113147634--2140751096--2058622652 &lt;int [1]&gt;        1
+## 3 -2142045021--2054826468--2129777399 &lt;int [1]&gt;        1</code></pre>
+<p>Y vemos que tenemos tres candidatos a duplicados. Checamos el primer tweet:</p>
+<div class="sourceCode" id="cb196"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb196-1"><a href="similitud.html#cb196-1" aria-hidden="true" tabindex="-1"></a>cubeta_1 <span class="ot">&lt;-</span> cand_duplicados_tbl <span class="sc">|&gt;</span> <span class="fu">pull</span>(cubeta_nombre) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="dv">1</span>)</span>
+<span id="cb196-2"><a href="similitud.html#cb196-2" aria-hidden="true" tabindex="-1"></a>doc_1 <span class="ot">&lt;-</span> cand_duplicados_tbl <span class="sc">|&gt;</span> <span class="fu">pull</span>(docs) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="dv">1</span>)</span>
+<span id="cb196-3"><a href="similitud.html#cb196-3" aria-hidden="true" tabindex="-1"></a>cubeta_1</span></code></pre></div>
+<pre><code>## [1] &quot;-2041983150--2147447475--2129777399&quot;</code></pre>
+<div class="sourceCode" id="cb198"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb198-1"><a href="similitud.html#cb198-1" aria-hidden="true" tabindex="-1"></a>doc_1</span></code></pre></div>
+<pre><code>## [1] 150004</code></pre>
+<div class="sourceCode" id="cb200"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb200-1"><a href="similitud.html#cb200-1" aria-hidden="true" tabindex="-1"></a><span class="co"># en la tabla original de todos los tweets</span></span>
+<span id="cb200-2"><a href="similitud.html#cb200-2" aria-hidden="true" tabindex="-1"></a>doc_2 <span class="ot">&lt;-</span> <span class="fu">filter</span>(docs_cubetas_tbl, cubeta_nombre <span class="sc">==</span> cubeta_1) <span class="sc">|&gt;</span> </span>
+<span id="cb200-3"><a href="similitud.html#cb200-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(docs) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="dv">1</span>)</span>
+<span id="cb200-4"><a href="similitud.html#cb200-4" aria-hidden="true" tabindex="-1"></a>doc_2[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>## [1] 36839</code></pre>
+<p>Checamos los tweets:</p>
+<div class="sourceCode" id="cb202"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb202-1"><a href="similitud.html#cb202-1" aria-hidden="true" tabindex="-1"></a>tw[doc_2[<span class="dv">1</span>]]</span></code></pre></div>
+<pre><code>## [1] &quot;Messi How far Suarez could not make it to the quarterfinals you know what to do Suarez Roger&quot;</code></pre>
+<div class="sourceCode" id="cb204"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb204-1"><a href="similitud.html#cb204-1" aria-hidden="true" tabindex="-1"></a>tw[doc_1]</span></code></pre></div>
+<pre><code>## [1] &quot;Messi How far Suarez could not make it to the quarterfinals you know what to do Suarez Roger&quot;</code></pre>
+<p>Y efectivamente detectamos que el nuevo tweet es duplicado. Otra vez, no fue necesario
+hacer una comparación exhaustiva del nuevo tweet contra nuestra colección inicial grande.</p>
+<p><strong>Ejercicio</strong>: checa los otros candidatos a duplicados que encontramos en este ejemplo.</p>
+</div>
+<div id="controlando-la-sensibilidad-y-umbral-de-similitud" class="section level2" number="3.8">
+<h2><span class="header-section-number">3.8</span> Controlando la sensibilidad y umbral de similitud</h2>
+<p>En algunos casos nos pueden interesar encontrar duplicados muy cercanos, y en otros
+problemas quisiéramos capturar pares con un umbral más bajo de similitud. Usando
+distinto número de hashes podemos hacer esto. En primer lugar,
+sabemos que un la probabilidad de que dos minhashes coincidan es
+igual a la similitud de jaccard de los dos textos correspondientes.</p>
+<ul>
+<li>Si <span class="math inline">\(s\)</span> es la similitud de Jaccard entre <span class="math inline">\(a\)</span> y <span class="math inline">\(b\)</span>, entonces:</li>
+</ul>
+<p><span class="math display">\[P(f_h(a) = f_h(b)) = s(a,b) = s\]</span>
+Si escogemos <span class="math inline">\(k\)</span> hashes al azar, y definimos candidatos solamente cuando coincidan
+<strong>todos los hashes</strong> (construcción AND), la probabilidad de hacer un par candidatos es:</p>
+<p><span class="math display">\[P(f_1(a) = f_1(b), \ldots, f_k(a)=f_k(b)) = s^k\]</span>
+Por otro lado, si consideramos un par candidato cuando al menos <strong>alguno</strong> de los
+minhashes coinciden (construcción OR), la probabilidad que <span class="math inline">\(a\)</span> y <span class="math inline">\(b\)</span> sean candidatos
+es:</p>
+<p><span class="math display">\[P(f_j(a) = f_j(b) \, \textrm{ para alguna } j) = 1-(1-s)^k\]</span></p>
+<p>Podemos graficar estas probabilidades con distintos valores de <span class="math inline">\(k\)</span></p>
+<div class="sourceCode" id="cb206"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb206-1"><a href="similitud.html#cb206-1" aria-hidden="true" tabindex="-1"></a>k <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb206-2"><a href="similitud.html#cb206-2" aria-hidden="true" tabindex="-1"></a>prob_captura <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">s =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.01</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb206-3"><a href="similitud.html#cb206-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossing</span>(<span class="at">tipo =</span> <span class="fu">c</span>(<span class="st">&quot;k_hashes_AND&quot;</span>, <span class="st">&quot;k_hashes_OR&quot;</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb206-4"><a href="similitud.html#cb206-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">crossing</span>(<span class="at">k =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb206-5"><a href="similitud.html#cb206-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prob_captura =</span> <span class="fu">ifelse</span>(tipo <span class="sc">==</span> <span class="st">&quot;k_hashes_AND&quot;</span>, s<span class="sc">^</span>k, <span class="dv">1</span> <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">-</span> s)<span class="sc">^</span>k))</span>
+<span id="cb206-6"><a href="similitud.html#cb206-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(prob_captura, <span class="fu">aes</span>(<span class="at">x =</span> s, <span class="at">y =</span> prob_captura, <span class="at">colour =</span> <span class="fu">factor</span>(k))) <span class="sc">+</span></span>
+<span id="cb206-7"><a href="similitud.html#cb206-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb206-8"><a href="similitud.html#cb206-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> tipo)</span></code></pre></div>
+<p><img src="02-similitud-1_files/figure-html/unnamed-chunk-41-1.png" width="672" /></p>
+<p>Nótese que:</p>
+<ul>
+<li>Si queremos tener muy alta probabilidad de capturar todos los pares similares,
+podemos usar la construcción OR con k = 3 para similitud mayor a 0.75 o k = 10 para similitud mayor a 0.3, por ejemplo</li>
+<li>La desventaja de esto, es que es posible que obtengamos muchos candidatos que realmente no tienen la similitud deseada (falsos positivos). Esto implica más procesamiento.</li>
+<li>Si solo queremos capturar pares de muy alta similitud (por ejemplo &gt; 0.98), y
+no es grave que tengamos algunos falsos positivos, podemos
+usar la construcción AND con 1 o 3 hashes por ejemplo, y obtendremos un número más manejable
+de pares candidatos para procesar.</li>
+<li>La desventaja de esto es que es posible obtener algunos falsos negativos. Depende de la aplicación esto puede ser aceptable o no.</li>
+</ul>
 
+<div class="resumen">
+A partir de un umbral <span class="math inline">\(s\)</span> de similitud para los pares que queremos capturar, podemos
+usar varios minhashes para afinar el método:
+- Usamos la construcción OR con varios hashes para capturar pares de alta o mediana similitud con mucha confianza. Generalmente es necesario filtrar falsos positivos.
+- Usamos la construcción AND con uno o varios hashes para pares de muy alta similitud
+con confianza alta. Tendremos menos falsos positivos, pero también es posible tener más
+falsos negativos (se nos escapan algunos pares muy similares).
+</div>
+<p><strong>Nota</strong>: es posible combinar estas técnicas para refinar la captura de pares
+a un nivel de similitud dado haciendo bandas de hashes: por ejemplo, si tenemos
+20 hashes podemos hacer 4 bandas de 5 hashes, usamos AND para cada grupo de 5 hashes y
+OR para las 4 bandas. Para más de esto, revisa nuestro texto <span class="citation">(<a href="#ref-mmd" role="doc-biblioref">Leskovec, Rajaraman, and Ullman 2014</a>)</span>.</p>
+</div>
+<div id="distancia-euclideana-y-lsh" class="section level2" number="3.9">
+<h2><span class="header-section-number">3.9</span> Distancia euclideana y LSH</h2>
+<p>Ahora aplicamos estas ideas para otro tipo de similitud. En este caso, consideramos
+la distancia euclideana usual en dimensión <span class="math inline">\(p\)</span>:</p>
+<p><span class="math display">\[d(x,y) = \sqrt{(x_1 - y_1)^2 + (x_2 - y_2)^2 +\cdots (x_p - y_p)^2}\]</span>
+Y nuestra tarea es <strong>encontrar todos los pares tales que su distancia euclideana
+es muy cercana a 0</strong>. Es decir, queremos hacer “clusters” pero sólo de datos
+muy cercanos, igual que en los ejemplos de similitud de jaccard.</p>
+<p>Para distancia euclideana nuestros hashes resultan de proyecciones
+aleatorias rectas fijas en cubetas. La idea general es que tomamos una línea al azar en el espacio
+de entradas, y la dividimos en cubetas de manera uniforme. El valor
+hash de un punto <span class="math inline">\(x\)</span> es el número de cubeta donde cae la proyección de <span class="math inline">\(x\)</span>.</p>
+<p>Más especificamente, si escogemos un ancho <span class="math inline">\(r\)</span> de cubeta:</p>
+<ol style="list-style-type: decimal">
+<li>Escogemos una dirección al azar <span class="math inline">\(v\)</span></li>
+<li>El hash de un punto <span class="math inline">\(x\)</span> se calcula como sigue:</li>
+</ol>
+<ul>
+<li>Calculamos el tamaño de la proyección <span class="math inline">\(x\)</span> sobre <span class="math inline">\(v\)</span></li>
+<li>Dividimos este tamaño entre <span class="math inline">\(r\)</span></li>
+<li>el hash la parte entera de este último número</li>
+</ul>
+<p>Es decir,
+<span class="math display">\[h(x) = \left\lfloor{ \frac{x\cdot v}{r}}\right\rfloor\]</span></p>
+<p><strong>Ejercicio</strong>: haz un dibujo de este proceso, y cómo se calcula el hash de un punto
+<span class="math inline">\(x\)</span> una
+vez que tienes <span class="math inline">\(r\)</span> y <span class="math inline">\(v\)</span>.</p>
+<p>Por ejemplo, si <span class="math inline">\(v=(1,2)\)</span>, y <span class="math inline">\(r = 1\)</span>:</p>
+<div class="sourceCode" id="cb207"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="similitud.html#cb207-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb207-2"><a href="similitud.html#cb207-2" aria-hidden="true" tabindex="-1"></a>norma <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">sqrt</span>(<span class="fu">sum</span>(x<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb207-3"><a href="similitud.html#cb207-3" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>) <span class="sc">/</span> <span class="fu">norma</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb207-4"><a href="similitud.html#cb207-4" aria-hidden="true" tabindex="-1"></a>v</span></code></pre></div>
+<pre><code>## [1] 0.447 0.894</code></pre>
+<div class="sourceCode" id="cb209"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="similitud.html#cb209-1" aria-hidden="true" tabindex="-1"></a>hash_1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">floor</span>(<span class="fu">sum</span>(x <span class="sc">*</span> v) <span class="sc">/</span> <span class="dv">1</span>)</span>
+<span id="cb209-2"><a href="similitud.html#cb209-2" aria-hidden="true" tabindex="-1"></a><span class="fu">hash_1</span>(<span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">0</span>))</span></code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<div class="sourceCode" id="cb211"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="similitud.html#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hash_1</span>(<span class="fu">c</span>(<span class="dv">0</span>,<span class="sc">-</span><span class="dv">1</span>))</span></code></pre></div>
+<pre><code>## [1] -1</code></pre>
+<div class="sourceCode" id="cb213"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="similitud.html#cb213-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hash_1</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<p>Construimos ahora nuestra función generadora de hashes:</p>
+<div class="sourceCode" id="cb215"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="similitud.html#cb215-1" aria-hidden="true" tabindex="-1"></a>gen_hash <span class="ot">&lt;-</span> <span class="cf">function</span>(p, r){</span>
+<span id="cb215-2"><a href="similitud.html#cb215-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># d es la dimensión y r es el ancho de las cubetas</span></span>
+<span id="cb215-3"><a href="similitud.html#cb215-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#</span></span>
+<span id="cb215-4"><a href="similitud.html#cb215-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># escogemos una dirección al azar</span></span>
+<span id="cb215-5"><a href="similitud.html#cb215-5" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(p)</span>
+<span id="cb215-6"><a href="similitud.html#cb215-6" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> v <span class="sc">/</span> <span class="fu">norma</span>(v)</span>
+<span id="cb215-7"><a href="similitud.html#cb215-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># devolvemos una función que calcula la cubeta:</span></span>
+<span id="cb215-8"><a href="similitud.html#cb215-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x){</span>
+<span id="cb215-9"><a href="similitud.html#cb215-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">floor</span>(<span class="fu">sum</span>(x <span class="sc">*</span> v) <span class="sc">/</span> r) <span class="sc">|&gt;</span> <span class="fu">as.integer</span>()</span>
+<span id="cb215-10"><a href="similitud.html#cb215-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb215-11"><a href="similitud.html#cb215-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb215-12"><a href="similitud.html#cb215-12" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">823</span>)</span>
+<span id="cb215-13"><a href="similitud.html#cb215-13" aria-hidden="true" tabindex="-1"></a>hash_1 <span class="ot">&lt;-</span> <span class="fu">gen_hash</span>(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb215-14"><a href="similitud.html#cb215-14" aria-hidden="true" tabindex="-1"></a><span class="co"># los hashes de dos puntos:</span></span>
+<span id="cb215-15"><a href="similitud.html#cb215-15" aria-hidden="true" tabindex="-1"></a><span class="fu">hash_1</span>(<span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">7</span>))</span></code></pre></div>
+<pre><code>## [1] -7</code></pre>
+<div class="sourceCode" id="cb217"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="similitud.html#cb217-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hash_1</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">4</span>, <span class="dv">7</span>))</span></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode" id="cb219"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb219-1"><a href="similitud.html#cb219-1" aria-hidden="true" tabindex="-1"></a><span class="co"># el vector que escogimos es</span></span>
+<span id="cb219-2"><a href="similitud.html#cb219-2" aria-hidden="true" tabindex="-1"></a><span class="fu">environment</span>(hash_1)<span class="sc">$</span>v</span></code></pre></div>
+<pre><code>## [1] -0.914 -0.405</code></pre>
+<div id="ejemplo-11" class="section level4 unnumbered">
+<h4>Ejemplo</h4>
+<p>La siguiente función genera dos clusters de puntos mezclados con puntos distribuidos
+normales con desviación estándar relativamente grande</p>
+<div class="sourceCode" id="cb221"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="similitud.html#cb221-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1021</span>)</span>
+<span id="cb221-2"><a href="similitud.html#cb221-2" aria-hidden="true" tabindex="-1"></a>simular_puntos <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">d =</span> <span class="dv">2</span>, <span class="at">n =</span> <span class="dv">200</span>){</span>
+<span id="cb221-3"><a href="similitud.html#cb221-3" aria-hidden="true" tabindex="-1"></a>  <span class="co">#puntos muy cercanos a (3,3,..., 3):</span></span>
+<span id="cb221-4"><a href="similitud.html#cb221-4" aria-hidden="true" tabindex="-1"></a>  mat_1 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">10</span> <span class="sc">*</span> d, <span class="at">sd =</span> <span class="fl">0.01</span>) <span class="sc">+</span> <span class="dv">3</span>, <span class="at">ncol =</span> d)</span>
+<span id="cb221-5"><a href="similitud.html#cb221-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">#puntos muy cercanos a (-3,-3,..., -3):</span></span>
+<span id="cb221-6"><a href="similitud.html#cb221-6" aria-hidden="true" tabindex="-1"></a>  mat_2 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">10</span> <span class="sc">*</span> d, <span class="at">sd =</span> <span class="fl">0.01</span>) <span class="sc">-</span> <span class="dv">3</span>, <span class="at">ncol =</span> d)</span>
+<span id="cb221-7"><a href="similitud.html#cb221-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># puntos distribuidos alrededor del origen:</span></span>
+<span id="cb221-8"><a href="similitud.html#cb221-8" aria-hidden="true" tabindex="-1"></a>  mat_3 <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n <span class="sc">*</span> d, <span class="at">sd =</span> <span class="dv">10</span>), <span class="at">ncol =</span> d)</span>
+<span id="cb221-9"><a href="similitud.html#cb221-9" aria-hidden="true" tabindex="-1"></a>  datos_tbl_vars <span class="ot">&lt;-</span> <span class="fu">rbind</span>(mat_3, mat_1, mat_2)  <span class="sc">|&gt;</span> </span>
+<span id="cb221-10"><a href="similitud.html#cb221-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb221-11"><a href="similitud.html#cb221-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">id_1 =</span> <span class="fu">row_number</span>())</span>
+<span id="cb221-12"><a href="similitud.html#cb221-12" aria-hidden="true" tabindex="-1"></a>  datos_tbl_vars</span>
+<span id="cb221-13"><a href="similitud.html#cb221-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb221-14"><a href="similitud.html#cb221-14" aria-hidden="true" tabindex="-1"></a><span class="co"># diez puntos en cluster 1, diez en cluster 2, y 100 sin cluster:</span></span>
+<span id="cb221-15"><a href="similitud.html#cb221-15" aria-hidden="true" tabindex="-1"></a>datos_tbl_vars <span class="ot">&lt;-</span> <span class="fu">simular_puntos</span>(<span class="at">d =</span> <span class="dv">2</span>, <span class="at">n =</span> <span class="dv">100</span>)</span></code></pre></div>
+<pre><code>## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.
+## Using compatibility `.name_repair`.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<div class="sourceCode" id="cb223"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="similitud.html#cb223-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(datos_tbl_vars, <span class="fu">aes</span>(<span class="at">x =</span> V1, <span class="at">y=</span> V2)) <span class="sc">+</span> </span>
+<span id="cb223-2"><a href="similitud.html#cb223-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">height =</span> <span class="fl">0.3</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code></pre></div>
+<p><img src="02-similitud-1_files/figure-html/unnamed-chunk-45-1.png" width="672" /></p>
+<p>Para este ejemplo calculamos las distancias reales:</p>
+<div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="similitud.html#cb224-1" aria-hidden="true" tabindex="-1"></a>dist_e <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y){</span>
+<span id="cb224-2"><a href="similitud.html#cb224-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">norma</span>(x <span class="sc">-</span> y)</span>
+<span id="cb224-3"><a href="similitud.html#cb224-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb224-4"><a href="similitud.html#cb224-4" aria-hidden="true" tabindex="-1"></a>datos_tbl <span class="ot">&lt;-</span> datos_tbl_vars <span class="sc">|&gt;</span></span>
+<span id="cb224-5"><a href="similitud.html#cb224-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>id_1, <span class="at">names_to =</span> <span class="st">&quot;variable&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;valor&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb224-6"><a href="similitud.html#cb224-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id_1) <span class="sc">|&gt;</span></span>
+<span id="cb224-7"><a href="similitud.html#cb224-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(variable) <span class="sc">|&gt;</span></span>
+<span id="cb224-8"><a href="similitud.html#cb224-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">vec_1 =</span> <span class="fu">list</span>(valor))</span>
+<span id="cb224-9"><a href="similitud.html#cb224-9" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
+<span id="cb224-10"><a href="similitud.html#cb224-10" aria-hidden="true" tabindex="-1"></a>pares_tbl <span class="ot">&lt;-</span> datos_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb224-11"><a href="similitud.html#cb224-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">crossing</span>(datos_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb224-12"><a href="similitud.html#cb224-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rename</span>(<span class="at">id_2 =</span> id_1, <span class="at">vec_2 =</span> vec_1)) <span class="sc">|&gt;</span></span>
+<span id="cb224-13"><a href="similitud.html#cb224-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(id_1 <span class="sc">&lt;</span> id_2) <span class="sc">|&gt;</span></span>
+<span id="cb224-14"><a href="similitud.html#cb224-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">dist =</span> <span class="fu">map2_dbl</span>(vec_1, vec_2, dist_e))</span>
+<span id="cb224-15"><a href="similitud.html#cb224-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>##    user  system elapsed 
+##   0.029   0.000   0.029</code></pre>
+<div class="sourceCode" id="cb226"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb226-1"><a href="similitud.html#cb226-1" aria-hidden="true" tabindex="-1"></a>pares_tbl <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 5
+##    id_1 vec_1      id_2 vec_2      dist
+##   &lt;int&gt; &lt;list&gt;    &lt;int&gt; &lt;list&gt;    &lt;dbl&gt;
+## 1     1 &lt;dbl [2]&gt;     2 &lt;dbl [2]&gt;  7.07
+## 2     1 &lt;dbl [2]&gt;     3 &lt;dbl [2]&gt; 24.2 
+## 3     1 &lt;dbl [2]&gt;     4 &lt;dbl [2]&gt; 29.0 
+## 4     1 &lt;dbl [2]&gt;     5 &lt;dbl [2]&gt; 24.9 
+## 5     1 &lt;dbl [2]&gt;     6 &lt;dbl [2]&gt;  3.31
+## 6     1 &lt;dbl [2]&gt;     7 &lt;dbl [2]&gt; 16.2</code></pre>
+<div class="sourceCode" id="cb228"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb228-1"><a href="similitud.html#cb228-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(pares_tbl)</span></code></pre></div>
+<pre><code>## [1] 7140</code></pre>
+<div class="sourceCode" id="cb230"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb230-1"><a href="similitud.html#cb230-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(pares_tbl<span class="sc">$</span>dist)</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="02-similitud-1_files/figure-html/unnamed-chunk-47-1.png" width="672" /></p>
+<p>Supongamos que queremos encontrar los puntos que están a distancia menor a 1:</p>
+<div class="sourceCode" id="cb232"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb232-1"><a href="similitud.html#cb232-1" aria-hidden="true" tabindex="-1"></a>pares_sim <span class="ot">&lt;-</span> pares_tbl <span class="sc">|&gt;</span> <span class="fu">filter</span>(dist <span class="sc">&lt;</span> <span class="dv">1</span>)</span>
+<span id="cb232-2"><a href="similitud.html#cb232-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(pares_sim)</span></code></pre></div>
+<pre><code>## [1] 103</code></pre>
+</div>
+<div id="cálculo-de-firmas" class="section level4 unnumbered">
+<h4>Cálculo de firmas</h4>
+<p>Usaremos 4 hashes con tamaño de cubeta = 0.2:</p>
+<div class="sourceCode" id="cb234"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb234-1"><a href="similitud.html#cb234-1" aria-hidden="true" tabindex="-1"></a><span class="co">#generar hashes</span></span>
+<span id="cb234-2"><a href="similitud.html#cb234-2" aria-hidden="true" tabindex="-1"></a>hash_f <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="sc">~</span> <span class="fu">gen_hash</span>(<span class="at">p =</span> <span class="dv">2</span>,  <span class="at">r =</span> <span class="fl">0.2</span>))</span>
+<span id="cb234-3"><a href="similitud.html#cb234-3" aria-hidden="true" tabindex="-1"></a><span class="co"># esta es una función de conveniencia:</span></span>
+<span id="cb234-4"><a href="similitud.html#cb234-4" aria-hidden="true" tabindex="-1"></a>calculador_hashes <span class="ot">&lt;-</span> <span class="cf">function</span>(hash_f){</span>
+<span id="cb234-5"><a href="similitud.html#cb234-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(z) {</span>
+<span id="cb234-6"><a href="similitud.html#cb234-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">map_int</span>(hash_f, <span class="sc">~</span> <span class="fu">.x</span>(z))</span>
+<span id="cb234-7"><a href="similitud.html#cb234-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb234-8"><a href="similitud.html#cb234-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb234-9"><a href="similitud.html#cb234-9" aria-hidden="true" tabindex="-1"></a>calc_hashes <span class="ot">&lt;-</span> <span class="fu">calculador_hashes</span>(hash_f)</span></code></pre></div>
+<p>Calculamos las firmas:</p>
+<div class="sourceCode" id="cb235"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="similitud.html#cb235-1" aria-hidden="true" tabindex="-1"></a>firmas_tbl <span class="ot">&lt;-</span> datos_tbl_vars <span class="sc">|&gt;</span> </span>
+<span id="cb235-2"><a href="similitud.html#cb235-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="sc">-</span>id_1, <span class="at">names_to =</span> <span class="st">&quot;variable&quot;</span>, <span class="at">values_to =</span> <span class="st">&quot;valor&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb235-3"><a href="similitud.html#cb235-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id_1) <span class="sc">|&gt;</span> </span>
+<span id="cb235-4"><a href="similitud.html#cb235-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">vec_1 =</span> <span class="fu">list</span>(valor)) <span class="sc">|&gt;</span> </span>
+<span id="cb235-5"><a href="similitud.html#cb235-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(vec_1, <span class="sc">~</span> <span class="fu">calc_hashes</span>(.x))) <span class="sc">|&gt;</span> </span>
+<span id="cb235-6"><a href="similitud.html#cb235-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id_1, firma)</span>
+<span id="cb235-7"><a href="similitud.html#cb235-7" aria-hidden="true" tabindex="-1"></a>firmas_tbl</span></code></pre></div>
+<pre><code>## # A tibble: 120 × 2
+##     id_1 firma    
+##    &lt;int&gt; &lt;list&gt;   
+##  1     1 &lt;int [4]&gt;
+##  2     2 &lt;int [4]&gt;
+##  3     3 &lt;int [4]&gt;
+##  4     4 &lt;int [4]&gt;
+##  5     5 &lt;int [4]&gt;
+##  6     6 &lt;int [4]&gt;
+##  7     7 &lt;int [4]&gt;
+##  8     8 &lt;int [4]&gt;
+##  9     9 &lt;int [4]&gt;
+## 10    10 &lt;int [4]&gt;
+## # … with 110 more rows</code></pre>
+<div class="sourceCode" id="cb237"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb237-1"><a href="similitud.html#cb237-1" aria-hidden="true" tabindex="-1"></a>firmas_tbl<span class="sc">$</span>firma[[<span class="dv">1</span>]]</span></code></pre></div>
+<pre><code>## [1] -88  14  14 -87</code></pre>
+<div class="sourceCode" id="cb239"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb239-1"><a href="similitud.html#cb239-1" aria-hidden="true" tabindex="-1"></a>firmas_tbl<span class="sc">$</span>firma[[<span class="dv">2</span>]]</span></code></pre></div>
+<pre><code>## [1] -91  48  48 -92</code></pre>
+<p>Para este ejemplo, consideraremos todos los pares que coinciden en al menos una cubeta
+(hacemos disyunción de los 4 hashes):</p>
+<div class="sourceCode" id="cb241"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb241-1"><a href="similitud.html#cb241-1" aria-hidden="true" tabindex="-1"></a>cubetas_tbl  <span class="ot">&lt;-</span> firmas_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb241-2"><a href="similitud.html#cb241-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(firma) <span class="sc">|&gt;</span> </span>
+<span id="cb241-3"><a href="similitud.html#cb241-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id_1) <span class="sc">|&gt;</span> </span>
+<span id="cb241-4"><a href="similitud.html#cb241-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hash_no =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb241-5"><a href="similitud.html#cb241-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">cubeta =</span> <span class="fu">paste</span>(hash_no, firma, <span class="at">sep =</span> <span class="st">&quot;/&quot;</span>))</span>
+<span id="cb241-6"><a href="similitud.html#cb241-6" aria-hidden="true" tabindex="-1"></a>cubetas_tbl</span></code></pre></div>
+<pre><code>## # A tibble: 480 × 4
+## # Groups:   id_1 [120]
+##     id_1 firma hash_no cubeta
+##    &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;chr&gt; 
+##  1     1   -88       1 1/-88 
+##  2     1    14       2 2/14  
+##  3     1    14       3 3/14  
+##  4     1   -87       4 4/-87 
+##  5     2   -91       1 1/-91 
+##  6     2    48       2 2/48  
+##  7     2    48       3 3/48  
+##  8     2   -92       4 4/-92 
+##  9     3   -24       1 1/-24 
+## 10     3    88       2 2/88  
+## # … with 470 more rows</code></pre>
+<p>Ahora agrupamos cubetas y filtramos las que tienen más de un elemento</p>
+<div class="sourceCode" id="cb243"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb243-1"><a href="similitud.html#cb243-1" aria-hidden="true" tabindex="-1"></a>cubetas_tbl <span class="ot">&lt;-</span> cubetas_tbl <span class="sc">|&gt;</span> <span class="fu">group_by</span>(cubeta) <span class="sc">|&gt;</span> </span>
+<span id="cb243-2"><a href="similitud.html#cb243-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">ids =</span> <span class="fu">list</span>(id_1), <span class="at">n =</span> <span class="fu">length</span>(id_1)) <span class="sc">|&gt;</span> </span>
+<span id="cb243-3"><a href="similitud.html#cb243-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb243-4"><a href="similitud.html#cb243-4" aria-hidden="true" tabindex="-1"></a>cubetas_tbl</span></code></pre></div>
+<pre><code>## # A tibble: 79 × 3
+##    cubeta ids            n
+##    &lt;chr&gt;  &lt;list&gt;     &lt;int&gt;
+##  1 1/-1   &lt;int [2]&gt;      2
+##  2 1/-13  &lt;int [2]&gt;      2
+##  3 1/-16  &lt;int [4]&gt;      4
+##  4 1/-21  &lt;int [11]&gt;    11
+##  5 1/-28  &lt;int [2]&gt;      2
+##  6 1/-32  &lt;int [2]&gt;      2
+##  7 1/-41  &lt;int [2]&gt;      2
+##  8 1/-44  &lt;int [2]&gt;      2
+##  9 1/-54  &lt;int [2]&gt;      2
+## 10 1/-55  &lt;int [2]&gt;      2
+## # … with 69 more rows</code></pre>
+<p>Y finalmente, extraemos los pares candidatos:</p>
+<div class="sourceCode" id="cb245"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb245-1"><a href="similitud.html#cb245-1" aria-hidden="true" tabindex="-1"></a>candidatos_tbl <span class="ot">&lt;-</span> </span>
+<span id="cb245-2"><a href="similitud.html#cb245-2" aria-hidden="true" tabindex="-1"></a>  cubetas_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb245-3"><a href="similitud.html#cb245-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pares_cand =</span> <span class="fu">map</span>(ids, <span class="sc">~</span> <span class="fu">combn</span>(.x, <span class="dv">2</span>, <span class="at">simplify =</span> <span class="cn">FALSE</span>))) <span class="sc">|&gt;</span> </span>
+<span id="cb245-4"><a href="similitud.html#cb245-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(cubeta, pares_cand) <span class="sc">|&gt;</span> </span>
+<span id="cb245-5"><a href="similitud.html#cb245-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(pares_cand) <span class="sc">|&gt;</span> </span>
+<span id="cb245-6"><a href="similitud.html#cb245-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(pares_cand, <span class="at">names_sep =</span> <span class="st">&quot;_&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb245-7"><a href="similitud.html#cb245-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>cubeta) <span class="sc">|&gt;</span> </span>
+<span id="cb245-8"><a href="similitud.html#cb245-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique</span>()</span>
+<span id="cb245-9"><a href="similitud.html#cb245-9" aria-hidden="true" tabindex="-1"></a>candidatos_tbl</span></code></pre></div>
+<pre><code>## # A tibble: 219 × 2
+##    pares_cand_1 pares_cand_2
+##           &lt;int&gt;        &lt;int&gt;
+##  1           25           34
+##  2           30           85
+##  3            8           33
+##  4            8           40
+##  5            8           80
+##  6           33           40
+##  7           33           80
+##  8           40           80
+##  9          100          111
+## 10          100          112
+## # … with 209 more rows</code></pre>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="similitud.html#cb247-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(candidatos_tbl)</span></code></pre></div>
+<pre><code>## [1] 219</code></pre>
+<p>En este caso, seguramente tenemos algunos falsos positivos que tenemos que
+filtrar, y quizá algunos falsos negativos.</p>
+<p>Calculamos distancias para todos los pares candidatos:</p>
+<div class="sourceCode" id="cb249"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb249-1"><a href="similitud.html#cb249-1" aria-hidden="true" tabindex="-1"></a>puntos_tbl <span class="ot">&lt;-</span> datos_tbl_vars <span class="sc">|&gt;</span> </span>
+<span id="cb249-2"><a href="similitud.html#cb249-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(V1<span class="sc">:</span>V2) <span class="sc">|&gt;</span></span>
+<span id="cb249-3"><a href="similitud.html#cb249-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(id_1) <span class="sc">|&gt;</span> </span>
+<span id="cb249-4"><a href="similitud.html#cb249-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>name) <span class="sc">|&gt;</span> </span>
+<span id="cb249-5"><a href="similitud.html#cb249-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">punto =</span> <span class="fu">list</span>(value))</span>
+<span id="cb249-6"><a href="similitud.html#cb249-6" aria-hidden="true" tabindex="-1"></a>candidatos_tbl <span class="ot">&lt;-</span> </span>
+<span id="cb249-7"><a href="similitud.html#cb249-7" aria-hidden="true" tabindex="-1"></a>  candidatos_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb249-8"><a href="similitud.html#cb249-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(puntos_tbl <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">pares_cand_1 =</span> id_1, <span class="at">punto_1 =</span> punto)) <span class="sc">|&gt;</span> </span>
+<span id="cb249-9"><a href="similitud.html#cb249-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(puntos_tbl <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">pares_cand_2 =</span> id_1, <span class="at">punto_2 =</span> punto))</span></code></pre></div>
+<pre><code>## Joining, by = &quot;pares_cand_1&quot;</code></pre>
+<pre><code>## Joining, by = &quot;pares_cand_2&quot;</code></pre>
+<div class="sourceCode" id="cb252"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb252-1"><a href="similitud.html#cb252-1" aria-hidden="true" tabindex="-1"></a>candidatos_tbl</span></code></pre></div>
+<pre><code>## # A tibble: 219 × 4
+##    pares_cand_1 pares_cand_2 punto_1   punto_2  
+##           &lt;int&gt;        &lt;int&gt; &lt;list&gt;    &lt;list&gt;   
+##  1           25           34 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+##  2           30           85 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+##  3            8           33 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+##  4            8           40 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+##  5            8           80 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+##  6           33           40 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+##  7           33           80 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+##  8           40           80 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+##  9          100          111 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+## 10          100          112 &lt;dbl [2]&gt; &lt;dbl [2]&gt;
+## # … with 209 more rows</code></pre>
+<div class="sourceCode" id="cb254"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb254-1"><a href="similitud.html#cb254-1" aria-hidden="true" tabindex="-1"></a>pares_similares_tbl <span class="ot">&lt;-</span> </span>
+<span id="cb254-2"><a href="similitud.html#cb254-2" aria-hidden="true" tabindex="-1"></a>  candidatos_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb254-3"><a href="similitud.html#cb254-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">dist =</span> <span class="fu">map2_dbl</span>(punto_1, punto_2, dist_e)) <span class="sc">|&gt;</span> </span>
+<span id="cb254-4"><a href="similitud.html#cb254-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(dist <span class="sc">&lt;</span> <span class="dv">1</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb255"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb255-1"><a href="similitud.html#cb255-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(pares_similares_tbl)</span></code></pre></div>
+<pre><code>## [1] 96</code></pre>
+</div>
+<div id="probando-con-datos-de-gold-standard" class="section level4 unnumbered">
+<h4>Probando con datos de “gold standard”</h4>
+<p>En este caso, sabemos cuáles son los pares que buscamos, así que podemos
+evaluar nuestro método:</p>
+<div class="sourceCode" id="cb257"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb257-1"><a href="similitud.html#cb257-1" aria-hidden="true" tabindex="-1"></a>verdadero_pos <span class="ot">&lt;-</span> <span class="fu">nrow</span>(<span class="fu">inner_join</span>(pares_similares_tbl, pares_sim))</span></code></pre></div>
+<pre><code>## Joining, by = &quot;dist&quot;</code></pre>
+<div class="sourceCode" id="cb259"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb259-1"><a href="similitud.html#cb259-1" aria-hidden="true" tabindex="-1"></a>verdadero_pos</span></code></pre></div>
+<pre><code>## [1] 96</code></pre>
+<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb261-1"><a href="similitud.html#cb261-1" aria-hidden="true" tabindex="-1"></a>sensibilidad <span class="ot">&lt;-</span> verdadero_pos <span class="sc">/</span> <span class="fu">nrow</span>(pares_sim)</span>
+<span id="cb261-2"><a href="similitud.html#cb261-2" aria-hidden="true" tabindex="-1"></a>sensibilidad</span></code></pre></div>
+<pre><code>## [1] 0.932</code></pre>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="similitud.html#cb263-1" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> verdadero_pos <span class="sc">/</span> <span class="fu">nrow</span>(pares_similares_tbl)</span>
+<span id="cb263-2"><a href="similitud.html#cb263-2" aria-hidden="true" tabindex="-1"></a>precision</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<p>Como vemos, la precisión es 1 y la sensibilidad es alta.
+Nos faltó encontrar una pequeña parte de los pares similares (alrededor de 7 de 103).</p>
+<ul>
+<li>Si queremos ser mas exhaustivos (con el mayor cómputo que implica), podemos
+hacer más anchas las cubetas (cambiar <span class="math inline">\(r\)</span> a 1 por ejemplo), y podemos incluir
+más hashes. ¿Qué pasa si ponemos <span class="math inline">\(r = 0.8\)</span> por ejemplo?</li>
+</ul>
+
+</div>
+</div>
+</div>
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-mmd" class="csl-entry">
+Leskovec, Jure, Anand Rajaraman, and Jeffrey David Ullman. 2014. <em>Mining of Massive Datasets</em>. 2nd ed. New York, NY, USA: Cambridge University Press. <a href="http://www.mmds.org">http://www.mmds.org</a>.
 </div>
 </div>
             </section>

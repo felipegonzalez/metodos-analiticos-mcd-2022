@@ -22,3 +22,6 @@ representación-matricial
 minhash-y-reducción-probabilística-de-dimensionalidad
 agrupando-textos-de-similitud-alta
 ejemplo-tweets
+verificar-si-un-nuevo-elemento-es-duplicado
+controlando-la-sensibilidad-y-umbral-de-similitud
+distancia-euclideana-y-lsh

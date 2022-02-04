@@ -819,7 +819,7 @@ system.time(tejas_doc <- calcular_tejas(tw[1:num_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   2.831   0.032   2.863
+##   3.193   0.031   3.226
 ```
 
 ```r
@@ -833,7 +833,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  25.770   0.005  25.784
+##  27.744   0.018  27.764
 ```
 
 ```r
@@ -875,7 +875,7 @@ docs_firmas$firma[1]
 ## [43] -2110278901 -2135431955 -2139423769 -2130397390 -2097742891 -2105787557
 ## [49] -2101425996 -1941363605
 ```
-Y probaremos primero hacer cubetas con algunas las firmas:
+Y probaremos primero hacer cubetas con algunas las firmas (las cuatro primeras por ejemplo):
 
 
 ```r
@@ -885,7 +885,8 @@ docs_cubetas_tbl <-
   docs_firmas |> 
   group_by(cubeta_nombre) |> 
   summarise(docs = list(doc_id)) |> 
-  mutate(num_docs = map_int(docs, length)) |> 
+  mutate(num_docs = map_int(docs, length)) 
+docs_cubetas_filt_tbl <- docs_cubetas_tbl |> 
   filter(num_docs > 1)
 ```
 
@@ -893,7 +894,7 @@ Y examinamos ahora algunas de las cubetas:
 
 
 ```r
-docs_ejemplo <- docs_cubetas_tbl$docs[[125]]
+docs_ejemplo <- docs_cubetas_filt_tbl$docs[[125]]
 tw[docs_ejemplo]
 ```
 
@@ -903,7 +904,7 @@ tw[docs_ejemplo]
 ```
 
 ```r
-docs_ejemplo <- docs_cubetas_tbl$docs[[1658]]
+docs_ejemplo <- docs_cubetas_filt_tbl$docs[[1658]]
 length(docs_ejemplo)
 ```
 
@@ -912,26 +913,18 @@ length(docs_ejemplo)
 ```
 
 ```r
-tw[docs_ejemplo][1:10]
+tw[docs_ejemplo][1:2]
 ```
 
 ```
-##  [1] "short story involving Nigeria Argentina and France"
-##  [2] "short story involving Nigeria Argentina and France"
-##  [3] "short story involving Nigeria Argentina and France"
-##  [4] "short story involving Nigeria Argentina and France"
-##  [5] "short story involving Nigeria Argentina and France"
-##  [6] "short story involving Nigeria Argentina and France"
-##  [7] "short story involving Nigeria Argentina and France"
-##  [8] "short story involving Nigeria Argentina and France"
-##  [9] "short story involving Nigeria Argentina and France"
-## [10] "short story involving Nigeria Argentina and France"
+## [1] "short story involving Nigeria Argentina and France"
+## [2] "short story involving Nigeria Argentina and France"
 ```
 
 
 
 ```r
-docs_ejemplo <- docs_cubetas_tbl$docs[[4958]]
+docs_ejemplo <- docs_cubetas_filt_tbl$docs[[4958]]
 tw[docs_ejemplo]
 ```
 
@@ -944,3 +937,732 @@ tw[docs_ejemplo]
 ```
 
 Con este método, podemos extraer pares de muy alta similitud (cercano a duplicados) de forma eficiente en colecciones grandes de texto.
+
+## Verificar si un nuevo elemento es duplicado
+
+Si tenemos un nuevo entrada, podemos checar si es duplicado calculando su firma, formando
+la cubetas,
+y revisando si cae en alguna de las cubetas conocidas. Nótese que tenemos que guardar
+las funciones hash que usamos  para aplicar a los nuevos datos, y repetir
+el proceso exactamente como procesamos los datos originales. Por ejemplo:
+
+
+```r
+nuevos_tweets <- 150000:150005
+tw[nuevos_tweets]
+```
+
+```
+## [1] "It should sound the song that was on the Show of the great fountain of Dubai Please play of"                              
+## [2] "PARK CHANYEOL Please play of"                                                                                             
+## [3] "What Game Congratulations to on reaching the quarter finals with but commiserations to Marcos"                            
+## [4] "For the fans of the vs rivalry Mbappe Cristiano Ronaldo fan has ended Messis dream of winning the"                        
+## [5] "Messi How far Suarez could not make it to the quarterfinals you know what to do Suarez Roger"                             
+## [6] "Got few daubes all right had to put him in when was painting low Thankfully painting finished another bit later after the"
+```
+
+```r
+system.time(tejas_nuevas_doc <- calcular_tejas(tw[nuevos_tweets], k = 5))
+```
+
+```
+##    user  system elapsed 
+##   0.000   0.000   0.001
+```
+
+```r
+tejas_nuevas_tbl <- tibble(doc_id = nuevos_tweets, tejas = tejas_nuevas_doc)
+system.time(
+  docs_nuevas_firmas <- tejas_nuevas_tbl |> 
+  mutate(firma = map(tejas, \(lista) map_int(hash_f, \(h) min(h(lista))))) |> 
+  select(doc_id, firma)) 
+```
+
+```
+##    user  system elapsed 
+##   0.008   0.000   0.008
+```
+
+```r
+docs_nuevas_firmas
+```
+
+```
+## # A tibble: 6 × 2
+##   doc_id firma     
+##    <int> <list>    
+## 1 150000 <int [50]>
+## 2 150001 <int [50]>
+## 3 150002 <int [50]>
+## 4 150003 <int [50]>
+## 5 150004 <int [50]>
+## 6 150005 <int [50]>
+```
+
+
+```r
+docs_nuevas_firmas <- docs_nuevas_firmas |> 
+  mutate(cubeta_nombre = map_chr(firma, \(x) paste(x[1:3], collapse = "-")))
+docs_cubetas_nuevas_tbl <- 
+  docs_nuevas_firmas |> 
+  group_by(cubeta_nombre) |> 
+  summarise(docs = list(doc_id)) |> 
+  mutate(num_docs = map_int(docs, length)) 
+docs_cubetas_nuevas_tbl
+```
+
+```
+## # A tibble: 6 × 3
+##   cubeta_nombre                       docs      num_docs
+##   <chr>                               <list>       <int>
+## 1 -2041983150--2147447475--2129777399 <int [1]>        1
+## 2 -2051683951--2053274679--2125528528 <int [1]>        1
+## 3 -2108824716--2032083428--2137254712 <int [1]>        1
+## 4 -2113147634--2140751096--2058622652 <int [1]>        1
+## 5 -2139603446--2140751096--2090996001 <int [1]>        1
+## 6 -2142045021--2054826468--2129777399 <int [1]>        1
+```
+
+Y ahora podemos hacer un semi-join con las cubetas:
+
+
+```r
+cand_duplicados_tbl <- docs_cubetas_nuevas_tbl |> semi_join(docs_cubetas_tbl |> select(cubeta_nombre))
+```
+
+```
+## Joining, by = "cubeta_nombre"
+```
+
+```r
+cand_duplicados_tbl
+```
+
+```
+## # A tibble: 3 × 3
+##   cubeta_nombre                       docs      num_docs
+##   <chr>                               <list>       <int>
+## 1 -2041983150--2147447475--2129777399 <int [1]>        1
+## 2 -2113147634--2140751096--2058622652 <int [1]>        1
+## 3 -2142045021--2054826468--2129777399 <int [1]>        1
+```
+
+Y vemos que tenemos tres candidatos a duplicados. Checamos el primer tweet:
+
+
+```r
+cubeta_1 <- cand_duplicados_tbl |> pull(cubeta_nombre) |> pluck(1)
+doc_1 <- cand_duplicados_tbl |> pull(docs) |> pluck(1)
+cubeta_1
+```
+
+```
+## [1] "-2041983150--2147447475--2129777399"
+```
+
+```r
+doc_1
+```
+
+```
+## [1] 150004
+```
+
+
+```r
+# en la tabla original de todos los tweets
+doc_2 <- filter(docs_cubetas_tbl, cubeta_nombre == cubeta_1) |> 
+  pull(docs) |> pluck(1)
+doc_2[1]
+```
+
+```
+## [1] 36839
+```
+Checamos los tweets:
+
+
+```r
+tw[doc_2[1]]
+```
+
+```
+## [1] "Messi How far Suarez could not make it to the quarterfinals you know what to do Suarez Roger"
+```
+
+```r
+tw[doc_1]
+```
+
+```
+## [1] "Messi How far Suarez could not make it to the quarterfinals you know what to do Suarez Roger"
+```
+Y efectivamente detectamos que el nuevo tweet es duplicado. Otra vez, no fue necesario
+hacer una comparación exhaustiva del nuevo tweet contra nuestra colección inicial grande.
+
+**Ejercicio**: checa los otros candidatos a duplicados que encontramos en este ejemplo.
+
+## Controlando la sensibilidad y umbral de similitud
+
+En algunos casos nos pueden interesar encontrar duplicados muy cercanos, y en otros
+problemas quisiéramos capturar pares con un umbral más bajo de similitud. Usando
+distinto número de hashes podemos hacer esto. En primer lugar,
+sabemos que un la probabilidad de que dos minhashes coincidan es
+igual a la similitud de jaccard de los dos textos correspondientes. 
+
+- Si $s$ es la similitud de Jaccard entre $a$ y $b$, entonces:
+
+$$P(f_h(a) = f_h(b)) = s(a,b) = s$$
+Si escogemos $k$ hashes al azar, y definimos candidatos solamente cuando coincidan
+**todos los hashes** (construcción AND), la probabilidad de hacer un par candidatos es:
+
+$$P(f_1(a) = f_1(b), \ldots, f_k(a)=f_k(b)) = s^k$$
+Por otro lado, si consideramos un par candidato cuando al menos **alguno** de los 
+minhashes coinciden (construcción OR), la probabilidad que $a$ y $b$ sean candidatos
+es:
+
+$$P(f_j(a) = f_j(b) \, \textrm{ para alguna } j) = 1-(1-s)^k$$
+
+Podemos graficar estas probabilidades con distintos valores de $k$
+
+
+```r
+k <- 3
+prob_captura <- tibble(s = seq(0, 1, 0.01)) |> 
+  crossing(tipo = c("k_hashes_AND", "k_hashes_OR")) |> 
+  crossing(k = c(1, 3, 5, 10)) |> 
+  mutate(prob_captura = ifelse(tipo == "k_hashes_AND", s^k, 1 - (1 - s)^k))
+ggplot(prob_captura, aes(x = s, y = prob_captura, colour = factor(k))) +
+  geom_point() +
+  facet_wrap(~ tipo)
+```
+
+<img src="02-similitud-1_files/figure-html/unnamed-chunk-41-1.png" width="672" />
+
+Nótese que:
+
+- Si queremos tener muy alta probabilidad de capturar todos los pares similares, 
+podemos usar la construcción OR con k = 3 para similitud mayor a 0.75 o k = 10 para similitud mayor a 0.3, por ejemplo
+- La desventaja de esto, es que es posible que obtengamos muchos candidatos que realmente no tienen la similitud deseada (falsos positivos). Esto implica más procesamiento.
+- Si solo queremos capturar pares de muy alta similitud (por ejemplo > 0.98), y
+no es grave que tengamos algunos falsos positivos, podemos
+usar la construcción AND con 1 o 3 hashes por ejemplo, y obtendremos un número más manejable 
+de pares candidatos para procesar.
+- La desventaja de esto es que es posible obtener algunos falsos negativos. Depende de la aplicación esto puede ser aceptable o no.
+
+\BeginKnitrBlock{resumen}<div class="resumen">A partir de un umbral $s$ de similitud para los pares que queremos capturar, podemos
+usar varios minhashes para afinar el método:
+  - Usamos la construcción OR con varios hashes para capturar pares de alta o mediana similitud con mucha confianza. Generalmente es necesario filtrar falsos positivos.
+  - Usamos la construcción AND con uno o varios hashes para pares de muy alta similitud
+con confianza alta. Tendremos menos falsos positivos, pero también es posible tener más
+falsos negativos (se nos escapan algunos pares muy similares).</div>\EndKnitrBlock{resumen}
+
+**Nota**: es posible combinar estas técnicas para refinar la captura de pares
+a un nivel de similitud dado haciendo bandas de hashes: por ejemplo, si tenemos
+20 hashes podemos hacer 4 bandas de 5 hashes, usamos AND para cada grupo de 5 hashes y
+OR para las 4 bandas. Para más de esto, revisa nuestro texto [@mmd].
+
+## Distancia euclideana y LSH
+
+Ahora aplicamos estas ideas para otro tipo de similitud. En este caso, consideramos
+la distancia euclideana usual en dimensión $p$:
+
+$$d(x,y) = \sqrt{(x_1 - y_1)^2 + (x_2 - y_2)^2 +\cdots (x_p - y_p)^2}$$
+Y nuestra tarea es **encontrar todos los pares tales que su distancia euclideana
+es muy cercana a 0**. Es decir, queremos hacer "clusters" pero sólo de datos
+muy cercanos, igual que en los ejemplos de similitud de jaccard.
+
+Para distancia euclideana nuestros hashes resultan de proyecciones
+aleatorias rectas fijas en cubetas. La idea general es que tomamos una línea al azar en el espacio
+de entradas, y la dividimos en cubetas de manera uniforme. El valor
+hash de un punto $x$ es el número de cubeta donde cae la proyección de $x$.
+
+Más especificamente, si escogemos un ancho $r$ de cubeta:
+
+1. Escogemos una dirección al azar $v$ 
+2. El hash de un punto $x$ se calcula como sigue:
+  - Calculamos el tamaño de la proyección $x$ sobre $v$
+  - Dividimos este tamaño entre $r$
+  - el hash la parte entera de este último número
+  
+Es decir,
+$$h(x) = \left\lfloor{ \frac{x\cdot v}{r}}\right\rfloor$$
+
+**Ejercicio**: haz un dibujo de este proceso, y cómo se calcula el hash de un punto
+$x$ una
+vez que tienes $r$ y $v$.
+
+Por ejemplo, si $v=(1,2)$, y $r = 1$:
+
+
+```r
+library(tidyverse)
+norma <- function(x) sqrt(sum(x^2))
+v <- c(1,2) / norma(c(1,2))
+v
+```
+
+```
+## [1] 0.447 0.894
+```
+
+```r
+hash_1 <- function(x) floor(sum(x * v) / 1)
+hash_1(c(5,0))
+```
+
+```
+## [1] 2
+```
+
+```r
+hash_1(c(0,-1))
+```
+
+```
+## [1] -1
+```
+
+```r
+hash_1(c(2,1))
+```
+
+```
+## [1] 1
+```
+
+Construimos ahora nuestra función generadora de hashes:
+
+
+```r
+gen_hash <- function(p, r){
+  # d es la dimensión y r es el ancho de las cubetas
+  #
+  # escogemos una dirección al azar
+  v <- rnorm(p)
+  v <- v / norma(v)
+  # devolvemos una función que calcula la cubeta:
+  function(x){
+    floor(sum(x * v) / r) |> as.integer()
+  }
+}
+set.seed(823)
+hash_1 <- gen_hash(2, 1)
+# los hashes de dos puntos:
+hash_1(c(4, 7))
+```
+
+```
+## [1] -7
+```
+
+```r
+hash_1(c(-4, 7))
+```
+
+```
+## [1] 0
+```
+
+```r
+# el vector que escogimos es
+environment(hash_1)$v
+```
+
+```
+## [1] -0.914 -0.405
+```
+
+#### Ejemplo {-}
+
+La siguiente función genera dos clusters de puntos mezclados con puntos distribuidos
+normales con desviación estándar relativamente grande
+
+
+
+```r
+set.seed(1021)
+simular_puntos <- function(d = 2, n = 200){
+  #puntos muy cercanos a (3,3,..., 3):
+  mat_1 <- matrix(rnorm(10 * d, sd = 0.01) + 3, ncol = d)
+  #puntos muy cercanos a (-3,-3,..., -3):
+  mat_2 <- matrix(rnorm(10 * d, sd = 0.01) - 3, ncol = d)
+  # puntos distribuidos alrededor del origen:
+  mat_3 <- matrix(rnorm(n * d, sd = 10), ncol = d)
+  datos_tbl_vars <- rbind(mat_3, mat_1, mat_2)  |> 
+    as_tibble() |> 
+    mutate(id_1 = row_number())
+  datos_tbl_vars
+}
+# diez puntos en cluster 1, diez en cluster 2, y 100 sin cluster:
+datos_tbl_vars <- simular_puntos(d = 2, n = 100)
+```
+
+```
+## Warning: The `x` argument of `as_tibble.matrix()` must have unique column names if `.name_repair` is omitted as of tibble 2.0.0.
+## Using compatibility `.name_repair`.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.
+```
+
+```r
+ggplot(datos_tbl_vars, aes(x = V1, y= V2)) + 
+  geom_jitter(width = 0.1, height = 0.3, alpha = 0.3)
+```
+
+<img src="02-similitud-1_files/figure-html/unnamed-chunk-45-1.png" width="672" />
+
+Para este ejemplo calculamos las distancias reales:
+
+
+```r
+dist_e <- function(x, y){
+  norma(x - y)
+}
+datos_tbl <- datos_tbl_vars |>
+  pivot_longer(-id_1, names_to = "variable", values_to = "valor") |> 
+  group_by(id_1) |>
+  arrange(variable) |>
+  summarise(vec_1 = list(valor))
+system.time(
+pares_tbl <- datos_tbl |> 
+    crossing(datos_tbl |> 
+        rename(id_2 = id_1, vec_2 = vec_1)) |>
+    filter(id_1 < id_2) |>
+    mutate(dist = map2_dbl(vec_1, vec_2, dist_e))
+)
+```
+
+```
+##    user  system elapsed 
+##   0.029   0.000   0.029
+```
+
+```r
+pares_tbl |> head()
+```
+
+```
+## # A tibble: 6 × 5
+##    id_1 vec_1      id_2 vec_2      dist
+##   <int> <list>    <int> <list>    <dbl>
+## 1     1 <dbl [2]>     2 <dbl [2]>  7.07
+## 2     1 <dbl [2]>     3 <dbl [2]> 24.2 
+## 3     1 <dbl [2]>     4 <dbl [2]> 29.0 
+## 4     1 <dbl [2]>     5 <dbl [2]> 24.9 
+## 5     1 <dbl [2]>     6 <dbl [2]>  3.31
+## 6     1 <dbl [2]>     7 <dbl [2]> 16.2
+```
+
+
+```r
+nrow(pares_tbl)
+```
+
+```
+## [1] 7140
+```
+
+```r
+qplot(pares_tbl$dist)
+```
+
+```
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+```
+
+<img src="02-similitud-1_files/figure-html/unnamed-chunk-47-1.png" width="672" />
+
+Supongamos que queremos encontrar los puntos que están a distancia menor a 1:
+
+
+```r
+pares_sim <- pares_tbl |> filter(dist < 1)
+nrow(pares_sim)
+```
+
+```
+## [1] 103
+```
+
+
+#### Cálculo de firmas {-}
+
+Usaremos 4 hashes con tamaño de cubeta = 0.2:
+
+
+```r
+#generar hashes
+hash_f <- map(1:4, ~ gen_hash(p = 2,  r = 0.2))
+# esta es una función de conveniencia:
+calculador_hashes <- function(hash_f){
+  function(z) {
+    map_int(hash_f, ~ .x(z))
+  }
+}
+calc_hashes <- calculador_hashes(hash_f)
+```
+
+Calculamos las firmas:
+
+
+```r
+firmas_tbl <- datos_tbl_vars |> 
+  pivot_longer(cols = -id_1, names_to = "variable", values_to = "valor") |> 
+  group_by(id_1) |> 
+  summarise(vec_1 = list(valor)) |> 
+  mutate(firma = map(vec_1, ~ calc_hashes(.x))) |> 
+  select(id_1, firma)
+firmas_tbl
+```
+
+```
+## # A tibble: 120 × 2
+##     id_1 firma    
+##    <int> <list>   
+##  1     1 <int [4]>
+##  2     2 <int [4]>
+##  3     3 <int [4]>
+##  4     4 <int [4]>
+##  5     5 <int [4]>
+##  6     6 <int [4]>
+##  7     7 <int [4]>
+##  8     8 <int [4]>
+##  9     9 <int [4]>
+## 10    10 <int [4]>
+## # … with 110 more rows
+```
+
+```r
+firmas_tbl$firma[[1]]
+```
+
+```
+## [1] -88  14  14 -87
+```
+
+```r
+firmas_tbl$firma[[2]]
+```
+
+```
+## [1] -91  48  48 -92
+```
+
+
+Para este ejemplo, consideraremos todos los pares que coinciden en al menos una cubeta
+(hacemos disyunción de los 4 hashes):
+
+
+```r
+cubetas_tbl  <- firmas_tbl |> 
+  unnest(firma) |> 
+  group_by(id_1) |> 
+  mutate(hash_no = 1:4) |> 
+  mutate(cubeta = paste(hash_no, firma, sep = "/"))
+cubetas_tbl
+```
+
+```
+## # A tibble: 480 × 4
+## # Groups:   id_1 [120]
+##     id_1 firma hash_no cubeta
+##    <int> <int>   <int> <chr> 
+##  1     1   -88       1 1/-88 
+##  2     1    14       2 2/14  
+##  3     1    14       3 3/14  
+##  4     1   -87       4 4/-87 
+##  5     2   -91       1 1/-91 
+##  6     2    48       2 2/48  
+##  7     2    48       3 3/48  
+##  8     2   -92       4 4/-92 
+##  9     3   -24       1 1/-24 
+## 10     3    88       2 2/88  
+## # … with 470 more rows
+```
+
+Ahora agrupamos cubetas y filtramos las que tienen más de un elemento
+
+
+```r
+cubetas_tbl <- cubetas_tbl |> group_by(cubeta) |> 
+  summarise(ids = list(id_1), n = length(id_1)) |> 
+  filter(n > 1)
+cubetas_tbl
+```
+
+```
+## # A tibble: 79 × 3
+##    cubeta ids            n
+##    <chr>  <list>     <int>
+##  1 1/-1   <int [2]>      2
+##  2 1/-13  <int [2]>      2
+##  3 1/-16  <int [4]>      4
+##  4 1/-21  <int [11]>    11
+##  5 1/-28  <int [2]>      2
+##  6 1/-32  <int [2]>      2
+##  7 1/-41  <int [2]>      2
+##  8 1/-44  <int [2]>      2
+##  9 1/-54  <int [2]>      2
+## 10 1/-55  <int [2]>      2
+## # … with 69 more rows
+```
+
+Y finalmente, extraemos los pares candidatos:
+
+
+```r
+candidatos_tbl <- 
+  cubetas_tbl |> 
+  mutate(pares_cand = map(ids, ~ combn(.x, 2, simplify = FALSE))) |> 
+  select(cubeta, pares_cand) |> 
+  unnest(pares_cand) |> 
+  unnest_wider(pares_cand, names_sep = "_") |> 
+  select(-cubeta) |> 
+  unique()
+candidatos_tbl
+```
+
+```
+## # A tibble: 219 × 2
+##    pares_cand_1 pares_cand_2
+##           <int>        <int>
+##  1           25           34
+##  2           30           85
+##  3            8           33
+##  4            8           40
+##  5            8           80
+##  6           33           40
+##  7           33           80
+##  8           40           80
+##  9          100          111
+## 10          100          112
+## # … with 209 more rows
+```
+
+
+```r
+nrow(candidatos_tbl)
+```
+
+```
+## [1] 219
+```
+
+En este caso, seguramente tenemos algunos falsos positivos que tenemos que
+filtrar, y quizá algunos falsos negativos.
+
+
+Calculamos distancias para todos los pares candidatos:
+
+
+```r
+puntos_tbl <- datos_tbl_vars |> 
+  pivot_longer(V1:V2) |>
+  group_by(id_1) |> 
+  select(-name) |> 
+  summarise(punto = list(value))
+candidatos_tbl <- 
+  candidatos_tbl |> 
+  left_join(puntos_tbl |> rename(pares_cand_1 = id_1, punto_1 = punto)) |> 
+  left_join(puntos_tbl |> rename(pares_cand_2 = id_1, punto_2 = punto))
+```
+
+```
+## Joining, by = "pares_cand_1"
+```
+
+```
+## Joining, by = "pares_cand_2"
+```
+
+```r
+candidatos_tbl
+```
+
+```
+## # A tibble: 219 × 4
+##    pares_cand_1 pares_cand_2 punto_1   punto_2  
+##           <int>        <int> <list>    <list>   
+##  1           25           34 <dbl [2]> <dbl [2]>
+##  2           30           85 <dbl [2]> <dbl [2]>
+##  3            8           33 <dbl [2]> <dbl [2]>
+##  4            8           40 <dbl [2]> <dbl [2]>
+##  5            8           80 <dbl [2]> <dbl [2]>
+##  6           33           40 <dbl [2]> <dbl [2]>
+##  7           33           80 <dbl [2]> <dbl [2]>
+##  8           40           80 <dbl [2]> <dbl [2]>
+##  9          100          111 <dbl [2]> <dbl [2]>
+## 10          100          112 <dbl [2]> <dbl [2]>
+## # … with 209 more rows
+```
+
+```r
+pares_similares_tbl <- 
+  candidatos_tbl |> 
+  mutate(dist = map2_dbl(punto_1, punto_2, dist_e)) |> 
+  filter(dist < 1)
+```
+
+
+```r
+nrow(pares_similares_tbl)
+```
+
+```
+## [1] 96
+```
+
+
+
+#### Probando con datos de "gold standard" {-}
+
+En este caso, sabemos cuáles son los pares que buscamos, así que podemos
+evaluar nuestro método:
+
+
+```r
+verdadero_pos <- nrow(inner_join(pares_similares_tbl, pares_sim))
+```
+
+```
+## Joining, by = "dist"
+```
+
+```r
+verdadero_pos
+```
+
+```
+## [1] 96
+```
+
+
+
+```r
+sensibilidad <- verdadero_pos / nrow(pares_sim)
+sensibilidad
+```
+
+```
+## [1] 0.932
+```
+
+```r
+precision <- verdadero_pos / nrow(pares_similares_tbl)
+precision
+```
+
+```
+## [1] 1
+```
+
+Como vemos, la precisión es 1 y la sensibilidad es alta.
+Nos faltó encontrar una pequeña parte de los pares similares (alrededor de 7 de 103). 
+
+- Si queremos ser mas exhaustivos (con el mayor cómputo que implica), podemos
+hacer más anchas las cubetas (cambiar $r$ a 1 por ejemplo), y podemos incluir
+más hashes. ¿Qué pasa si ponemos $r = 0.8$ por ejemplo?
+
+
+
