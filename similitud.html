@@ -833,7 +833,7 @@ kaggle</a>.</p>
 <span id="cb165-2"><a href="similitud.html#cb165-2" aria-hidden="true" tabindex="-1"></a>num_tweets <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
 <span id="cb165-3"><a href="similitud.html#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[<span class="dv">1</span><span class="sc">:</span>num_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   2.607   0.032   2.639</code></pre>
+##   2.831   0.032   2.863</code></pre>
 <div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="similitud.html#cb167-1" aria-hidden="true" tabindex="-1"></a>tejas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> <span class="dv">1</span><span class="sc">:</span>num_tweets, <span class="at">tejas =</span> tejas_doc)</span>
 <span id="cb167-2"><a href="similitud.html#cb167-2" aria-hidden="true" tabindex="-1"></a>hash_f <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="sc">~</span> <span class="fu">generar_hash</span>())</span>
 <span id="cb167-3"><a href="similitud.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
@@ -841,7 +841,7 @@ kaggle</a>.</p>
 <span id="cb167-5"><a href="similitud.html#cb167-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
 <span id="cb167-6"><a href="similitud.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##  23.959   0.012  23.979</code></pre>
+##  25.770   0.005  25.784</code></pre>
 <div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="similitud.html#cb169-1" aria-hidden="true" tabindex="-1"></a>docs_firmas</span></code></pre></div>
 <pre><code>## # A tibble: 100,000 × 2
 ##    doc_id firma     
