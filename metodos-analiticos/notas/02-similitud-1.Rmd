@@ -965,6 +965,16 @@ De esta última puedes ver más en @mmd.
 
 ## LSH para imágenes
 
+Consideramos tres imágenes para probar:
+
+```{r echo=FALSE, out.width='100%'}
+knitr::include_graphics("../datos/imagenes/elefante_1.jpg")
+knitr::include_graphics("../datos/imagenes/elefante_3.jpg")
+knitr::include_graphics("../datos/imagenes/leon_1.jpg")
+
+```
+
+
 En espacios de dimensión muy alta, como en imágenes, conviene hacer reducción de dimensionalidad
 para definir la métrica de distancia y utilizar estos métodos para encontrar vecinos cercanos.
 
