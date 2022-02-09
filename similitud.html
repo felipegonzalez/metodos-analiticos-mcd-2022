@@ -237,8 +237,9 @@ div.csl-indent {
 <li class="chapter" data-level="3.8" data-path="similitud.html"><a href="similitud.html#controlando-la-sensibilidad-y-umbral-de-similitud"><i class="fa fa-check"></i><b>3.8</b> Controlando la sensibilidad y umbral de similitud</a></li>
 <li class="chapter" data-level="3.9" data-path="similitud.html"><a href="similitud.html#distancia-euclideana-y-lsh"><i class="fa fa-check"></i><b>3.9</b> Distancia euclideana y LSH</a></li>
 <li class="chapter" data-level="3.10" data-path="similitud.html"><a href="similitud.html#locality-sensitive-hashing-lsh"><i class="fa fa-check"></i><b>3.10</b> Locality Sensitive Hashing (LSH)</a></li>
-<li class="chapter" data-level="3.11" data-path="similitud.html"><a href="similitud.html#joins-por-similitud"><i class="fa fa-check"></i><b>3.11</b> Joins por similitud</a></li>
-<li class="chapter" data-level="3.12" data-path="similitud.html"><a href="similitud.html#ejemplo-entity-matching"><i class="fa fa-check"></i><b>3.12</b> Ejemplo: entity matching</a></li>
+<li class="chapter" data-level="3.11" data-path="similitud.html"><a href="similitud.html#lsh-para-imágenes"><i class="fa fa-check"></i><b>3.11</b> LSH para imágenes</a></li>
+<li class="chapter" data-level="3.12" data-path="similitud.html"><a href="similitud.html#joins-por-similitud"><i class="fa fa-check"></i><b>3.12</b> Joins por similitud</a></li>
+<li class="chapter" data-level="3.13" data-path="similitud.html"><a href="similitud.html#ejemplo-entity-matching"><i class="fa fa-check"></i><b>3.13</b> Ejemplo: entity matching</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
@@ -839,7 +840,7 @@ kaggle</a>.</p>
 <span id="cb165-2"><a href="similitud.html#cb165-2" aria-hidden="true" tabindex="-1"></a>num_tweets <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
 <span id="cb165-3"><a href="similitud.html#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[<span class="dv">1</span><span class="sc">:</span>num_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   2.869   0.027   2.898</code></pre>
+##   2.802   0.032   2.834</code></pre>
 <div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="similitud.html#cb167-1" aria-hidden="true" tabindex="-1"></a>tejas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> <span class="dv">1</span><span class="sc">:</span>num_tweets, <span class="at">tejas =</span> tejas_doc)</span>
 <span id="cb167-2"><a href="similitud.html#cb167-2" aria-hidden="true" tabindex="-1"></a>hash_f <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="sc">~</span> <span class="fu">generar_hash</span>())</span>
 <span id="cb167-3"><a href="similitud.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
@@ -847,7 +848,7 @@ kaggle</a>.</p>
 <span id="cb167-5"><a href="similitud.html#cb167-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
 <span id="cb167-6"><a href="similitud.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##  24.447   0.003  24.452</code></pre>
+##  24.926   0.009  24.940</code></pre>
 <div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="similitud.html#cb169-1" aria-hidden="true" tabindex="-1"></a>docs_firmas</span></code></pre></div>
 <pre><code>## # A tibble: 100,000 × 2
 ##    doc_id firma     
@@ -922,7 +923,7 @@ el proceso exactamente como procesamos los datos originales. Por ejemplo:</p>
 ## [6] &quot;Got few daubes all right had to put him in when was painting low Thankfully painting finished another bit later after the&quot;</code></pre>
 <div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="similitud.html#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_nuevas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[nuevos_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.001   0.000   0.001</code></pre>
+##   0.001   0.000   0.000</code></pre>
 <div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="similitud.html#cb186-1" aria-hidden="true" tabindex="-1"></a>tejas_nuevas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> nuevos_tweets, <span class="at">tejas =</span> tejas_nuevas_doc)</span>
 <span id="cb186-2"><a href="similitud.html#cb186-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
 <span id="cb186-3"><a href="similitud.html#cb186-3" aria-hidden="true" tabindex="-1"></a>  docs_nuevas_firmas <span class="ot">&lt;-</span> tejas_nuevas_tbl <span class="sc">|&gt;</span> </span>
@@ -1143,7 +1144,7 @@ normales con desviación estándar relativamente grande</p>
 <span id="cb222-14"><a href="similitud.html#cb222-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">dist =</span> <span class="fu">map2_dbl</span>(vec_1, vec_2, dist_e))</span>
 <span id="cb222-15"><a href="similitud.html#cb222-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.024   0.000   0.024</code></pre>
+##   0.023   0.000   0.023</code></pre>
 <div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="similitud.html#cb224-1" aria-hidden="true" tabindex="-1"></a>pares_tbl <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 5
 ##    id_1 vec_1      id_2 vec_2      dist
@@ -1368,8 +1369,60 @@ una familia sensible a la localidad.</li>
 </ol>
 <p>De esta última puedes ver más en <span class="citation"><a href="#ref-mmd" role="doc-biblioref">Leskovec, Rajaraman, and Ullman</a> (<a href="#ref-mmd" role="doc-biblioref">2014</a>)</span>.</p>
 </div>
-<div id="joins-por-similitud" class="section level2" number="3.11">
-<h2><span class="header-section-number">3.11</span> Joins por similitud</h2>
+<div id="lsh-para-imágenes" class="section level2" number="3.11">
+<h2><span class="header-section-number">3.11</span> LSH para imágenes</h2>
+<p>En espacios de dimensión muy alta, como en imágenes, conviene hacer reducción de dimensionalidad
+para definir la métrica de distancia y utilizar estos métodos para encontrar vecinos cercanos.</p>
+<div class="sourceCode" id="cb261"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb261-1"><a href="similitud.html#cb261-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(keras)</span>
+<span id="cb261-2"><a href="similitud.html#cb261-2" aria-hidden="true" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> <span class="fu">application_vgg16</span>(<span class="at">weights =</span> <span class="st">&#39;imagenet&#39;</span>)</span></code></pre></div>
+<pre><code>## Loaded Tensorflow version 2.4.0</code></pre>
+<div class="sourceCode" id="cb263"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb263-1"><a href="similitud.html#cb263-1" aria-hidden="true" tabindex="-1"></a><span class="co"># obtener la penúltima</span></span>
+<span id="cb263-2"><a href="similitud.html#cb263-2" aria-hidden="true" tabindex="-1"></a>embed_modelo <span class="ot">&lt;-</span>  <span class="fu">keras_model</span>(<span class="at">inputs =</span> modelo<span class="sc">$</span>input, </span>
+<span id="cb263-3"><a href="similitud.html#cb263-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">outputs =</span> <span class="fu">get_layer</span>(modelo, <span class="st">&quot;fc2&quot;</span>)<span class="sc">$</span>output)</span></code></pre></div>
+<div class="sourceCode" id="cb264"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb264-1"><a href="similitud.html#cb264-1" aria-hidden="true" tabindex="-1"></a>obtener_pixeles <span class="ot">&lt;-</span> <span class="cf">function</span>(imagen_ruta){</span>
+<span id="cb264-2"><a href="similitud.html#cb264-2" aria-hidden="true" tabindex="-1"></a>  img <span class="ot">&lt;-</span> <span class="fu">image_load</span>(imagen_ruta, <span class="at">target_size =</span> <span class="fu">c</span>(<span class="dv">224</span>,<span class="dv">224</span>))</span>
+<span id="cb264-3"><a href="similitud.html#cb264-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">image_to_array</span>(img)</span>
+<span id="cb264-4"><a href="similitud.html#cb264-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">array_reshape</span>(x, <span class="fu">c</span>(<span class="dv">1</span>, <span class="fu">dim</span>(x))) </span>
+<span id="cb264-5"><a href="similitud.html#cb264-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb264-6"><a href="similitud.html#cb264-6" aria-hidden="true" tabindex="-1"></a>calcular_capa <span class="ot">&lt;-</span> <span class="cf">function</span>(imagen_ruta){</span>
+<span id="cb264-7"><a href="similitud.html#cb264-7" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">obtener_pixeles</span>(imagen_ruta) <span class="sc">|&gt;</span> <span class="fu">imagenet_preprocess_input</span>()</span>
+<span id="cb264-8"><a href="similitud.html#cb264-8" aria-hidden="true" tabindex="-1"></a>  embed_modelo <span class="sc">|&gt;</span>  <span class="fu">predict</span>(x) <span class="sc">|&gt;</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb264-9"><a href="similitud.html#cb264-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb264-10"><a href="similitud.html#cb264-10" aria-hidden="true" tabindex="-1"></a>pixeles_1 <span class="ot">&lt;-</span> <span class="fu">obtener_pixeles</span>(<span class="st">&quot;../datos/imagenes/elefante_1.jpg&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb264-11"><a href="similitud.html#cb264-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>()</span>
+<span id="cb264-12"><a href="similitud.html#cb264-12" aria-hidden="true" tabindex="-1"></a>pixeles_2 <span class="ot">&lt;-</span> <span class="fu">obtener_pixeles</span>(<span class="st">&quot;../datos/imagenes/elefante_3.jpg&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb264-13"><a href="similitud.html#cb264-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>()</span>
+<span id="cb264-14"><a href="similitud.html#cb264-14" aria-hidden="true" tabindex="-1"></a>pixeles_3 <span class="ot">&lt;-</span> <span class="fu">obtener_pixeles</span>(<span class="st">&quot;../datos/imagenes/leon_1.jpg&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb264-15"><a href="similitud.html#cb264-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.numeric</span>()</span></code></pre></div>
+<p>Calculamos la distancia pixel a pixel:</p>
+<div class="sourceCode" id="cb265"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb265-1"><a href="similitud.html#cb265-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>((pixeles_2 <span class="sc">-</span> pixeles_1)<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] 7040</code></pre>
+<div class="sourceCode" id="cb267"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb267-1"><a href="similitud.html#cb267-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>((pixeles_1 <span class="sc">-</span> pixeles_3)<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] 7064</code></pre>
+<p>Calculamos la penúltima capa de nuestro modelo para las imágenes de prueba:</p>
+<div class="sourceCode" id="cb269"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb269-1"><a href="similitud.html#cb269-1" aria-hidden="true" tabindex="-1"></a>features_1 <span class="ot">&lt;-</span> <span class="fu">calcular_capa</span>(<span class="st">&quot;../datos/imagenes/elefante_1.jpg&quot;</span>)</span>
+<span id="cb269-2"><a href="similitud.html#cb269-2" aria-hidden="true" tabindex="-1"></a>features_2 <span class="ot">&lt;-</span> <span class="fu">calcular_capa</span>(<span class="st">&quot;../datos/imagenes/elefante_3.jpg&quot;</span>)</span>
+<span id="cb269-3"><a href="similitud.html#cb269-3" aria-hidden="true" tabindex="-1"></a>features_3 <span class="ot">&lt;-</span> <span class="fu">calcular_capa</span>(<span class="st">&quot;../datos/imagenes/leon_1.jpg&quot;</span>)</span>
+<span id="cb269-4"><a href="similitud.html#cb269-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(features_1)</span></code></pre></div>
+<pre><code>## [1] 4096</code></pre>
+<p>Nótese ahora que la distancia en nuestro nuevo espacio de imágenes
+es mucho más chica para los elefantes que entre el león y los elefantes:</p>
+<div class="sourceCode" id="cb271"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb271-1"><a href="similitud.html#cb271-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>((features_2 <span class="sc">-</span> features_1)<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] 0.889</code></pre>
+<div class="sourceCode" id="cb273"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb273-1"><a href="similitud.html#cb273-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>((features_1 <span class="sc">-</span> features_3)<span class="sc">^</span><span class="dv">2</span>)</span></code></pre></div>
+<pre><code>## [1] 3.2</code></pre>
+<p>Podemos usar entonces el siguiente proceso:</p>
+<ol style="list-style-type: decimal">
+<li>Calculamos para cada imagen la representación dada por la última capa
+de una red nueronal de clasificación para imagen.</li>
+<li>Definimos como nuestra medida de distancia entre imagenes la distancia euclideana
+en la representación del inciso anterior</li>
+<li>Definimos funciones hash con proyecciones en cubetas como vimos arriba</li>
+<li>Con estos hashes, podemos encontrar imagenes duplicadas o muy similares.</li>
+</ol>
+</div>
+<div id="joins-por-similitud" class="section level2" number="3.12">
+<h2><span class="header-section-number">3.12</span> Joins por similitud</h2>
 <p>Otro uso de las técnicas del LSH nos permita hacer
 uniones (<em>joins</em>) por similitud. La idea es la siguiente:</p>
 <ul>
@@ -1392,8 +1445,9 @@ caen en la misma cubeta.</li>
 <li>Usando criterios adicionales, podemos filtrar falsos positivos.</li>
 </ol>
 </div>
-<div id="ejemplo-entity-matching" class="section level2" number="3.12">
-<h2><span class="header-section-number">3.12</span> Ejemplo: entity matching</h2>
+<div id="ejemplo-entity-matching" class="section level2" number="3.13">
+<h2><span class="header-section-number">3.13</span> Ejemplo: entity matching</h2>
+<p>Ver tarea 4 en el repositorio del curso.</p>
 
 </div>
 </div>

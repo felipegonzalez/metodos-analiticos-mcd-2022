@@ -26,5 +26,6 @@ verificar-si-un-nuevo-elemento-es-duplicado
 controlando-la-sensibilidad-y-umbral-de-similitud
 distancia-euclideana-y-lsh
 locality-sensitive-hashing-lsh
+lsh-para-imágenes
 joins-por-similitud
 ejemplo-entity-matching

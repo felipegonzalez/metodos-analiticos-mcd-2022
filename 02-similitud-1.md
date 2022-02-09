@@ -819,7 +819,7 @@ system.time(tejas_doc <- calcular_tejas(tw[1:num_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   2.869   0.027   2.898
+##   2.802   0.032   2.834
 ```
 
 ```r
@@ -833,7 +833,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  24.447   0.003  24.452
+##  24.926   0.009  24.940
 ```
 
 ```r
@@ -967,7 +967,7 @@ system.time(tejas_nuevas_doc <- calcular_tejas(tw[nuevos_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   0.001   0.000   0.001
+##   0.001   0.000   0.000
 ```
 
 ```r
@@ -1325,7 +1325,7 @@ pares_tbl <- datos_tbl |>
 
 ```
 ##    user  system elapsed 
-##   0.024   0.000   0.024
+##   0.023   0.000   0.023
 ```
 
 ```r
@@ -1686,6 +1686,110 @@ una familia sensible a la localidad.
 
 De esta última puedes ver más en @mmd.
 
+## LSH para imágenes
+
+En espacios de dimensión muy alta, como en imágenes, conviene hacer reducción de dimensionalidad
+para definir la métrica de distancia y utilizar estos métodos para encontrar vecinos cercanos.
+
+
+```r
+library(keras)
+modelo <- application_vgg16(weights = 'imagenet')
+```
+
+```
+## Loaded Tensorflow version 2.4.0
+```
+
+```r
+# obtener la penúltima
+embed_modelo <-  keras_model(inputs = modelo$input, 
+                     outputs = get_layer(modelo, "fc2")$output)
+```
+
+
+```r
+obtener_pixeles <- function(imagen_ruta){
+  img <- image_load(imagen_ruta, target_size = c(224,224))
+  x <- image_to_array(img)
+  array_reshape(x, c(1, dim(x))) 
+}
+calcular_capa <- function(imagen_ruta){
+  x <- obtener_pixeles(imagen_ruta) |> imagenet_preprocess_input()
+  embed_modelo |>  predict(x) |> as.numeric()
+}
+pixeles_1 <- obtener_pixeles("../datos/imagenes/elefante_1.jpg") |> 
+  as.numeric()
+pixeles_2 <- obtener_pixeles("../datos/imagenes/elefante_3.jpg") |> 
+  as.numeric()
+pixeles_3 <- obtener_pixeles("../datos/imagenes/leon_1.jpg") |> 
+  as.numeric()
+```
+
+Calculamos la distancia pixel a pixel:
+
+
+```r
+mean((pixeles_2 - pixeles_1)^2)
+```
+
+```
+## [1] 7040
+```
+
+```r
+mean((pixeles_1 - pixeles_3)^2)
+```
+
+```
+## [1] 7064
+```
+
+Calculamos la penúltima capa de nuestro modelo para las imágenes de prueba:
+
+
+
+```r
+features_1 <- calcular_capa("../datos/imagenes/elefante_1.jpg")
+features_2 <- calcular_capa("../datos/imagenes/elefante_3.jpg")
+features_3 <- calcular_capa("../datos/imagenes/leon_1.jpg")
+length(features_1)
+```
+
+```
+## [1] 4096
+```
+
+Nótese ahora que la distancia en nuestro nuevo espacio de imágenes
+es mucho más chica para los elefantes que entre el león y los elefantes:
+
+
+```r
+mean((features_2 - features_1)^2)
+```
+
+```
+## [1] 0.889
+```
+
+```r
+mean((features_1 - features_3)^2)
+```
+
+```
+## [1] 3.2
+```
+
+Podemos usar entonces el siguiente proceso:
+
+1. Calculamos para cada imagen la representación dada por la última capa
+de una red nueronal de clasificación para imagen.
+2. Definimos como nuestra medida de distancia entre imagenes la distancia euclideana
+en la representación del inciso anterior
+3. Definimos funciones hash con proyecciones en cubetas como vimos arriba
+4. Con estos hashes, podemos encontrar imagenes duplicadas o muy similares.
+
+
 ## Joins por similitud
 
 Otro uso de las técnicas del LSH nos permita hacer
@@ -1712,4 +1816,5 @@ caen en la misma cubeta.
 
 ## Ejemplo: entity matching
 
+Ver tarea 4 en el repositorio del curso.
 
