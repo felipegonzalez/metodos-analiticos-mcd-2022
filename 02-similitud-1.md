@@ -819,7 +819,7 @@ system.time(tejas_doc <- calcular_tejas(tw[1:num_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   3.193   0.031   3.226
+##   2.869   0.027   2.898
 ```
 
 ```r
@@ -833,7 +833,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  27.744   0.018  27.764
+##  24.447   0.003  24.452
 ```
 
 ```r
@@ -967,7 +967,7 @@ system.time(tejas_nuevas_doc <- calcular_tejas(tw[nuevos_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   0.000   0.000   0.001
+##   0.001   0.000   0.001
 ```
 
 ```r
@@ -980,7 +980,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.008   0.000   0.008
+##   0.007   0.000   0.007
 ```
 
 ```r
@@ -1145,13 +1145,14 @@ Nótese que:
 podemos usar la construcción OR con k = 3 para similitud mayor a 0.75 o k = 10 para similitud mayor a 0.3, por ejemplo
 - La desventaja de esto, es que es posible que obtengamos muchos candidatos que realmente no tienen la similitud deseada (falsos positivos). Esto implica más procesamiento.
 - Si solo queremos capturar pares de muy alta similitud (por ejemplo > 0.98), y
-no es grave que tengamos algunos falsos positivos, podemos
+no es grave que tengamos algunos falsos negativos, podemos
 usar la construcción AND con 1 o 3 hashes por ejemplo, y obtendremos un número más manejable 
 de pares candidatos para procesar.
 - La desventaja de esto es que es posible obtener algunos falsos negativos. Depende de la aplicación esto puede ser aceptable o no.
 
 \BeginKnitrBlock{resumen}<div class="resumen">A partir de un umbral $s$ de similitud para los pares que queremos capturar, podemos
 usar varios minhashes para afinar el método:
+
   - Usamos la construcción OR con varios hashes para capturar pares de alta o mediana similitud con mucha confianza. Generalmente es necesario filtrar falsos positivos.
   - Usamos la construcción AND con uno o varios hashes para pares de muy alta similitud
 con confianza alta. Tendremos menos falsos positivos, pero también es posible tener más
@@ -1223,22 +1224,11 @@ hash_1(c(0,-1))
 ## [1] -1
 ```
 
-```r
-hash_1(c(2,1))
-```
-
-```
-## [1] 1
-```
-
 Construimos ahora nuestra función generadora de hashes:
 
 
 ```r
 gen_hash <- function(p, r){
-  # d es la dimensión y r es el ancho de las cubetas
-  #
-  # escogemos una dirección al azar
   v <- rnorm(p)
   v <- v / norma(v)
   # devolvemos una función que calcula la cubeta:
@@ -1307,10 +1297,10 @@ datos_tbl_vars <- simular_puntos(d = 2, n = 100)
 
 ```r
 ggplot(datos_tbl_vars, aes(x = V1, y= V2)) + 
-  geom_jitter(width = 0.1, height = 0.3, alpha = 0.3)
+  geom_jitter(width = 0.5, height = 0.5, alpha = 0.3)
 ```
 
-<img src="02-similitud-1_files/figure-html/unnamed-chunk-45-1.png" width="672" />
+<img src="02-similitud-1_files/figure-html/unnamed-chunk-45-1.png" width="384" />
 
 Para este ejemplo calculamos las distancias reales:
 
@@ -1335,7 +1325,7 @@ pares_tbl <- datos_tbl |>
 
 ```
 ##    user  system elapsed 
-##   0.029   0.000   0.029
+##   0.024   0.000   0.024
 ```
 
 ```r
@@ -1363,16 +1353,6 @@ nrow(pares_tbl)
 ## [1] 7140
 ```
 
-```r
-qplot(pares_tbl$dist)
-```
-
-```
-## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
-```
-
-<img src="02-similitud-1_files/figure-html/unnamed-chunk-47-1.png" width="672" />
-
 Supongamos que queremos encontrar los puntos que están a distancia menor a 1:
 
 
@@ -1384,7 +1364,7 @@ nrow(pares_sim)
 ```
 ## [1] 103
 ```
-
+Ahora veremos cómo encontrar estos 103 pares de puntos cercanos.
 
 #### Cálculo de firmas {-}
 
@@ -1451,7 +1431,7 @@ firmas_tbl$firma[[2]]
 
 
 Para este ejemplo, consideraremos todos los pares que coinciden en al menos una cubeta
-(hacemos disyunción de los 4 hashes):
+(hacemos disyunción o construcción OR de los 4 hashes):
 
 
 ```r
@@ -1552,8 +1532,8 @@ nrow(candidatos_tbl)
 En este caso, seguramente tenemos algunos falsos positivos que tenemos que
 filtrar, y quizá algunos falsos negativos.
 
-
-Calculamos distancias para todos los pares candidatos:
+Calculamos distancias para todos los pares candidatos (es una lista
+mucho más corta generalmente):
 
 
 ```r
@@ -1664,5 +1644,72 @@ Nos faltó encontrar una pequeña parte de los pares similares (alrededor de 7 d
 hacer más anchas las cubetas (cambiar $r$ a 1 por ejemplo), y podemos incluir
 más hashes. ¿Qué pasa si ponemos $r = 0.8$ por ejemplo?
 
+
+\BeginKnitrBlock{resumen}<div class="resumen">**Proyección aleatoria en cubetas.**
+
+Podemos encontrar pares muy similares en datos numéricos usando como hashes 
+proyecciones aleatorias discretizadas en cubetas. Para afinar el umbral de captura
+y el balance de falsos positivos y falsos negativos, usamos las mismas técnicas
+mencionadas arriba para minhashing (construcciones OR o AND y combinaciones).</div>\EndKnitrBlock{resumen}
+
+## Locality Sensitive Hashing (LSH)
+
+Las dos técnicas que acabamos de ver arriba son tipos de *Locality Sensitive Hashing* (LSH),
+donde usamos hashes que tienden a coincidir cuando dos elementos son similares. Esto requiere de dos partes:
+
+1. Una definición de distancia en el espacio original
+2. Una familia de hashes que se seleccionan al azar que son sensibles a la localidad en relación a la distancia seleccionada, que formalmente podemos escribir como:
+
+
+\BeginKnitrBlock{resumen}<div class="resumen">Sean $d_1<d_2$ dos valores (que interpretamos como distancias).
+Una familia ${\cal F}$ es una familia $d_1,d_2,p_1,p_2$,  sensible a localidad
+(con $p_1>p_2$) cuando para cualquier par de elementos $x,y$,
+1. Si $d(x,y)\leq d_1$, entonces la probabilidad  $P(f(x)=f(y))\geq p_1$.
+2. Si $d(x,y)\geq d_2$, entonces $P(f(x)=f(y))\leq p_2$
+  Nótese que las probabilidades están dadas sobre la selección de $f$.</div>\EndKnitrBlock{resumen}
+  
+
+Estas condiciones se interpretan como sigue: cuando $x$ y $y$ están
+suficientemente cerca ($d_1$), la probabilidad de que sean mapeados al mismo valor
+por una función $f$ de la familia es alta.  Cuando $x$ y $y$ están lejos
+$d_2$, entonces, la probabilidad de que sean mapeados al mismo valor es baja.
+Podemos ver una gráfica:   
+
+
+<img src="02-similitud-1_files/figure-html/unnamed-chunk-62-1.png" width="384" />
+En nuestros ejemplos, vimos (puedes intentar demostrarlas):
+
+1. Para documentos, utilizamos distancia de Jaccard de tejas. Las funciones minhash dan
+una familia sensible a la localidad.
+2. Para datos numéricos con distancia euclideana, la familia de proyecciones aleatorias en cubetas das una familia sensible a la localidad
+3. (Adicional) La similitud coseno para datos numéricos (donde no nos importa la magnitud sino solo la dirección de lso puntos), que se utiliza a veces en procesamiento de texto, también puede tratarse utilizando proyecciones aleatorias con 2 cubetas (derecha e izquierda)
+
+De esta última puedes ver más en @mmd.
+
+## Joins por similitud
+
+Otro uso de las técnicas del LSH nos permita hacer
+uniones (*joins*) por similitud. La idea es la siguiente:
+
+- Tenemos una tabla A, con una columna A.x que es un texto, por ejemplo, o un vector de números, etc.
+- Tenemos una tabla B, con una columna B.x que es del mismo tipo que A.x
+- Queremos hacer una unión de A con B con la llave x, de forma que 
+queden pareados todos los elementos tales que $sim(A.x_i, A.y_j)$ es chica.
+
+Un ejemplo es pegar dos tablas de datos de películas de 
+fuentes distintas mediante el título (que a veces varía en cómo está escrito, de manera que no podemos hacer un join usual), o títulos
+de pláticas en diferentes conferencias, o juntar registros de personas que pueden tener
+escrito su nombre de manera un poco diferente o con errores, netc.
+
+Usando LSH podemos hacer un *join aproximado por similitud*. La
+idea es la misma que antes: 
+
+1. Calculamos cubetas de la misma forma para cada tabla (mismos hashes y bandas)
+2. Unimos las cubetas de las dos fuentes
+3. Los pares candidatos son todos los pares (uno de A y uno de B) que
+caen en la misma cubeta.
+4. Usando criterios adicionales, podemos filtrar falsos positivos.
+
+## Ejemplo: entity matching
 
 
