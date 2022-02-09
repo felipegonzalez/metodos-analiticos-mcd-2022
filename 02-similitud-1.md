@@ -819,7 +819,7 @@ system.time(tejas_doc <- calcular_tejas(tw[1:num_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   2.802   0.032   2.834
+##   2.475   0.027   2.501
 ```
 
 ```r
@@ -833,7 +833,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  24.926   0.009  24.940
+##  24.626   0.001  24.632
 ```
 
 ```r
@@ -967,7 +967,7 @@ system.time(tejas_nuevas_doc <- calcular_tejas(tw[nuevos_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   0.001   0.000   0.000
+##   0.001   0.000   0.001
 ```
 
 ```r
@@ -980,7 +980,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##   0.007   0.000   0.007
+##   0.006   0.000   0.006
 ```
 
 ```r
@@ -1325,7 +1325,7 @@ pares_tbl <- datos_tbl |>
 
 ```
 ##    user  system elapsed 
-##   0.023   0.000   0.023
+##   0.024   0.000   0.023
 ```
 
 ```r
@@ -1687,6 +1687,11 @@ una familia sensible a la localidad.
 De esta última puedes ver más en @mmd.
 
 ## LSH para imágenes
+
+Consideramos tres imágenes para probar:
+
+<img src="../datos/imagenes/elefante_1.jpg" width="100%" /><img src="../datos/imagenes/elefante_3.jpg" width="100%" /><img src="../datos/imagenes/leon_1.jpg" width="100%" />
+
 
 En espacios de dimensión muy alta, como en imágenes, conviene hacer reducción de dimensionalidad
 para definir la métrica de distancia y utilizar estos métodos para encontrar vecinos cercanos.
