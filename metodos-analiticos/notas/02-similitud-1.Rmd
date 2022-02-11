@@ -968,9 +968,9 @@ De esta última puedes ver más en @mmd.
 Consideramos tres imágenes para probar:
 
 ```{r echo=FALSE, out.width='40%'}
-knitr::include_graphics(c("../datos/imagenes/elefante_1.jpg",
-                          "../datos/imagenes/elefante_3.jpg",
-                          "../datos/imagenes/leon_1.jpg"))
+knitr::include_graphics(c("images/elefante_1.jpg",
+                          "images/elefante_3.jpg",
+                          "images/leon_1.jpg"))
 ```
 
 
