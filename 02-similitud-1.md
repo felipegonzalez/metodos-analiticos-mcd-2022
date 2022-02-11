@@ -819,7 +819,7 @@ system.time(tejas_doc <- calcular_tejas(tw[1:num_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   3.117   0.077   3.193
+##   2.670   0.035   2.706
 ```
 
 ```r
@@ -833,7 +833,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  29.187   0.017  29.214
+##  26.731   0.006  26.739
 ```
 
 ```r
@@ -967,7 +967,7 @@ system.time(tejas_nuevas_doc <- calcular_tejas(tw[nuevos_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   0.001   0.000   0.001
+##   0.001   0.000   0.000
 ```
 
 ```r
@@ -1325,7 +1325,7 @@ pares_tbl <- datos_tbl |>
 
 ```
 ##    user  system elapsed 
-##   0.029   0.000   0.029
+##   0.025   0.000   0.025
 ```
 
 ```r
@@ -1690,7 +1690,7 @@ De esta última puedes ver más en @mmd.
 
 Consideramos tres imágenes para probar:
 
-<img src="../datos/imagenes/elefante_1.jpg" width="40%" /><img src="../datos/imagenes/elefante_3.jpg" width="40%" /><img src="../datos/imagenes/leon_1.jpg" width="40%" />
+<img src="images/elefante_1.jpg" width="40%" /><img src="images/elefante_3.jpg" width="40%" /><img src="images/leon_1.jpg" width="40%" />
 
 
 En espacios de dimensión muy alta, como en imágenes, conviene hacer reducción de dimensionalidad
