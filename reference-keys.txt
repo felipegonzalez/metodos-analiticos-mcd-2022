@@ -1,3 +1,5 @@
+eq:valor-propio-derecho
+eq:valor-propio-izquierdo
 intro
 frecuentes
 datos-de-canastas
@@ -29,3 +31,15 @@ locality-sensitive-hashing-lsh
 lsh-para-imágenes
 joins-por-similitud
 ejemplo-entity-matching
+dvs-y-reducción-de-dimensionalidad
+descomposición-aditiva-en-matrices-de-rango-1
+matrices-de-rango-1
+aproximación-con-matrices-de-rango-1.
+suma-de-matrices-de-rango-1.
+aproximación-con-matrices-de-rango-bajo
+discusión-aproximación-de-rango-1.
+discusión-aproximaciones-de-rango-más-alto
+descomposición-en-valores-singulares-svd-o-dvs
+interpretación-geométrica
+svd-para-películas-de-netflix
+calidad-de-representación-de-svd.
