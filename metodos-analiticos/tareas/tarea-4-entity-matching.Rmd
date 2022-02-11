@@ -1,5 +1,5 @@
 ---
-title: "Tarea 3. LSH y Entity matching"
+title: "Tarea 3. Joins por similitud y Entity matching"
 output: html_notebook
 ---
 
@@ -7,9 +7,8 @@ output: html_notebook
 En este ejemplo veremos como usar LSH 
 para encontrar registros
 que se refieren al mismo elemento pero están en distintas tablas, 
-y pueden diferir en cómo están registrados (entity matching). Vamos a
-usar funciones del paquete *textreuse*, aunque puedes usar
-también las funciones de las notas.
+y pueden diferir en cómo están registrados (entity matching). Este también
+es un ejemplo
 
 ## Datos
 
@@ -38,19 +37,19 @@ factible sería hacer todas las posibles comparaciones?
 
 ## Tejas y hashing
 
-Vamos a poner todos los documentos en una sola lista. Aunque al final
-encontremos elementos de la misma fuente en la misma cubeta, podemos
-filtrar estos.
+Primero hacemos una limpieza básica (puedes reconsiderar este proceso
+más adelante cuando veamos los resultados)_
 
 ```{r}
 acm_1 <- acm |> select(id, title, authors) |> 
   mutate(texto = paste(title, authors, sep = "    ")) |> 
-  mutate(origen = "ACM") |> 
-  mutate(id = as.character(id))
+  mutate(id = as.character(id)) |> 
+  mutate(texto = str_to_lower(texto)) |> 
+  mutate(texto = str_remove_all(texto, pattern = "[^A-Za-z0-9 -]"))
 dbl_1 <- dbl |> select(id, title, authors) |> 
   mutate(texto = paste(title, authors, sep = "    ")) |> 
-  mutate(origen = "DBL")
-acm_dbl <- bind_rows(acm_1, dbl_1)
+  mutate(texto = str_to_lower(texto)) |> 
+  mutate(texto = str_remove_all(texto, pattern = "[^A-Za-z0-9 -]"))
 ```
 
 **Pregunta 2**: ¿por qué definimos el texto incluyendo algún espacio en blanco entre título y autor?
@@ -74,84 +73,77 @@ generar_hash <- function(){
 }
 ```
 
-En este caso escogemos 10 hashes,
-tejas de tamaño 4, y usamos sólo título y autor.
+En este caso escogemos 2 hashes,
+tejas de tamaño 5, y usamos sólo título y autor.
 
 
 ```{r}
-set.seed(88345)
-# usar funciones de textreuse (que hace hash de las tejas directamente)
-hashes <- map(1:4, ~ generar_hash())
 # el siguiente devuelve un objeto con los minhashes calculados
-corpus <- acm_dbl |> 
-  mutate(texto = str_to_lower(texto))
-corpus_tejas <- corpus |> 
+acm_tejas <- acm_1 |> 
+  mutate(tejas = map(texto, ~ calcular_tejas(.x, k = 5)))
+dbl_tejas <- dbl_1 |> 
   mutate(tejas = map(texto, ~ calcular_tejas(.x, k = 5)))
 ```
 
 Por ejemplo, para el primer documento tenemos el contenido y los minhashes calculados:
 
 ```{r}
-corpus_tejas$texto[[1]]
-corpus_tejas$tejas[[1]]
+acm_tejas$texto[[1]]
+dbl_tejas$tejas[[1]]
 ```
 
 Ahora calculamos minhashes
 
 ```{r}
+set.seed(88345)
+# crear hashes
+hashes <- map(1:2, ~ generar_hash())
+
 construir_firmas <- function(hashes, tejas){
   tibble(hash_num = 1:length(hashes), 
          firma = map_int(hashes, \(h) min(h(tejas)))
   )
 }
-docs_firmas <- corpus_tejas |> 
+
+acm_firmas <- acm_tejas |> 
   mutate(firma = map(tejas, ~ construir_firmas(hashes, .x))) |> 
   select(id, firma) |> 
   unnest(firma) |> 
   mutate(cubeta = paste(hash_num, firma, sep = "-")) |> 
   select(id, cubeta)
-docs_firmas
+dbl_firmas <- dbl_tejas |> 
+  mutate(firma = map(tejas, ~ construir_firmas(hashes, .x))) |> 
+  select(id, firma) |> 
+  unnest(firma) |> 
+  mutate(cubeta = paste(hash_num, firma, sep = "-")) |> 
+  select(id, cubeta)
 ```
 
- Ahora agrupamos por cubeta y filtramos:
+Ahora hacemos una unión por cubetas para obtener nuestros pares candidatos:
 
 ```{r}
-docs_cubetas_tbl <- 
-  docs_firmas |> 
-  group_by(cubeta) |> 
-  summarise(docs = list(id)) |> 
-  mutate(num_docs = map_int(docs, length)) 
-docs_cubetas_filt_tbl <- docs_cubetas_tbl |> 
-  filter(num_docs > 1)
-nrow(docs_cubetas_filt_tbl)
+candidatos_tbl <- inner_join(acm_firmas |> rename(idACM = id), 
+                          dbl_firmas |> rename(idDBL = id))
 ```
 
 
 
 ## Examinar pares candidatos
 
-Ahora extraemos pares similares. 
+Ahora calculamos similitud exacta para candidatos
 
 ```{r}
-pares_tbl <- docs_cubetas_filt_tbl |> 
-  mutate(pares_cand = map(docs, ~ combn(.x, 2, simplify = FALSE))) |> 
-  select(cubeta, pares_cand) |> 
-  unnest(pares_cand) |> 
-  unnest_wider(pares_cand, names_sep = "_") |> 
-  left_join(corpus_tejas |>
-              select(pares_cand_1 = id, tejas_1 = tejas, origen_1 = origen)) |> 
-  left_join(corpus_tejas |> 
-              select(pares_cand_2 = id, tejas_2 = tejas, origen_2 = origen)) |> 
-  mutate(score = map2_dbl(tejas_1, tejas_2, ~ sim_jaccard(.x, .y))) 
-pares_tbl
-```
-
-Quitamos pares de la misma fuente:
-
-```{r}
-pares_tbl <- filter(pares_tbl, origen_1 == "ACM", origen_1 != origen_2) |> 
+sim_jaccard <- \(a, b)  length(intersect(a, b)) / length(union(a, b))
+candidatos_score_tbl <- candidatos_tbl |> 
+  left_join(acm_tejas |>
+              select(idACM = id, tejas_acm = tejas)) |> 
+  left_join(dbl_tejas |> 
+              select(idDBL = id, tejas_dbl = tejas)) |> 
+  mutate(score = map2_dbl(tejas_acm, tejas_dbl, ~ sim_jaccard(.x, .y))) |> 
+  select(-tejas_acm, -tejas_dbl, -cubeta)
+candidatos_score_tbl <- candidatos_score_tbl |> 
   unique()
-pares_tbl <- pares_tbl |> select(pares_cand_1, pares_cand_2, origen_1, origen_2, score)
+candidatos_score_tbl
 ```
 
 
@@ -162,7 +154,6 @@ y da unos ejemplos.
 
 **Pregunta 5**: ¿Cuántas comparaciones tuviste qué hacer (cálculos de similitud)? Compara con el total
 de comparaciones que es posible hacer entre estas dos tablas.
-
 
 
 **Pregunta 6**: 
@@ -185,7 +176,7 @@ observaciones de la pregunta anterior.
 ```{r}
 # código filtrando con score > tu_numero, y examinando los elementos
 # de similitud más baja
-candidatos_filt <- filter(pares_tbl, score > 0.50)
+candidatos_filt <- filter(candidatos_score_tbl, score > 0.3)
 tail(candidatos_filt)
 ```
 
@@ -202,12 +193,6 @@ correctas, que están en la carpeta de los datos.
 mapping <- read_csv("../datos/entity_matching/DBLP-ACM_perfectMapping.csv")
 ```
 
-Crea variables apropiadas para hacer join de los verdaderos matches con tus candidatos:
-
-```{r}
-candidatos_filt <- candidatos_filt |> mutate(idDBLP = ifelse(str_detect(pares_cand_1, "^[0-9]*$"), pares_cand_2, pares_cand_1))
-candidatos_filt <- candidatos_filt |> mutate(idACM = ifelse(str_detect(pares_cand_1, "^[0-9]*$"), pares_cand_1, pares_cand_2))
-```
 
 Podemos calcular el número de pares verdaderos que son candidatos (recuperados), el número de pares
 candidatos que son candidatos pero no son pares verdaderos, por ejemplo:
@@ -219,15 +204,18 @@ nrow(candidatos_filt)
 nrow(ambos)
 ```
 
-*Pregunta 11 *: Evalúa precisión y recall de tu método. Para distintas aplicaciones que te
+*Pregunta 11*: ¿Hubiera funcionado igualmente bien hacer un join usando 
+autores o título en lugar de este join por similitud?
+
+*Pregunta 12 *: Evalúa precisión y recall de tu método. Para distintas aplicaciones que te
 puedas imaginar, ¿qué tan buenos son estos resultados? ¿Qué consideras
 mejor en este punto, tener precisión o recall alto? 
 
 ```{r}
-precision <- 
-precision
-recall <- 
-recall
+#precision <- 
+#precision
+#recall <- 
+#recall
 ```
 
 
@@ -239,5 +227,12 @@ de los siguientes pares:
 ```{r}
 anti_join(mapping, candidatos_filt) 
 ```
+
+También puedes examinar falsos positivos:
+
+```{r}
+anti_join(candidatos_filt, mapping) 
+```
+
 
 **Pregunta 11**: Considerando estos errores, ¿qué se te ocurre para mejorar el método?
