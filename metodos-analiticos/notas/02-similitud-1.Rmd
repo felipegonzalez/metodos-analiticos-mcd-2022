@@ -967,11 +967,10 @@ De esta última puedes ver más en @mmd.
 
 Consideramos tres imágenes para probar:
 
-```{r echo=FALSE, out.width='100%'}
-knitr::include_graphics("../datos/imagenes/elefante_1.jpg")
-knitr::include_graphics("../datos/imagenes/elefante_3.jpg")
-knitr::include_graphics("../datos/imagenes/leon_1.jpg")
-
+```{r echo=FALSE, out.width='40%'}
+knitr::include_graphics(c("../datos/imagenes/elefante_1.jpg",
+                          "../datos/imagenes/elefante_3.jpg",
+                          "../datos/imagenes/leon_1.jpg"))
 ```
 
 
