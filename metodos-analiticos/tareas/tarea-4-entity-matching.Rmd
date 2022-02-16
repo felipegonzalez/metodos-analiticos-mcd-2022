@@ -35,6 +35,12 @@ nrow(dbl)
 tendrías que hacer? Si cada tabla contuviera unos 2 millones de documentos, ¿qué tan 
 factible sería hacer todas las posibles comparaciones?
 
+```{r}
+nrow(acm) * nrow(dbl) 
+2e6 * 2e6 / 2
+```
+
+
 ## Tejas y hashing
 
 Primero hacemos una limpieza básica (puedes reconsiderar este proceso
@@ -45,15 +51,16 @@ acm_1 <- acm |> select(id, title, authors) |>
   mutate(texto = paste(title, authors, sep = "    ")) |> 
   mutate(id = as.character(id)) |> 
   mutate(texto = str_to_lower(texto)) |> 
-  mutate(texto = str_remove_all(texto, pattern = "[^A-Za-z0-9 -]"))
+  mutate(texto = str_remove_all(texto, pattern = "[^a-z -]"))
 dbl_1 <- dbl |> select(id, title, authors) |> 
   mutate(texto = paste(title, authors, sep = "    ")) |> 
   mutate(texto = str_to_lower(texto)) |> 
-  mutate(texto = str_remove_all(texto, pattern = "[^A-Za-z0-9 -]"))
+  mutate(texto = str_remove_all(texto, pattern = "[^a-z -]"))
 ```
 
-**Pregunta 2**: ¿por qué definimos el texto incluyendo algún espacio en blanco entre título y autor?
-¿Qué otra estrategia se te ocurre para convertir en tejas?
+**Pregunta 2**: ¿por qué definimos el texto incluyendo algún espacio en blanco entre título y autor? ¿Qué otra estrategia se te ocurre para convertir en tejas?
+
+Vamos a usar tejas de tamaño 5, y así las tejas de título y autor están separadas.
 
 **Pregunta 3**: cuántas comparaciones tendrías que hacer si calcularas
 la similitud entre todos los posibles pares?
@@ -89,7 +96,7 @@ Por ejemplo, para el primer documento tenemos el contenido y los minhashes calcu
 
 ```{r}
 acm_tejas$texto[[1]]
-dbl_tejas$tejas[[1]]
+acm_tejas$tejas[[1]]
 ```
 
 Ahora calculamos minhashes
@@ -97,7 +104,7 @@ Ahora calculamos minhashes
 ```{r}
 set.seed(88345)
 # crear hashes
-hashes <- map(1:2, ~ generar_hash())
+hashes <- map(1:3, ~ generar_hash())
 
 construir_firmas <- function(hashes, tejas){
   tibble(hash_num = 1:length(hashes), 
@@ -124,6 +131,7 @@ Ahora hacemos una unión por cubetas para obtener nuestros pares candidatos:
 ```{r}
 candidatos_tbl <- inner_join(acm_firmas |> rename(idACM = id), 
                           dbl_firmas |> rename(idDBL = id))
+candidatos_tbl
 ```
 
 
@@ -151,9 +159,21 @@ candidatos_score_tbl
 **Pregunta 4**: explica cómo se calcula la columna *score* en la tabla de candidatos,
 y da unos ejemplos.
 
+Similitud de jaccard entre las tejas de los candidatos.
+
+```{r}
+candidatos_score_tbl |> summarise(media_score = mean(score))
+candidatos_score_tbl |> ggplot(aes(sample = score)) + geom_qq(distribution = stats::qunif)
+```
+
+
 
 **Pregunta 5**: ¿Cuántas comparaciones tuviste qué hacer (cálculos de similitud)? Compara con el total
 de comparaciones que es posible hacer entre estas dos tablas.
+
+```{r}
+nrow(candidatos_score_tbl)
+```
 
 
 **Pregunta 6**: 
@@ -161,6 +181,15 @@ de comparaciones que es posible hacer entre estas dos tablas.
 Examina algunos elementos con similitud uno o cercana a uno. ¿Se refieren al
 mismo artículo en las dos fuentes? 
 
+```{r}
+candidatos_score_tbl |> arrange(desc(score))
+```
+
+
+```{r}
+filter(dbl_1, id == "journals/sigmod/BuchnerM98") |> pull(texto)
+filter(acm_1, id == 306124) |> pull(texto)
+```
 
 
 ## Examinar resultados
@@ -178,9 +207,14 @@ observaciones de la pregunta anterior.
 # de similitud más baja
 candidatos_filt <- filter(candidatos_score_tbl, score > 0.3)
 tail(candidatos_filt)
+nrow(candidatos_filt)
 ```
 
 **Pregunta 10**: ¿cuántos pares candidatos obtuviste al final?
+
+```{r}
+nrow(candidatos_filt)
+```
 
 
 ## Evaluación de resultados
@@ -190,7 +224,8 @@ correctas, que están en la carpeta de los datos.
 
 
 ```{r}
-mapping <- read_csv("../datos/entity_matching/DBLP-ACM_perfectMapping.csv")
+mapping <- read_csv("../datos/entity_matching/DBLP-ACM_perfectMapping.csv") |> 
+  rename(idDBL = idDBLP)
 ```
 
 
@@ -198,7 +233,7 @@ Podemos calcular el número de pares verdaderos que son candidatos (recuperados)
 candidatos que son candidatos pero no son pares verdaderos, por ejemplo:
 
 ```{r}
-mapping <- mapping |> mutate(idACM = as.character(idACM))
+mapping <- mapping |> mutate(idACM = as.character(idACM)) 
 ambos <- inner_join(candidatos_filt, mapping)
 nrow(candidatos_filt)
 nrow(ambos)
@@ -212,10 +247,10 @@ puedas imaginar, ¿qué tan buenos son estos resultados? ¿Qué consideras
 mejor en este punto, tener precisión o recall alto? 
 
 ```{r}
-#precision <- 
-#precision
-#recall <- 
-#recall
+precision <- nrow(ambos) / nrow(candidatos_filt)
+precision
+recall <- nrow(ambos) / nrow(mapping)
+recall
 ```
 
 
@@ -236,3 +271,7 @@ anti_join(candidatos_filt, mapping)
 
 
 **Pregunta 11**: Considerando estos errores, ¿qué se te ocurre para mejorar el método?
+
+- Corregir encoding DBLP
+- Hacer análisis posterior checando solo titulo (darle menos peso a los autores),
+solo con los candidatos del primer procesamiento.
