@@ -603,10 +603,14 @@ y su componente $j$ es
 $$(x_i\cdot v) v_j= \sigma u_iv_j$$
 De aquí, vemos que la matriz de proyecciones de los puntos originales sobre $v$ es la matriz
 $$\sigma uv^t$$
+
 ```{block2, type="resumen"}
 Si $u$ y $v$ son vectores singulares de $X$, entonces
+
 - El vector $\sigma u$ nos da las variables ponderadas de $X$ por los pesos de las variables $v$
+
 - La matriz de proyecciones de los renglones de $X$ sobre el vector $v$ es $\sigma uv^t$
+
 - Si escogemos el par $u,v$ de vectores propios con la $\sigma$ más grande posible, entonces el vector $v$ es la dirección tal que las proyecciones de los reglones de $X$ sobre $v$ son lo más cercanas posibles a los renglones originales $x_i$
 ```
 
@@ -1232,8 +1236,9 @@ $$||\tilde{X}||^2_F =  \sum_{j=1}^p \sigma_{j}^2$$
   Y el lado izquierdo es en este caso una suma de varianzas:
   $$\sum_{j=1}^p Var(X_j) =  \sum_{j=1}^p \sigma_{j}^2.$$
   El lado izquierdo se llama *Varianza total* de la matriz $X$. Componentes principales particiona la varianza total de la matriz $X$ en 
-componentes .
-## ¿Centrar o no centrar por columna?
+componentes.
+
+### ¿Centrar o no centrar por columna?
 Típicamente, antes de aplicar SVD hacemos algunos pasos de procesamiento
 de las variables. En componentes principales, este paso de procesamiento
 es centrar la tabla por columnas. Conviene hacer esto cuando:
@@ -1248,6 +1253,7 @@ análisis son similares** en cuanto a interpretación y en cuanto a usos posteri
 de las dimensiones obtenidas.
 Pueden ver análisis detallado en [este artículo](https://www.researchgate.net/publication/255644479_On_Relationships_Between_Uncentred_And_Column-Centred_Principal_Component_Analysis), que
 hace comparaciones a lo largo de varios conjuntos de datos.
+
 ### Ejemplo: resultados similares{-}
 En el ejemplo de gasto en rubros que vimos arriba, los pesos $v_j$ son muy similares:
   
@@ -1263,7 +1269,8 @@ svd_1$u %*% diag(svd_1$d)
 ```
 Llegaríamos a conclusiones similares si interpretamos cualquiera de los dos análisis
 (verifica por ejemplo el ordenamiento de rubros y años en cada dimensión).
-## Ejemplos: donde es buena idea centrar  {-}
+
+### Ejemplos: donde es buena idea centrar  {-}
 Por ejemplo, si hacemos componentes principales con los siguientes datos:
   
 ```{r, message=FALSE}

@@ -1,0 +1,145 @@
+---
+title: "Reducción de dimensionalidad y marginación de municipios"
+output: html_document
+---
+
+## Marginación de municipios
+
+Consideremos el índice de marginación que calcula CONAPO con datos
+de censos y conteos. Este índice un resumen de varios indicadores de carencias de las
+poblaciones de los municipios que nos rankear a los municipios por nivel de marginación.
+Se utiliza frecuentemente en análisis en donde queremos incluir el contexto
+donde viven las personas, y para guiar decisiones
+de política pública.
+
+Por ejemplo, para 2010 tenemos los datos:
+
+```{r, message=FALSE}
+library(tidyverse)
+marginacion <- read_csv("../datos/indice-marginacion/imm-2010.csv")
+descrip <- read_csv("../datos/indice-marginacion/imm-2010-descrip.csv", skip = 2)
+descrip 
+```
+
+El índice de marginación es una combinación de variables que indican
+distintos tipos de carencias para obtener un resumen o calificación general
+del grado de marginación de **cada municipio**.
+
+```{r}
+ggplot(marginacion, aes(x = IM)) + geom_histogram()
+```
+
+Por ejemplo, si promediamos los índices de marginación de los municipios dentro
+de cada estado obtenemos:
+
+```{r}
+marginacion |> group_by(NOM_ENT) |> summarise(marg = mean(IM), n = sum(POB_TOT)) |> 
+    arrange(desc(marg))
+```
+
+
+## Aproximación de rango uno 
+
+Veamos un resumen de las variables incluidas:
+
+```{r}
+marg_tabla <- marginacion |> select(ANALF:PO2SM)
+marg_tabla |> gather(variable, valor, ANALF:PO2SM) |> group_by(variable) |> 
+    summarise(q10 = quantile(valor, 0.10),
+              mediana = median(valor), 
+              q90 = quantile(valor, 0.90)) |> 
+    arrange(desc(mediana))
+```
+
+Nota que la escala de las variables es muy distinta distinta. Podemos normalizar,
+por ejemplo centrando y escalando por la desviación estándar (esta no es la única manera):
+
+```{r}
+marg_tabla_esc <- marg_tabla |> 
+  mutate(across(everything(), ~ (.x - mean(.x))/sd(.x)))   
+```
+
+
+```{r}
+marg_tabla_esc |> gather(variable, valor, ANALF:OVPT) |> group_by(variable) |> 
+    summarise(q10 = quantile(valor, 0.10),
+              mediana = median(valor), 
+              q90 = quantile(valor, 0.90)) |> 
+    arrange(desc(mediana)) |> 
+  mutate(across(is.numeric, ~ round(.x, 3)))
+```
+
+
+- Buscamos primero una dimensión latente que nos da la mejor
+aproximación de rango uno a la tabla de marginación normalizada. 
+
+Para hacer esto podemos usar la descomposición en valores singulares:
+
+```{r}
+dvs_marg <- svd(marg_tabla_esc) 
+```
+
+Extraemos las componentes de este objeto:
+
+```{r}
+# puedes multipicar columnas particulares de u **y** v por -1 para interpretar más fácilmente
+# si es necesario. Si multiplicas por -1 la columna 3 de U, por ejemplo, también 
+# hay que multiplicar por -1 la columna 3 de V
+u <- dvs_marg$u
+v <- dvs_marg$v
+sigma <- dvs_marg$d
+```
+
+**Pregunta 1**: calcula la dimensión o tamaño de u, v y sigma. Explica de dónde salen estos valores.
+
+Extrae la primera dimensión de esta descomposición:
+
+```{r}
+u_1 <-  - u[,1]
+v_1 <-  - v[,1]
+sigma_1 <- sigma[1]
+```
+
+Ahora construimos la aproximación de rango 1 a la matriz normalizada de marginación:
+
+```{r}
+X_1 <- sigma_1 * u_1 %*% t(v_1)
+```
+
+**Pregunta 2**: Calcula qué tan buena es la aproximación: calcula los residuales de $X_1$ 
+como aproximación de *marg_tabla*, y compara con el tamaño de *marg_tabla*
+
+```{r}
+X <- as.matrix(marg_tabla_esc)
+R <- X - X_1
+# aquí tu código
+```
+Grafica los valores de la aproximación $X_1$ vs $X$
+
+```{r}
+#aquí tu código
+```
+
+
+
+**Pregunta 3**: En la descomposición que hiciste, ¿Qué usaría cómo medición de marginación por municipio,
+los scores de los municipios o los pesos de las variables?
+
+**Pregunta 4**: Explica cómo se construye tu medición de marginación en términos
+de la descomposición en valores singulares que obtuviste? ¿Cómo se ponderan las
+variables originales para construir tu medición de marginación?
+
+**Pregunta 5**: ¿Puedes reconstruir el índice oficial a partir de la componente que obtuviste?
+
+Una forma de graficar los scores junto con el peso de las variables es el *biplot*. Puedes
+hacerlo como sigue:
+
+```{r}
+ajuste <- princomp(marg_tabla_esc)
+library(ggfortify)
+ggplot2::autoplot(ajuste, label = FALSE, loadings.label = TRUE)
+```
+Interpretamos el biplot como sigue: la proyección de un municipio sobre cada vector (variable
+original) intenta aproximar el valor que toma cada municipio en la variable correspondiente. En nuestra gráfica, los municipios a la derecha tienden a tener valores más altos que promedio en todas las variables, y los que están a la izquierda están por debajo del promedio. **Recuerda que esta es la aproximación de rango 2, de forma que estas proyecciones dan valores aproximados en relación a los datos originales**.
+
+**Pregunta 6**: Interpreta la segunda dimensión, ¿qué tipo de municipios discrimina?
