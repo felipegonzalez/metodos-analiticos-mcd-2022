@@ -274,6 +274,9 @@ div.csl-indent {
 <li class="chapter" data-level="4.8" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#componentes-principales"><i class="fa fa-check"></i><b>4.8</b> Componentes principales</a>
 <ul>
 <li class="chapter" data-level="4.8.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#varianza-en-componentes-principales."><i class="fa fa-check"></i><b>4.8.1</b> Varianza en componentes principales.</a></li>
+<li class="chapter" data-level="4.8.2" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#centrar-o-no-centrar-por-columna"><i class="fa fa-check"></i><b>4.8.2</b> ¿Centrar o no centrar por columna?</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-resultados-similares"><i class="fa fa-check"></i>Ejemplo: resultados similares</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplos-donde-es-buena-idea-centrar"><i class="fa fa-check"></i>Ejemplos: donde es buena idea centrar</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
@@ -938,16 +941,18 @@ variable derivada que combina linealmente las variables originales. Las proyecci
 de los reglones o casos <span class="math inline">\(x_i\)</span> de <span class="math inline">\(X\)</span> podemos escribirlas también como (suponiendo <span class="math inline">\(v\)</span> de norma 1):</p>
 <p><span class="math display">\[(x_i\cdot v) v= \sigma u_iv\]</span>
 y su componente <span class="math inline">\(j\)</span> es</p>
-<span class="math display">\[(x_i\cdot v) v_j= \sigma u_iv_j\]</span>
+<p><span class="math display">\[(x_i\cdot v) v_j= \sigma u_iv_j\]</span>
 De aquí, vemos que la matriz de proyecciones de los puntos originales sobre <span class="math inline">\(v\)</span> es la matriz
-<span class="math display">\[\sigma uv^t\]</span>
+<span class="math display">\[\sigma uv^t\]</span></p>
 
 <div class="resumen">
-Si <span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span> son vectores singulares de <span class="math inline">\(X\)</span>, entonces
-- El vector <span class="math inline">\(\sigma u\)</span> nos da las variables ponderadas de <span class="math inline">\(X\)</span> por los pesos de las variables <span class="math inline">\(v\)</span>
-- La matriz de proyecciones de los renglones de <span class="math inline">\(X\)</span> sobre el vector <span class="math inline">\(v\)</span> es <span class="math inline">\(\sigma uv^t\)</span>
-- Si escogemos el par <span class="math inline">\(u,v\)</span> de vectores propios con la <span class="math inline">\(\sigma\)</span> más grande posible, entonces el vector <span class="math inline">\(v\)</span> es la dirección tal que las proyecciones de los reglones de <span class="math inline">\(X\)</span> sobre <span class="math inline">\(v\)</span> son lo más cercanas posibles a los renglones originales <span class="math inline">\(x_i\)</span>
-</div>
+<p>Si <span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span> son vectores singulares de <span class="math inline">\(X\)</span>, entonces</p>
+<ul>
+<li><p>El vector <span class="math inline">\(\sigma u\)</span> nos da las variables ponderadas de <span class="math inline">\(X\)</span> por los pesos de las variables <span class="math inline">\(v\)</span></p></li>
+<li><p>La matriz de proyecciones de los renglones de <span class="math inline">\(X\)</span> sobre el vector <span class="math inline">\(v\)</span> es <span class="math inline">\(\sigma uv^t\)</span></p></li>
+<li><p>Si escogemos el par <span class="math inline">\(u,v\)</span> de vectores propios con la <span class="math inline">\(\sigma\)</span> más grande posible, entonces el vector <span class="math inline">\(v\)</span> es la dirección tal que las proyecciones de los reglones de <span class="math inline">\(X\)</span> sobre <span class="math inline">\(v\)</span> son lo más cercanas posibles a los renglones originales <span class="math inline">\(x_i\)</span></p>
+</div></li>
+</ul>
 <div id="ejemplo-14" class="section level3 unnumbered">
 <h3>Ejemplo</h3>
 <p>Consideremos unos datos simulados</p>
@@ -1533,9 +1538,11 @@ que no compartan información lineal entre ellas.
 Y el lado izquierdo es en este caso una suma de varianzas:
 <span class="math display">\[\sum_{j=1}^p Var(X_j) =  \sum_{j=1}^p \sigma_{j}^2.\]</span>
 El lado izquierdo se llama <em>Varianza total</em> de la matriz <span class="math inline">\(X\)</span>. Componentes principales particiona la varianza total de la matriz <span class="math inline">\(X\)</span> en
-componentes .
-## ¿Centrar o no centrar por columna?
-Típicamente, antes de aplicar SVD hacemos algunos pasos de procesamiento
+componentes.</p>
+</div>
+<div id="centrar-o-no-centrar-por-columna" class="section level3" number="4.8.2">
+<h3><span class="header-section-number">4.8.2</span> ¿Centrar o no centrar por columna?</h3>
+<p>Típicamente, antes de aplicar SVD hacemos algunos pasos de procesamiento
 de las variables. En componentes principales, este paso de procesamiento
 es centrar la tabla por columnas. Conviene hacer esto cuando:</p>
 <ol style="list-style-type: decimal">
@@ -1548,10 +1555,12 @@ Sin embargo, también es importante notar que muchas veces <strong>los resultado
 análisis son similares</strong> en cuanto a interpretación y en cuanto a usos posteriores
 de las dimensiones obtenidas.
 Pueden ver análisis detallado en <a href="https://www.researchgate.net/publication/255644479_On_Relationships_Between_Uncentred_And_Column-Centred_Principal_Component_Analysis">este artículo</a>, que
-hace comparaciones a lo largo de varios conjuntos de datos.
-### Ejemplo: resultados similares{-}
-En el ejemplo de gasto en rubros que vimos arriba, los pesos <span class="math inline">\(v_j\)</span> son muy similares:</li>
+hace comparaciones a lo largo de varios conjuntos de datos.</li>
 </ol>
+</div>
+<div id="ejemplo-resultados-similares" class="section level3 unnumbered">
+<h3>Ejemplo: resultados similares</h3>
+<p>En el ejemplo de gasto en rubros que vimos arriba, los pesos <span class="math inline">\(v_j\)</span> son muy similares:</p>
 <div class="sourceCode" id="cb403"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb403-1"><a href="dvs-y-reducción-de-dimensionalidad.html#cb403-1" aria-hidden="true" tabindex="-1"></a>comps_1 <span class="ot">&lt;-</span> <span class="fu">princomp</span>(USPersonalExpenditure[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>)])</span>
 <span id="cb403-2"><a href="dvs-y-reducción-de-dimensionalidad.html#cb403-2" aria-hidden="true" tabindex="-1"></a>svd_1 <span class="ot">&lt;-</span> <span class="fu">svd</span>(USPersonalExpenditure[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>)])</span>
 <span id="cb403-3"><a href="dvs-y-reducción-de-dimensionalidad.html#cb403-3" aria-hidden="true" tabindex="-1"></a>comps_1<span class="sc">$</span>loadings[,]</span></code></pre></div>
@@ -1579,9 +1588,11 @@ En el ejemplo de gasto en rubros que vimos arriba, los pesos <span class="math i
 ## [4,]   -5.942974  0.9476773 -0.16452015
 ## [5,]   -4.014277  0.6433704  0.27845344</code></pre>
 <p>Llegaríamos a conclusiones similares si interpretamos cualquiera de los dos análisis
-(verifica por ejemplo el ordenamiento de rubros y años en cada dimensión).
-## Ejemplos: donde es buena idea centrar {-}
-Por ejemplo, si hacemos componentes principales con los siguientes datos:</p>
+(verifica por ejemplo el ordenamiento de rubros y años en cada dimensión).</p>
+</div>
+<div id="ejemplos-donde-es-buena-idea-centrar" class="section level3 unnumbered">
+<h3>Ejemplos: donde es buena idea centrar</h3>
+<p>Por ejemplo, si hacemos componentes principales con los siguientes datos:</p>
 <div class="sourceCode" id="cb411"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb411-1"><a href="dvs-y-reducción-de-dimensionalidad.html#cb411-1" aria-hidden="true" tabindex="-1"></a>whisky <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;../datos/whiskies.csv&#39;</span>)</span>
 <span id="cb411-2"><a href="dvs-y-reducción-de-dimensionalidad.html#cb411-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(whisky)</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 17
