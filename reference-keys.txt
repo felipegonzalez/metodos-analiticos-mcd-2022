@@ -38,8 +38,11 @@ aproximación-con-matrices-de-rango-1.
 suma-de-matrices-de-rango-1.
 aproximación-con-matrices-de-rango-bajo
 discusión-aproximación-de-rango-1.
+interpetación-de-vectores-singulares
 discusión-aproximaciones-de-rango-más-alto
 descomposición-en-valores-singulares-svd-o-dvs
-interpretación-geométrica
+más-de-interpretación-geométrica
 svd-para-películas-de-netflix
 calidad-de-representación-de-svd.
+componentes-principales
+varianza-en-componentes-principales.
