@@ -82,7 +82,7 @@ normalizar <- function(x){
   x_norm
 }
 v <- normalizar(v)
-peliculas <- data_frame(pelicula = peliculas_nom, v = v) |> arrange(v)
+peliculas <- tibble(pelicula = peliculas_nom, v = v) |> arrange(v)
 peliculas
 ```
 
@@ -1432,7 +1432,7 @@ de dimensión alta esto puede querer decir que nos costará más trabajo encontr
 En t-SNE construimos una medida de similitud entre puntos que busca concentrarse en puntos similares. Por ejemplo, la estructura de clusters
 de estos datos podemos recuperarla en una dimensión:
 ```{r, message=FALSE, warning=FALSE, fig.width=4, fig.asp=0.7}
-install.packages("tsne")
+install.packages("tsne", repos = "https://cloud.r-project.org")
 library(tsne)
 sne_ejemplo <- tsne(as.matrix(dat_ej[,1:2]), k = 1, perplexity=100)
 qplot(sne_ejemplo, fill = dat_ej$color) + xlab('u')
