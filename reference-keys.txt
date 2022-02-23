@@ -1,5 +1,6 @@
 eq:valor-propio-derecho
 eq:valor-propio-izquierdo
+eq:simprom
 intro
 frecuentes
 datos-de-canastas
@@ -47,3 +48,14 @@ calidad-de-representación-de-svd.
 componentes-principales
 varianza-en-componentes-principales.
 centrar-o-no-centrar-por-columna
+sistemas-de-recomendación-y-filtrado-colaborativo
+enfoques-de-recomendación
+datos
+modelos-de-referencia-y-evaluación
+evaluación-de-predicciones
+opcional-efectos-en-análisis-de-heterogeneidad-en-uso-de-escala
+ejemplo
+modelo-de-referencia
+filtrado-colaborativo-similitud
+simitems
+implementación

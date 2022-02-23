@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>5 Sistemas de recomendación y filtrado colaborativo | Métodos analíticos, ITAM 2022</title>
+  <meta name="description" content="Notas para métodos analíticos 2022" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="5 Sistemas de recomendación y filtrado colaborativo | Métodos analíticos, ITAM 2022" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Notas para métodos analíticos 2022" />
+  <meta name="github-repo" content="felipexgonzalez/metodos-analiticos-mcd-2022" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="5 Sistemas de recomendación y filtrado colaborativo | Métodos analíticos, ITAM 2022" />
+  
+  <meta name="twitter:description" content="Notas para métodos analíticos 2022" />
+  
+
+<meta name="author" content="Felipe González" />
+
+
+<meta name="date" content="2022-02-23" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="dvs-y-reducción-de-dimensionalidad.html"/>
+<link rel="next" href="referencias.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.20/datatables.js"></script>
+<link href="libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Métodos Analíticos</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Temario</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#evaluación"><i class="fa fa-check"></i>Evaluación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introducción</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#simlitud-en-dimensión-alta"><i class="fa fa-check"></i>Simlitud en dimensión alta</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#medidas-de-distancia-o-similitud"><i class="fa fa-check"></i>Medidas de distancia o similitud</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#tipos-de-soluciones"><i class="fa fa-check"></i>Tipos de soluciones</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#proyección-y-búsqueda-de-marginales-interesantes"><i class="fa fa-check"></i>Proyección y búsqueda de marginales interesantes</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#proyecciones-globales"><i class="fa fa-check"></i>Proyecciones globales</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#descripción-de-estructura-local"><i class="fa fa-check"></i>Descripción de estructura local</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#inmersiones-embeddings"><i class="fa fa-check"></i>Inmersiones (embeddings)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="frecuentes.html"><a href="frecuentes.html"><i class="fa fa-check"></i><b>2</b> Análisis de conjuntos frecuentes</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="frecuentes.html"><a href="frecuentes.html#datos-de-canastas"><i class="fa fa-check"></i><b>2.1</b> Datos de canastas</a></li>
+<li class="chapter" data-level="2.2" data-path="frecuentes.html"><a href="frecuentes.html#conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.2</b> Conjuntos frecuentes</a></li>
+<li class="chapter" data-level="2.3" data-path="frecuentes.html"><a href="frecuentes.html#monotonicidad-de-conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.3</b> Monotonicidad de conjuntos frecuentes</a></li>
+<li class="chapter" data-level="2.4" data-path="frecuentes.html"><a href="frecuentes.html#algoritmo-a-priori"><i class="fa fa-check"></i><b>2.4</b> Algoritmo a-priori</a></li>
+<li class="chapter" data-level="2.5" data-path="frecuentes.html"><a href="frecuentes.html#modelos-simples-para-análisis-de-canastas"><i class="fa fa-check"></i><b>2.5</b> Modelos simples para análisis de canastas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-3"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#modelo-de-artículos-independientes"><i class="fa fa-check"></i>Modelo de artículos independientes</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="frecuentes.html"><a href="frecuentes.html#soporte-teórico-y-conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.6</b> Soporte teórico y conjuntos frecuentes</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-4"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="frecuentes.html"><a href="frecuentes.html#reglas-de-asociación"><i class="fa fa-check"></i><b>2.7</b> Reglas de asociación</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-5"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-6"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.8" data-path="frecuentes.html"><a href="frecuentes.html#dificultades-en-el-análisis-de-canastas"><i class="fa fa-check"></i><b>2.8</b> Dificultades en el análisis de canastas</a></li>
+<li class="chapter" data-level="2.9" data-path="frecuentes.html"><a href="frecuentes.html#otras-medidas-de-calidad-de-reglas"><i class="fa fa-check"></i><b>2.9</b> Otras medidas de calidad de reglas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#hyper-lift-bajo-hipótesis-de-independencia"><i class="fa fa-check"></i>Hyper-lift bajo hipótesis de independencia</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#hyper-lift-para-datos-de-canastas"><i class="fa fa-check"></i>Hyper-lift para datos de canastas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.10" data-path="frecuentes.html"><a href="frecuentes.html#selección-de-reglas"><i class="fa fa-check"></i><b>2.10</b> Selección de reglas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-canastas-grandes"><i class="fa fa-check"></i>Ejemplo: canastas grandes</a></li>
+</ul></li>
+<li class="chapter" data-level="2.11" data-path="frecuentes.html"><a href="frecuentes.html#búsqueda-de-reglas-especializadas"><i class="fa fa-check"></i><b>2.11</b> Búsqueda de reglas especializadas</a></li>
+<li class="chapter" data-level="2.12" data-path="frecuentes.html"><a href="frecuentes.html#visualización-de-asociaciones"><i class="fa fa-check"></i><b>2.12</b> Visualización de asociaciones</a>
+<ul>
+<li class="chapter" data-level="2.12.1" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-canastas"><i class="fa fa-check"></i><b>2.12.1</b> Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.13" data-path="frecuentes.html"><a href="frecuentes.html#otras-aplicaciones"><i class="fa fa-check"></i><b>2.13</b> Otras aplicaciones</a></li>
+<li class="chapter" data-level="2.14" data-path="frecuentes.html"><a href="frecuentes.html#ejercicios"><i class="fa fa-check"></i><b>2.14</b> Ejercicios</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="similitud.html"><a href="similitud.html"><i class="fa fa-check"></i><b>3</b> Similitud y vecinos cercanos</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="similitud.html"><a href="similitud.html#similitud-de-conjuntos"><i class="fa fa-check"></i><b>3.1</b> Similitud de conjuntos</a></li>
+<li class="chapter" data-level="3.2" data-path="similitud.html"><a href="similitud.html#representación-de-documentos-como-conjuntos"><i class="fa fa-check"></i><b>3.2</b> Representación de documentos como conjuntos</a></li>
+<li class="chapter" data-level="3.3" data-path="similitud.html"><a href="similitud.html#representación-matricial"><i class="fa fa-check"></i><b>3.3</b> Representación matricial</a></li>
+<li class="chapter" data-level="3.4" data-path="similitud.html"><a href="similitud.html#minhash-y-reducción-probabilística-de-dimensionalidad"><i class="fa fa-check"></i><b>3.4</b> Minhash y reducción probabilística de dimensionalidad</a></li>
+<li class="chapter" data-level="3.5" data-path="similitud.html"><a href="similitud.html#agrupando-textos-de-similitud-alta"><i class="fa fa-check"></i><b>3.5</b> Agrupando textos de similitud alta</a></li>
+<li class="chapter" data-level="3.6" data-path="similitud.html"><a href="similitud.html#ejemplo-tweets"><i class="fa fa-check"></i><b>3.6</b> Ejemplo: tweets</a></li>
+<li class="chapter" data-level="3.7" data-path="similitud.html"><a href="similitud.html#verificar-si-un-nuevo-elemento-es-duplicado"><i class="fa fa-check"></i><b>3.7</b> Verificar si un nuevo elemento es duplicado</a></li>
+<li class="chapter" data-level="3.8" data-path="similitud.html"><a href="similitud.html#controlando-la-sensibilidad-y-umbral-de-similitud"><i class="fa fa-check"></i><b>3.8</b> Controlando la sensibilidad y umbral de similitud</a></li>
+<li class="chapter" data-level="3.9" data-path="similitud.html"><a href="similitud.html#distancia-euclideana-y-lsh"><i class="fa fa-check"></i><b>3.9</b> Distancia euclideana y LSH</a></li>
+<li class="chapter" data-level="3.10" data-path="similitud.html"><a href="similitud.html#locality-sensitive-hashing-lsh"><i class="fa fa-check"></i><b>3.10</b> Locality Sensitive Hashing (LSH)</a></li>
+<li class="chapter" data-level="3.11" data-path="similitud.html"><a href="similitud.html#lsh-para-imágenes"><i class="fa fa-check"></i><b>3.11</b> LSH para imágenes</a></li>
+<li class="chapter" data-level="3.12" data-path="similitud.html"><a href="similitud.html#joins-por-similitud"><i class="fa fa-check"></i><b>3.12</b> Joins por similitud</a></li>
+<li class="chapter" data-level="3.13" data-path="similitud.html"><a href="similitud.html#ejemplo-entity-matching"><i class="fa fa-check"></i><b>3.13</b> Ejemplo: entity matching</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html"><i class="fa fa-check"></i><b>4</b> DVS y reducción de dimensionalidad</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#descomposición-aditiva-en-matrices-de-rango-1"><i class="fa fa-check"></i><b>4.1</b> Descomposición aditiva en matrices de rango 1</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#matrices-de-rango-1"><i class="fa fa-check"></i><b>4.1.1</b> Matrices de rango 1</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-una-matriz-de-rango-1-de-preferencias"><i class="fa fa-check"></i>Ejemplo: una matriz de rango 1 de preferencias</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#aproximación-con-matrices-de-rango-1."><i class="fa fa-check"></i><b>4.2</b> Aproximación con matrices de rango 1.</a>
+<ul>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-12"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="4.2.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#suma-de-matrices-de-rango-1."><i class="fa fa-check"></i><b>4.2.1</b> Suma de matrices de rango 1.</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-películas"><i class="fa fa-check"></i>Ejemplo: películas</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#aproximación-con-matrices-de-rango-bajo"><i class="fa fa-check"></i><b>4.3</b> Aproximación con matrices de rango bajo</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#discusión-aproximación-de-rango-1."><i class="fa fa-check"></i><b>4.3.1</b> Discusión: aproximación de rango 1.</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#interpetación-de-vectores-singulares"><i class="fa fa-check"></i><b>4.4</b> Interpetación de vectores singulares</a>
+<ul>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-14"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="4.4.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#discusión-aproximaciones-de-rango-más-alto"><i class="fa fa-check"></i><b>4.4.1</b> Discusión: aproximaciones de rango más alto</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-15"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#descomposición-en-valores-singulares-svd-o-dvs"><i class="fa fa-check"></i><b>4.5</b> Descomposición en valores singulares (SVD o DVS)</a></li>
+<li class="chapter" data-level="4.6" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#más-de-interpretación-geométrica"><i class="fa fa-check"></i><b>4.6</b> Más de interpretación geométrica</a></li>
+<li class="chapter" data-level="4.7" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#svd-para-películas-de-netflix"><i class="fa fa-check"></i><b>4.7</b> SVD para películas de netflix</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#calidad-de-representación-de-svd."><i class="fa fa-check"></i><b>4.7.1</b> Calidad de representación de SVD.</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-16"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#componentes-principales"><i class="fa fa-check"></i><b>4.8</b> Componentes principales</a>
+<ul>
+<li class="chapter" data-level="4.8.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#varianza-en-componentes-principales."><i class="fa fa-check"></i><b>4.8.1</b> Varianza en componentes principales.</a></li>
+<li class="chapter" data-level="4.8.2" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#centrar-o-no-centrar-por-columna"><i class="fa fa-check"></i><b>4.8.2</b> ¿Centrar o no centrar por columna?</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-resultados-similares"><i class="fa fa-check"></i>Ejemplo: resultados similares</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplos-donde-es-buena-idea-centrar"><i class="fa fa-check"></i>Ejemplos: donde es buena idea centrar</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html"><i class="fa fa-check"></i><b>5</b> Sistemas de recomendación y filtrado colaborativo</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#enfoques-de-recomendación"><i class="fa fa-check"></i><b>5.1</b> Enfoques de recomendación</a></li>
+<li class="chapter" data-level="5.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#datos"><i class="fa fa-check"></i><b>5.2</b> Datos</a>
+<ul>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-17"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#modelos-de-referencia-y-evaluación"><i class="fa fa-check"></i><b>5.3</b> Modelos de referencia y evaluación</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#evaluación-de-predicciones"><i class="fa fa-check"></i><b>5.3.1</b> Evaluación de predicciones</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-datos-de-netflix"><i class="fa fa-check"></i>Ejemplo: datos de Netflix</a></li>
+<li class="chapter" data-level="5.3.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#opcional-efectos-en-análisis-de-heterogeneidad-en-uso-de-escala"><i class="fa fa-check"></i><b>5.3.2</b> (Opcional) Efectos en análisis de heterogeneidad en uso de escala</a></li>
+<li class="chapter" data-level="5.3.3" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo"><i class="fa fa-check"></i><b>5.3.3</b> Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#modelo-de-referencia"><i class="fa fa-check"></i><b>5.4</b> Modelo de referencia</a>
+<ul>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejercicio-modelo-de-referencia-para-netflix"><i class="fa fa-check"></i>Ejercicio: modelo de referencia para Netflix</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#filtrado-colaborativo-similitud"><i class="fa fa-check"></i><b>5.5</b> Filtrado colaborativo: similitud</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#simitems"><i class="fa fa-check"></i><b>5.5.1</b> Cálculo de similitud entre usuarios/películas</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-18"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-cómo-se-ven-las-calificaciones-de-películas-similaresno-similares"><i class="fa fa-check"></i>Ejemplo: ¿cómo se ven las calificaciones de películas similares/no similares?</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejercicio-4"><i class="fa fa-check"></i>Ejercicio</a></li>
+<li class="chapter" data-level="5.5.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#implementación"><i class="fa fa-check"></i><b>5.5.2</b> Implementación</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/felipegonzalez/metodos-analiticos-mcd-2022" target="blank">Repositorio de Github</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Métodos analíticos, ITAM 2022</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="sistemas-de-recomendación-y-filtrado-colaborativo" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Sistemas de recomendación y filtrado colaborativo</h1>
+<p>En esta sección discutiremos métodos que se pueden utilizar
+para hacer recomendaciones de documentos, películas, artículos, etc.
+a personas según sus intereses.</p>
+<ul>
+<li><strong>Problema</strong>: predecir la respuesta de personas a estímulos a los que no han sido expuestos,
+basados en respuesta a otros estímulos de esta y quizá otras personas similares.</li>
+</ul>
+<p>Por ejemplo, si consideramos usuarios de Netflix: ¿qué tanto le puede gustar a X la película Y? Usuarios de Amazon: ¿qué tan probable es que compren Z artículo si se les ofrece?</p>
+<div id="enfoques-de-recomendación" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Enfoques de recomendación</h2>
+<p>Hay varios enfoques que podemos utilizar para atacar este problema:</p>
+<ul>
+<li><strong>Principalmente basados en contenido</strong>: En función de características de los estímulos, productos o películas (por ejemplo, género, actores, país de origen, año, etc.) intentamos predecir el gusto por el estímulo. En este enfoque, construimos variables derivadas del contenido de los artículos (por ejemplo: qué actores salen, año, etc. o en textos palabras que aparecen), e intentamos predecir el gusto a partir de esas características.</li>
+</ul>
+<p>Ejemplo: Si mu gustó <em>Twilight</em> entonces el sistema recomienda otros dramas+vampiros (”
+por ejemplo “Entrevista con un vampiro”).</p>
+<ul>
+<li><strong>Principalmente colaborativos</strong>: utilizamos gustos o intereses de usuarios/artículos similares — en el sentido de que les han gustado los mismos artículos/les gustaron a las mismas personas.</li>
+</ul>
+<p>Ejemplo: Me gustó StarWars y Harry Potter, varios otros usuarios a los que también les gustaron estas dos películas también les gustó “Señor de los anillos,” así que recomendamos “Señor de los Anillos.” Entre estos métodos, veremos principalmente métodos basados en reducción de dimensionalidad o <strong>modelos de factores latentes</strong>: encontrar factores latentes que describan usuarios y películas, y predecimos dependiendo de los niveles de factores latentes de personas y películas.</p>
+</div>
+<div id="datos" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Datos</h2>
+<p>Los datos utilizados para este tipo de sistemas son de dos
+tipos:</p>
+<ul>
+<li><p>Ratings <em>explícitos</em> dados por los usuarios (por ejemplo, Netflix mucho tiempo fue así: <span class="math inline">\(1-5\)</span> estrellas)</p></li>
+<li><p>Ratings <em>implícitos</em> que se derivan de la actividad de los usuarios (por ejemplo, vio la película completa, dio click en la descripción de un producto, etc.).</p></li>
+</ul>
+<div id="ejemplo-17" class="section level3 unnumbered">
+<h3>Ejemplo</h3>
+<p>Consideramos evaluaciones en escala de gusto: por ejemplo <span class="math inline">\(1-5\)</span> estrellas, o <span class="math inline">\(1\)</span>-me disgustó mucho, <span class="math inline">\(5\)</span>-me gustó mucho, etc.</p>
+<p>Podemos representar las evaluaciones como una matriz:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">SWars1</th>
+<th align="left">SWars4</th>
+<th align="left">SWars5</th>
+<th align="left">HPotter1</th>
+<th align="left">HPotter2</th>
+<th align="left">Twilight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">a</td>
+<td align="left">3</td>
+<td align="left">5</td>
+<td align="left">5</td>
+<td align="left">2</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr class="even">
+<td align="left">b</td>
+<td align="left">3</td>
+<td align="left">-</td>
+<td align="left">4</td>
+<td align="left">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+</tr>
+<tr class="odd">
+<td align="left">c</td>
+<td align="left">-</td>
+<td align="left">-</td>
+<td align="left">-</td>
+<td align="left">5</td>
+<td align="left">4</td>
+<td align="left">-</td>
+</tr>
+<tr class="even">
+<td align="left">d</td>
+<td align="left">1</td>
+<td align="left">-</td>
+<td align="left">2</td>
+<td align="left">-</td>
+<td align="left">5</td>
+<td align="left">4</td>
+</tr>
+</tbody>
+</table>
+<p>Y lo que queremos hacer es predecir los valores faltantes de esta matriz, y seleccionar para cada usuario los artículos con predicción más alta, por ejemplo</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="left">SWars1</th>
+<th align="left">SWars4</th>
+<th align="left">SWars5</th>
+<th align="left">HPotter1</th>
+<th align="left">HPotter2</th>
+<th align="left">Twilight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">a</td>
+<td align="left">3</td>
+<td align="left">5</td>
+<td align="left">5</td>
+<td align="left">2</td>
+<td align="left">4.5</td>
+<td align="left">4.5</td>
+</tr>
+<tr class="even">
+<td align="left">b</td>
+<td align="left">3</td>
+<td align="left">3.5</td>
+<td align="left">4</td>
+<td align="left">3.1</td>
+<td align="left">4.5</td>
+<td align="left">1.9</td>
+</tr>
+<tr class="odd">
+<td align="left">c</td>
+<td align="left">1.8</td>
+<td align="left">2.6</td>
+<td align="left">4.5</td>
+<td align="left">5</td>
+<td align="left">4</td>
+<td align="left">2.4</td>
+</tr>
+<tr class="even">
+<td align="left">d</td>
+<td align="left">1</td>
+<td align="left">3</td>
+<td align="left">2</td>
+<td align="left">3.5</td>
+<td align="left">5</td>
+<td align="left">4</td>
+</tr>
+</tbody>
+</table>
+<p>Podemos pensar en este problema como uno de <strong>imputación de datos faltantes</strong>. Las dificultades
+particulares de este problema son:</p>
+<ul>
+<li>Datos ralos: cada usuario sólo ha visto y calificado una proporción baja de películas, y hay películas con pocas vistas.</li>
+<li>Escalabilidad: el número de películas y usuarios es generalmente grande</li>
+</ul>
+<p>Por estas razones, típicamente no es posible usar técnicas estadísticas de imputación de datos (como imputación estocástica basada en regresión)</p>
+<ul>
+<li>Usaremos mejor métodos más simples basados en similitud entre usuarios y películas y descomposición de matrices.</li>
+</ul>
+</div>
+</div>
+<div id="modelos-de-referencia-y-evaluación" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Modelos de referencia y evaluación</h2>
+<p>Vamos a comenzar considerando modelos muy simples. El primero que se nos puede ocurrir es uno
+de homogeneidad de gustos: para una persona <span class="math inline">\(i\)</span>, nuestra predicción de su gusto por la película
+<span class="math inline">\(j\)</span> es simplemente la media de la película <span class="math inline">\(j\)</span> sobre todos los usuarios que la han visto.</p>
+<p>Este sería un buen modelo si los gustos fueran muy parecidos sobre todos los usuarios. Esta sería una recomendación de “artículos populares.”</p>
+<p>Introducimos la siguente notación:</p>
+<ul>
+<li><span class="math inline">\(x_{ij}\)</span> es la evaluación del usuario <span class="math inline">\(i\)</span> de la película <span class="math inline">\(j\)</span>. Obsérvese que muchos de estos valores no son observados (no tenemos información de varias <span class="math inline">\(x_{ij}\)</span>).</li>
+<li><span class="math inline">\(\hat{x}_{ij}\)</span> es la predicción que hacemos de gusto del usuario <span class="math inline">\(i\)</span> por la película <span class="math inline">\(j\)</span></li>
+</ul>
+<p>En nuestro primer modelo simple, nuestra predicción es simplemente
+<span class="math display">\[\hat{x}_{ij} = \hat{b}_j\]</span>
+donde
+<span class="math display">\[\hat{b_j} = \frac{1}{N_j}\sum_{s} x_{sj},\]</span>
+y este promedio es sobre los <span class="math inline">\(N_j\)</span> usuarios que vieron (y calificaron) la película <span class="math inline">\(j\)</span>.</p>
+<p>¿Cómo evaluamos nuestras predicciones?</p>
+<div id="evaluación-de-predicciones" class="section level3" number="5.3.1">
+<h3><span class="header-section-number">5.3.1</span> Evaluación de predicciones</h3>
+<p>Usamos muestras de entrenamiento y validación. Como en el concurso de Netflix,
+utilizaremos la raíz del error cuadrático medio:</p>
+<p><span class="math display">\[RECM =\left ( \frac{1}{T} \sum_{(i,j) \, observada} (x_{ij}-\hat{x}_{ij})^2 \right)^{\frac{1}{2}}\]</span></p>
+<p>aunque también podríamos utilizar la desviación absoluta media:</p>
+<p><span class="math display">\[DAM =\frac{1}{T} \sum_{(i,j) \, observada} |x_{ij}-\hat{x}_{ij}|\]</span></p>
+<ul>
+<li>Nótese que estas dos cantidades se evaluán sólo sobre los pares <span class="math inline">\((i,j)\)</span> para los
+que tengamos una observación <span class="math inline">\(x_{ij}\)</span>.</li>
+</ul>
+<p><strong>Observaciones</strong>:</p>
+<ul>
+<li><p>Generalmente evaluamos sobre un conjunto de validación separado del conjunto
+de entrenamiento.</p></li>
+<li><p>Escogemos una muestra de películas, una muestra de usuarios, y ponemos
+en validación el conjunto de calificaciones de esos usuarios para esas películas.</p></li>
+<li><p>Para hacer un conjunto de prueba, idealmente los datos deben ser de películas
+que hayan sido observadas por los usuarios en el futuro (después del periodo de los
+datos de entrenamiento).</p></li>
+<li><p>Nótese que no seleccionamos <em>todas</em> las evaluaciones de un usuario, ni <em>todas</em> las
+evaluaciones de una película. Con estas estrategias, veríamos qué pasa con nuestro
+modelo cuando tenemos una película que no se ha visto o un usuario nuevo.
+Lo que queremos ententer es cómo se desempeña nuestro sistema
+cuando tenemos cierta información de usuarios y de películas.</p></li>
+</ul>
+</div>
+<div id="ejemplo-datos-de-netflix" class="section level3 unnumbered">
+<h3>Ejemplo: datos de Netflix</h3>
+<p>Los datos del concurso de Netflix originalmente vienen en archivos de texto, un archivo por película.</p>
+<p>The movie rating files contain over <span class="math inline">\(100\)</span> million ratings from <span class="math inline">\(480\)</span> thousand
+randomly-chosen, anonymous Netflix customers over <span class="math inline">\(17\)</span> thousand movie titles. The
+data were collected between October, <span class="math inline">\(1998\)</span> and December, <span class="math inline">\(2005\)</span> and reflect the
+distribution of all ratings received during this period. The ratings are on a
+scale from <span class="math inline">\(1\)</span> to <span class="math inline">\(5\)</span> (integral) stars. To protect customer privacy, each customer
+id has been replaced with a randomly-assigned id. The date of each rating and
+the title and year of release for each movie id are also provided.</p>
+<p>The file “training_set.tar” is a tar of a directory containing <span class="math inline">\(17770\)</span> files, one
+per movie. The first line of each file contains the movie id followed by a
+colon. Each subsequent line in the file corresponds to a rating from a customer
+and its date in the following format:</p>
+<p>CustomerID,Rating,Date</p>
+<ul>
+<li>MovieIDs range from <span class="math inline">\(1\)</span> to <span class="math inline">\(17770\)</span> sequentially.</li>
+<li>CustomerIDs range from <span class="math inline">\(1\)</span> to <span class="math inline">\(2649429\)</span>, with gaps. There are <span class="math inline">\(480189\)</span> users.</li>
+<li>Ratings are on a five star (integral) scale from <span class="math inline">\(1\)</span> to <span class="math inline">\(5\)</span>.</li>
+<li>Dates have the format YYYY-MM-DD.</li>
+</ul>
+<hr />
+<p>En primer lugar haremos un análisis exploratorio de los datos para entender algunas
+de sus características, ajustamos el modelo simple de gustos homogéneos (la predicción es el
+promedio de calificaciones de cada película), y lo evaluamos.</p>
+<p>Comenzamos por cargar los datos:</p>
+<div class="sourceCode" id="cb442"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb442-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb442-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb442-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb442-2" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>())</span>
+<span id="cb442-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb442-3" aria-hidden="true" tabindex="-1"></a>cb_palette <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;#000000&quot;</span>, <span class="st">&quot;#E69F00&quot;</span>, <span class="st">&quot;#56B4E9&quot;</span>, <span class="st">&quot;#009E73&quot;</span>, <span class="st">&quot;#F0E442&quot;</span>, <span class="st">&quot;#0072B2&quot;</span>, <span class="st">&quot;#D55E00&quot;</span>, <span class="st">&quot;#CC79A7&quot;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb443"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb443-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb443-1" aria-hidden="true" tabindex="-1"></a><span class="co"># url &lt;- &quot;https://s3.amazonaws.com/ma-netflix/dat_muestra_nflix.csv&quot;</span></span>
+<span id="cb443-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb443-2" aria-hidden="true" tabindex="-1"></a>pelis_nombres <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;../datos/netflix/movies_title_fix.csv&#39;</span>, <span class="at">col_names =</span> <span class="cn">FALSE</span>, <span class="at">na =</span> <span class="fu">c</span>(<span class="st">&quot;&quot;</span>, <span class="st">&quot;NA&quot;</span>, <span class="st">&quot;NULL&quot;</span>))</span></code></pre></div>
+<pre><code>## Rows: 17770 Columns: 3</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): X3
+## dbl (2): X1, X2</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode" id="cb447"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb447-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb447-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(pelis_nombres) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;peli_id&#39;</span>,<span class="st">&#39;año&#39;</span>,<span class="st">&#39;nombre&#39;</span>)</span>
+<span id="cb447-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb447-2" aria-hidden="true" tabindex="-1"></a>dat_netflix <span class="ot">&lt;-</span> <span class="fu">read_csv</span>( <span class="st">&quot;../datos/netflix/dat_muestra_nflix.csv&quot;</span>, <span class="at">progress =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb447-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb447-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>usuario_id_orig) <span class="sc">|&gt;</span> </span>
+<span id="cb447-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb447-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">usuario_id =</span> <span class="fu">as.integer</span>(<span class="fu">as.factor</span>(usuario_id)))</span></code></pre></div>
+<pre><code>## Rows: 20968941 Columns: 5</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## dbl  (4): peli_id, usuario_id_orig, calif, usuario_id
+## date (1): fecha</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode" id="cb451"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb451-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb451-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_netflix)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 4
+##   peli_id calif fecha      usuario_id
+##     &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;          &lt;int&gt;
+## 1       1     3 2004-04-14          1
+## 2       1     3 2004-12-28          2
+## 3       1     4 2004-04-06          3
+## 4       1     4 2004-03-07          4
+## 5       1     4 2004-03-29          5
+## 6       1     2 2004-07-11          6</code></pre>
+<div class="sourceCode" id="cb453"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb453-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb453-1" aria-hidden="true" tabindex="-1"></a>dat_netflix <span class="sc">|&gt;</span> <span class="fu">tally</span>()</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 1
+##          n
+##      &lt;int&gt;
+## 1 20968941</code></pre>
+<p>Y ahora calculamos las medias de cada película.</p>
+<div class="sourceCode" id="cb455"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb455-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb455-1" aria-hidden="true" tabindex="-1"></a>medias_pelis <span class="ot">&lt;-</span> dat_netflix <span class="sc">|&gt;</span> <span class="fu">group_by</span>(peli_id) <span class="sc">|&gt;</span> </span>
+<span id="cb455-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb455-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">media_peli =</span> <span class="fu">mean</span>(calif), <span class="at">num_calif_peli =</span> <span class="fu">n</span>()) </span>
+<span id="cb455-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb455-3" aria-hidden="true" tabindex="-1"></a>medias_pelis <span class="ot">&lt;-</span> <span class="fu">left_join</span>(medias_pelis, pelis_nombres)</span></code></pre></div>
+<pre><code>## Joining, by = &quot;peli_id&quot;</code></pre>
+<div class="sourceCode" id="cb457"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb457-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb457-1" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(medias_pelis, <span class="fu">desc</span>(media_peli)) <span class="sc">|&gt;</span> </span>
+<span id="cb457-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb457-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">200</span>, media_peli) <span class="sc">|&gt;</span> </span>
+<span id="cb457-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb457-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">media_peli =</span> <span class="fu">round</span>(media_peli, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb457-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb457-4" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>()</span></code></pre></div>
+<div id="htmlwidget-ca17d6aec51dff491356" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ca17d6aec51dff491356">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144","145","146","147","148","149","150","151","152","153","154","155","156","157","158","159","160","161","162","163","164","165","166","167","168","169","170","171","172","173","174","175","176","177","178","179","180","181","182","183","184","185","186","187","188","189","190","191","192","193","194","195","196","197","198","199","200"],[14791,8964,6522,4614,14961,7230,15538,7057,9864,3456,16875,1587,5018,4238,12398,13504,14550,13,2608,10464,1418,7833,2102,3033,5103,5582,11662,14240,2568,16587,15296,12834,2700,7664,15437,17307,10042,12293,16265,9063,11216,3444,2019,9436,17085,1499,8468,17219,8116,2598,1476,7569,1947,4427,12681,16302,15861,15104,13556,9628,14302,8535,11521,12891,2117,10640,7815,8447,12870,10080,2114,5760,7110,10644,12530,2452,1072,1915,14729,3962,16147,13665,7742,16711,3046,2162,17480,10643,4348,11641,3290,7751,2172,8226,9040,8038,3067,16006,10598,724,1357,5292,4294,14031,15557,6974,5738,13673,13205,5258,15609,4789,5092,2591,3965,2057,15500,4877,12755,7749,4353,14648,5530,15014,7539,1495,4098,2321,8355,1256,3247,9644,14621,5837,12731,9909,7445,16954,6007,3928,5161,9979,10011,10251,10973,12184,4691,7302,4306,710,3523,7430,7639,9483,14806,2803,2862,7396,2575,14537,12035,15768,8580,14615,2548,11026,13663,5714,8934,4978,16377,10947,12937,7193,11191,5519,11283,12107,13478,1020,11607,7695,7669,1409,12125,10778,11202,2782,8664,3593,10825,6428,14283,12219,11705,17157,10519,4207,11126,270],[4.88,4.83,4.76,4.75,4.72,4.71,4.7,4.69,4.68,4.68,4.67,4.65,4.63,4.62,4.62,4.6,4.6,4.59,4.59,4.58,4.57,4.56,4.56,4.56,4.55,4.55,4.55,4.54,4.54,4.53,4.52,4.52,4.51,4.51,4.51,4.5,4.5,4.5,4.5,4.5,4.5,4.5,4.49,4.49,4.48,4.48,4.48,4.48,4.48,4.48,4.47,4.47,4.47,4.47,4.47,4.46,4.46,4.46,4.46,4.46,4.46,4.46,4.46,4.46,4.45,4.45,4.45,4.45,4.45,4.45,4.45,4.45,4.44,4.43,4.43,4.43,4.43,4.42,4.42,4.42,4.42,4.42,4.41,4.41,4.41,4.41,4.41,4.41,4.4,4.4,4.4,4.4,4.4,4.39,4.39,4.39,4.38,4.38,4.38,4.38,4.38,4.38,4.38,4.37,4.37,4.37,4.37,4.37,4.37,4.37,4.36,4.36,4.36,4.36,4.36,4.36,4.36,4.36,4.36,4.35,4.35,4.35,4.35,4.35,4.35,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.33,4.33,4.33,4.33,4.33,4.33,4.33,4.33,4.33,4.33,4.33,4.33,4.33,4.32,4.32,4.32,4.32,4.31,4.31,4.31,4.31,4.31,4.31,4.31,4.31,4.31,4.31,4.31,4.31,4.31,4.31,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.29],[17,6,29,4,15260,15191,329,15528,364,1502,6,34,146,371,245,345,29112,27,39,19,166,1327,1700,45,3564,19250,4242,27918,398,3835,7789,4475,47,2001,751,2477,24745,22253,17858,30,16,2111,443,86,4894,195,2655,1887,7219,21,2384,824,1003,1359,15,4840,2852,104,1801,18517,8414,3863,31611,3637,22,11,559,6437,21287,5197,2191,7937,1368,1058,5885,31146,84,373,656,29391,9062,43,3160,6934,3264,3576,1651,1793,97,502,14953,1703,4700,2138,31,1654,26,2280,3802,221,1364,2988,8,1950,1942,22561,2549,10638,679,1265,2358,1481,2381,36,381,1991,1309,2278,42,1478,2481,2239,1558,1313,182,3490,1371,61,137,2334,123,1500,26868,3821,890,3249,822,30052,3952,1503,12,9,12,48,39,6969,874,666,31436,49,1913,7104,470,62,1536,4158,26769,108,178,70,691,163,1915,32,1818,476,2876,331,13,1674,37800,27862,2216,18557,2788,2309,38071,10,10,4285,19330,2230,1524,1083,899,2242,136,28364,780,1053,379,13330,2165,48,151,27276,31,1485,1248,7504],[2003,2003,2001,1964,2003,2001,2004,2002,2004,2004,2005,1962,2001,2000,2004,2004,1994,2003,2003,1995,2002,2004,1994,2005,1993,1980,2004,2003,2004,1992,2001,2001,2005,2000,2002,2003,1981,1972,1977,2004,1991,2004,2004,2002,2002,2000,2002,1991,2002,2005,2004,2004,2002,2001,1996,1999,2001,1987,1999,1983,2000,1990,2002,2003,2004,1976,2003,2001,1993,2001,2002,2001,2004,2002,2004,2001,2000,2000,2004,2003,1999,2002,2003,2003,1990,2000,2003,1992,2002,1994,1974,1985,1991,2000,1999,1950,2004,1989,2004,1992,2003,2002,2004,2002,1999,1995,2003,1995,2004,1990,2001,2001,1997,2003,1992,2001,2001,2004,1995,2005,2002,2003,2000,2003,1991,2001,2002,2004,2005,1994,2005,2002,2001,1999,2001,2002,2004,1989,2003,2004,2005,1975,2005,2005,2005,2002,2002,2001,1999,1993,1992,2001,2004,1992,2001,1995,1991,1969,2004,1989,2002,2000,1999,2001,2000,2002,2000,1974,2003,2000,1999,2004,1999,1987,1999,1999,1994,2001,1973,1989,2005,1999,2004,2003,2001,2001,1999,1995,2001,1988,1993,1962,1994,2000,1997,1998,2003,1980,2000,2001],["Trailer Park Boys: Season 3","Trailer Park Boys: Season 4","Trailer Park Boys: Seasons 1 &amp; 2","Blood and Black Lace","Lord of the Rings: The Return of the King: Extended Edition","The Lord of the Rings: The Fellowship of the Ring: Extended Edition","Fullmetal Alchemist","Lord of the Rings: The Two Towers: Extended Edition","Battlestar Galactica: Season 1","Lost: Season 1","Ah! My Goddess","Harakiri","Fruits Basket","Inu-Yasha","Veronica Mars: Season 1","House M.D.: Season 1","The Shawshank Redemption: Special Edition","Lord of the Rings: The Return of the King: Extended Edition: Bonus Material","WWE: Mick Foley's Greatest Hits and Misses","Tenchi Muyo! Ryo Ohki","Inu-Yasha: The Movie 3: Swords of an Honorable Ruler","Arrested Development: Season 2","The Simpsons: Season 6","Ghost in the Shell: Stand Alone Complex: 2nd Gig","The Simpsons: Season 5","Star Wars: Episode V: The Empire Strikes Back","The Sopranos: Season 5","Lord of the Rings: The Return of the King","Stargate SG-1: Season 8","The Simpsons: Season 4","Band of Brothers","Family Guy: Vol. 2: Season 3","ECW: One Night Stand","Gladiator: Extended Edition","South Park: Season 6","CSI: Season 4","Raiders of the Lost Ark","The Godfather","Star Wars: Episode IV: A New Hope","Shura no Toki","Gundam 0083: Stardust Memory","Family Guy: Freakin' Sweet Collection","Samurai Champloo","Full Metal Panic FUMOFFU","24: Season 2","FLCL","CSI: Season 3","Seinfeld: Season 3","The Sopranos: Season 4","Baby Einstein: On the Go: Riding Sailing and Soaring","Six Feet Under: Season 4","Dead Like Me: Season 2","Gilmore Girls: Season 3","The West Wing: Season 3","Kodocha","Family Guy: Vol. 1: Seasons 1-2","CSI: Season 2","Anne of Green Gables: The Sequel","The West Wing: Season 2","Star Wars: Episode VI: Return of the Jedi","The Sopranos: Season 2","The Simpsons: Season 2","Lord of the Rings: The Two Towers","24: Season 3","Case Closed: Season 5","The Duchess of Duke Street: Series 1","Gilmore Girls: Season 4","24: Season 1","Schindler's List","Six Feet Under: Season 2","Firefly","The Sopranos: Season 3","The Shield: Season 3","The West Wing: Season 4","Sex and the City: Season 6: Part 2","Lord of the Rings: The Fellowship of the Ring","As Time Goes By: Series 8","Law &amp; Order: Special Victims Unit: The Second Year","Smallville: Season 4","Finding Nemo (Widescreen)","The Sopranos: Season 1","As Time Goes By: Series 9","Six Feet Under: Season 3","Sex and the City: Season 6: Part 1","The Simpsons: Treehouse of Horror","CSI: Season 1","The Shield: Season 2","Seinfeld: Season 4","The Twelve Kingdoms","My So-Called Life","The Godfather Part II","Anne of Green Gables","The Simpsons: Season 3","Buffy the Vampire Slayer: Season 5","The Sixth Sense: Bonus Material","Cinderella: Special Edition","Teen Titans: Season 2","Seinfeld: Seasons 1 &amp; 2","Chappelle's Show: Season 2","Yu Yu Hakusho","Stargate SG-1: Season 7","Alias: Season 2","Ghost Hunters: Season 1","Buffy the Vampire Slayer: Season 7","Futurama: Vol. 3","The Usual Suspects","Alias: Season 3","Toy Story","Rescue Me: Season 1","Ken Burns' Civil War","South Park: Season 5","Stargate SG-1: Season 5","Buffy the Vampire Slayer: Season 2","Maburaho","Red Dwarf: Series 5","Buffy the Vampire Slayer: Season 6","Gilmore Girls: Season 2","Simpsons Gone Wild","WWE: The Monday Night War","Curb Your Enthusiasm: Season 4","Curb Your Enthusiasm: Season 3","Finding Nemo (Full-screen)","Stargate SG-1: Season 4","Angel: Season 5","The Kids in the Hall: Season 3","Alias: Season 1","Angel: Season 4","Get Backers","UFC 52: Ultimate Fighting Championship: Randy Couture vs. Chuck Liddell","The Best of Friends: Vol. 4","The Looney Tunes Golden Collection: Vol. 3","Stargate SG-1: Season 6","Shrek (Full-screen)","Friends: Season 7","Farscape: Season 3","Friends: Season 9","Monk: Season 3","Indiana Jones and the Last Crusade","Arrested Development: Season 1","Nip/Tuck: Season 2","Pride FC: Body Blow","The Hiding Place","Lamb of God: Killadelphia","Samurai 7","WWE: Vengeance: Hell in a Cell","Sex and the City: Season 5","Farscape: Season 4","The Blue Planet: Seas of Life: Seasonal Seas - Coral Seas","The Sixth Sense","Inspector Morse 9: The Last Enemy","Star Trek: The Next Generation: Season 6","Six Feet Under: Season 1","Star Wars Trilogy: Bonus Material","Inspector Morse 8: Ghost in the Machine","Angel: Season 3","Pride and Prejudice","The Silence of the Lambs","The Twilight Zone: Vol. 43","R.O.D. the TV Series","Garfield and Friends: Vol. 3","Oz: Season 5","The Simpsons: Christmas 2","Futurama: Vol. 4","Abraham and Mary Lincoln: A House Divided: American Experience","Gilmore Girls: Season 1","Inu-Yasha: The Movie 2: The Castle Beyond the Looking Glass","South Park: Season 4","Upstairs Downstairs: Season 4","Johnny Cash: Hurt: A Film by Mark Romanek","Freaks &amp; Geeks: The Complete Series","The Green Mile","The Incredibles","Buffy the Vampire Slayer: Season 4","The Princess Bride","South Park: Season 3","The West Wing: Season 1","Forrest Gump","The Merchants of Cool: Frontline","Ivan Vasilievich: Back to the Future","The Simpsons: Season 1","Hotel Rwanda","Futurama: Vol. 2","Desperate Housewives: Season 1","The O.C.: Season 1","The Blue Planet: Seas of Life: Open Ocean - The Deep","Scrubs: Season 1","Initial D","Braveheart","The Blue Planet: Seas of Life: Ocean World - Frozen Seas","My Neighbor Totoro","Red Dwarf: Series 6","To Kill a Mockingbird","The Best of Friends: Vol. 3","Dragon Ball Z: Vegeta Saga 1","VeggieTales: A Snoodles Tale","Saving Private Ryan","The Howlin' Wolf Story","The Blues Brothers: Extended Cut","Oz: Season 4","Sex and the City: Season 4"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>peli_id<\/th>\n      <th>media_peli<\/th>\n      <th>num_calif_peli<\/th>\n      <th>año<\/th>\n      <th>nombre<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>Nótese que varias de las películas con mejor promedio tienen muy pocas evaluaciones. Podemos
+examinar más detalladamente graficando número de evaluaciones vs promedio:</p>
+<div class="sourceCode" id="cb458"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb458-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb458-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(medias_pelis, <span class="fu">aes</span>(<span class="at">x=</span>num_calif_peli, <span class="at">y=</span>media_peli)) <span class="sc">+</span> </span>
+<span id="cb458-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb458-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.1</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&quot;Número de calificaciones&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb458-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb458-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Promedio de calificaciones&quot;</span>) </span></code></pre></div>
+<p><img src="04-recomendacion_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Y vemos que hay más variabilidad en los promedios cuando hay menos evaluaciones, como
+es de esperarse. ¿Puedes ver algún problema que tendremos que enfrentar con el modelo simple?</p>
+<p>Si filtramos por número de calificaciones (al menos <span class="math inline">\(500\)</span> por ejemplo),
+estas son las películas mejor calificadas (la mayoría conocidas y populares):</p>
+<div class="sourceCode" id="cb459"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb459-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb459-1" aria-hidden="true" tabindex="-1"></a><span class="fu">arrange</span>(medias_pelis, <span class="fu">desc</span>(media_peli)) <span class="sc">|&gt;</span> </span>
+<span id="cb459-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb459-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(num_calif_peli <span class="sc">&gt;</span> <span class="dv">500</span>) <span class="sc">|&gt;</span></span>
+<span id="cb459-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb459-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">200</span>, media_peli) <span class="sc">|&gt;</span> </span>
+<span id="cb459-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb459-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">media_peli =</span> <span class="fu">round</span>(media_peli, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb459-5"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb459-5" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>()</span></code></pre></div>
+<div id="htmlwidget-c8f37a36587e011770ad" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c8f37a36587e011770ad">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144","145","146","147","148","149","150","151","152","153","154","155","156","157","158","159","160","161","162","163","164","165","166","167","168","169","170","171","172","173","174","175","176","177","178","179","180","181","182","183","184","185","186","187","188","189","190","191","192","193","194","195","196","197","198","199","200"],[14961,7230,7057,3456,14550,7833,2102,5103,5582,11662,14240,16587,15296,12834,7664,15437,17307,10042,12293,16265,3444,17085,8468,17219,8116,1476,7569,1947,4427,16302,15861,13556,9628,14302,8535,11521,12891,7815,8447,12870,10080,2114,5760,7110,10644,12530,2452,14729,3962,16147,7742,16711,3046,2162,17480,10643,11641,3290,7751,2172,8226,8038,16006,10598,1357,5292,14031,15557,6974,5738,13673,13205,5258,15609,4789,5092,2057,15500,4877,7749,4353,14648,5530,15014,1495,4098,1256,9644,14621,5837,12731,9909,7445,16954,6007,3928,12184,4691,7302,4306,3523,7430,14806,2803,2862,12035,8580,2548,13663,4978,16377,10947,12937,7193,11191,5519,11283,1020,11607,7695,7669,1409,12125,10778,2782,8664,3593,6428,14283,17157,4207,11126,270,5326,5732,4115,14911,1441,4383,316,5549,11089,7605,7393,17682,7303,2942,774,16022,3958,15777,10072,13669,17165,15773,17687,10061,8327,752,14533,11925,2566,15333,11050,15836,12384,2861,7158,12811,2040,16615,2195,7735,10418,12999,6355,1795,5297,6739,13123,3864,12100,11164,8438,14571,12956,13468,5886,14709,15183,9326,16394,6142,14742,14691,15534,16278,7235,7683,12026],[4.72,4.71,4.69,4.68,4.6,4.56,4.56,4.55,4.55,4.55,4.54,4.53,4.52,4.52,4.51,4.51,4.5,4.5,4.5,4.5,4.5,4.48,4.48,4.48,4.48,4.47,4.47,4.47,4.47,4.46,4.46,4.46,4.46,4.46,4.46,4.46,4.46,4.45,4.45,4.45,4.45,4.45,4.45,4.44,4.43,4.43,4.43,4.42,4.42,4.42,4.41,4.41,4.41,4.41,4.41,4.41,4.4,4.4,4.4,4.4,4.39,4.39,4.38,4.38,4.38,4.38,4.37,4.37,4.37,4.37,4.37,4.37,4.37,4.36,4.36,4.36,4.36,4.36,4.36,4.35,4.35,4.35,4.35,4.35,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.34,4.33,4.33,4.33,4.33,4.33,4.33,4.32,4.32,4.32,4.31,4.31,4.31,4.31,4.31,4.31,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.3,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.29,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.28,4.27,4.27,4.27,4.27,4.27,4.27,4.26,4.26,4.26,4.26,4.26,4.26,4.26,4.26,4.26,4.26,4.26,4.25,4.25,4.25,4.25,4.25,4.24,4.24,4.24,4.24,4.24,4.24,4.24,4.24,4.24,4.23,4.23,4.23,4.23,4.23,4.23,4.23,4.23,4.23,4.22,4.22,4.22,4.22,4.22,4.22,4.21,4.21,4.21],[15260,15191,15528,1502,29112,1327,1700,3564,19250,4242,27918,3835,7789,4475,2001,751,2477,24745,22253,17858,2111,4894,2655,1887,7219,2384,824,1003,1359,4840,2852,1801,18517,8414,3863,31611,3637,559,6437,21287,5197,2191,7937,1368,1058,5885,31146,656,29391,9062,3160,6934,3264,3576,1651,1793,502,14953,1703,4700,2138,1654,2280,3802,1364,2988,1950,1942,22561,2549,10638,679,1265,2358,1481,2381,1991,1309,2278,1478,2481,2239,1558,1313,3490,1371,2334,1500,26868,3821,890,3249,822,30052,3952,1503,6969,874,666,31436,1913,7104,1536,4158,26769,691,1915,1818,2876,1674,37800,27862,2216,18557,2788,2309,38071,4285,19330,2230,1524,1083,899,2242,28364,780,1053,13330,2165,27276,1485,1248,7504,1802,18898,873,2006,1603,837,517,2970,27089,1191,535,2447,1017,3975,514,1338,1144,3726,612,572,1428,998,1500,1370,18232,1785,3933,1020,1611,774,1091,900,1206,710,3792,2490,1878,625,856,559,3328,2389,1686,1076,1239,12076,1183,11547,598,8148,4386,930,1775,664,1830,1712,1278,1533,508,1101,2131,29401,548,2570,1180,4049,571],[2003,2001,2002,2004,1994,2004,1994,1993,1980,2004,2003,1992,2001,2001,2000,2002,2003,1981,1972,1977,2004,2002,2002,1991,2002,2004,2004,2002,2001,1999,2001,1999,1983,2000,1990,2002,2003,2003,2001,1993,2001,2002,2001,2004,2002,2004,2001,2004,2003,1999,2003,2003,1990,2000,2003,1992,1994,1974,1985,1991,2000,1950,1989,2004,2003,2002,2002,1999,1995,2003,1995,2004,1990,2001,2001,1997,2001,2001,2004,2005,2002,2003,2000,2003,2001,2002,1994,2002,2001,1999,2001,2002,2004,1989,2003,2004,2002,2002,2001,1999,1992,2001,2001,1995,1991,2002,1999,2000,2000,2000,1999,2004,1999,1987,1999,1999,1994,1989,2005,1999,2004,2003,2001,2001,1995,2001,1988,1962,1994,1998,1980,2000,2001,1990,1990,1999,2002,1998,2004,1999,2001,2001,2004,1993,1998,2002,1999,2003,2003,2003,2001,2004,1988,2004,2003,1997,2003,1975,1993,2002,2003,1999,1999,1977,1979,2001,1996,1997,2000,1991,2001,2004,1997,1997,2003,2002,1978,2000,1954,1976,2005,1992,2000,1998,1999,2000,1992,2000,1988,1975,2003,1995,2003,2000,1999,2001,2004,2003,1988,1996],["Lord of the Rings: The Return of the King: Extended Edition","The Lord of the Rings: The Fellowship of the Ring: Extended Edition","Lord of the Rings: The Two Towers: Extended Edition","Lost: Season 1","The Shawshank Redemption: Special Edition","Arrested Development: Season 2","The Simpsons: Season 6","The Simpsons: Season 5","Star Wars: Episode V: The Empire Strikes Back","The Sopranos: Season 5","Lord of the Rings: The Return of the King","The Simpsons: Season 4","Band of Brothers","Family Guy: Vol. 2: Season 3","Gladiator: Extended Edition","South Park: Season 6","CSI: Season 4","Raiders of the Lost Ark","The Godfather","Star Wars: Episode IV: A New Hope","Family Guy: Freakin' Sweet Collection","24: Season 2","CSI: Season 3","Seinfeld: Season 3","The Sopranos: Season 4","Six Feet Under: Season 4","Dead Like Me: Season 2","Gilmore Girls: Season 3","The West Wing: Season 3","Family Guy: Vol. 1: Seasons 1-2","CSI: Season 2","The West Wing: Season 2","Star Wars: Episode VI: Return of the Jedi","The Sopranos: Season 2","The Simpsons: Season 2","Lord of the Rings: The Two Towers","24: Season 3","Gilmore Girls: Season 4","24: Season 1","Schindler's List","Six Feet Under: Season 2","Firefly","The Sopranos: Season 3","The Shield: Season 3","The West Wing: Season 4","Sex and the City: Season 6: Part 2","Lord of the Rings: The Fellowship of the Ring","Smallville: Season 4","Finding Nemo (Widescreen)","The Sopranos: Season 1","Six Feet Under: Season 3","Sex and the City: Season 6: Part 1","The Simpsons: Treehouse of Horror","CSI: Season 1","The Shield: Season 2","Seinfeld: Season 4","My So-Called Life","The Godfather Part II","Anne of Green Gables","The Simpsons: Season 3","Buffy the Vampire Slayer: Season 5","Cinderella: Special Edition","Seinfeld: Seasons 1 &amp; 2","Chappelle's Show: Season 2","Stargate SG-1: Season 7","Alias: Season 2","Buffy the Vampire Slayer: Season 7","Futurama: Vol. 3","The Usual Suspects","Alias: Season 3","Toy Story","Rescue Me: Season 1","Ken Burns' Civil War","South Park: Season 5","Stargate SG-1: Season 5","Buffy the Vampire Slayer: Season 2","Buffy the Vampire Slayer: Season 6","Gilmore Girls: Season 2","Simpsons Gone Wild","Curb Your Enthusiasm: Season 4","Curb Your Enthusiasm: Season 3","Finding Nemo (Full-screen)","Stargate SG-1: Season 4","Angel: Season 5","Alias: Season 1","Angel: Season 4","The Best of Friends: Vol. 4","Stargate SG-1: Season 6","Shrek (Full-screen)","Friends: Season 7","Farscape: Season 3","Friends: Season 9","Monk: Season 3","Indiana Jones and the Last Crusade","Arrested Development: Season 1","Nip/Tuck: Season 2","Sex and the City: Season 5","Farscape: Season 4","The Blue Planet: Seas of Life: Seasonal Seas - Coral Seas","The Sixth Sense","Star Trek: The Next Generation: Season 6","Six Feet Under: Season 1","Angel: Season 3","Pride and Prejudice","The Silence of the Lambs","Oz: Season 5","Futurama: Vol. 4","Gilmore Girls: Season 1","South Park: Season 4","Freaks &amp; Geeks: The Complete Series","The Green Mile","The Incredibles","Buffy the Vampire Slayer: Season 4","The Princess Bride","South Park: Season 3","The West Wing: Season 1","Forrest Gump","The Simpsons: Season 1","Hotel Rwanda","Futurama: Vol. 2","Desperate Housewives: Season 1","The O.C.: Season 1","The Blue Planet: Seas of Life: Open Ocean - The Deep","Scrubs: Season 1","Braveheart","The Blue Planet: Seas of Life: Ocean World - Frozen Seas","My Neighbor Totoro","To Kill a Mockingbird","The Best of Friends: Vol. 3","Saving Private Ryan","The Blues Brothers: Extended Cut","Oz: Season 4","Sex and the City: Season 4","Star Trek: The Next Generation: Season 4","GoodFellas: Special Edition","The Simpsons: Bart Wars","The Shield: Season 1","Stargate SG-1: Season 2","Farscape: The Peacekeeper Wars","Futurama: Monster Robot Maniac Fun Collection","Curb Your Enthusiasm: Season 2","Monsters Inc.","Queer as Folk: Season 4","Prime Suspect 3","Buffy the Vampire Slayer: Season 3","Coupling: Season 3","Friends: Season 6","Foyle's War: Set 2","Battlestar Galactica: The Miniseries","Monk: Season 2","Friends: Season 8","Prime Suspect 6","Red Dwarf: Series 4","The Daily Show with Jon Stewart: Indecision 2004","Aqua Teen Hunger Force: Vol. 3","Oz: Season 3","Smallville: Season 3","One Flew Over the Cuckoo's Nest","Star Trek: The Next Generation: Season 7","The Office: Series 2","The Wire: Season 2","Stargate SG-1: Season 3","Samurai X: Trust and Betrayal Director's Cut","MASH: Season 6","MASH: Season 8","Coupling: Season 2","Babylon 5: Season 4","The Best of Friends: Season 4","The X-Files: Season 1","Star Trek: The Next Generation: Season 5","Shrek (Widescreen)","The Looney Tunes Golden Collection: Vol. 2","Rurouni Kenshin","South Park: Season 1","Nip/Tuck: Season 1","Smallville: Season 2","MASH: Season 7","Aqua Teen Hunger Force: Vol. 2","Rear Window","MASH: Season 5","Batman Begins","Prime Suspect 2","Sex and the City: Season 3","Friends: Season 5","Toy Story 2","Angel: Season 2","Law &amp; Order: Season 3","The X-Files: Season 3","Star Trek: The Next Generation: Season 2","MASH: Season 4","Queer as Folk: Season 3","Prime Suspect 4","Law &amp; Order: Special Victims Unit: The Fifth Year","The X-Files: Season 2","The Matrix","Inu-Yasha: The Movie: Affections Touching Across Time","Something the Lord Made","Carnivale: Season 1","Cinema Paradiso: Director's Cut","ER: Season 3"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>peli_id<\/th>\n      <th>media_peli<\/th>\n      <th>num_calif_peli<\/th>\n      <th>año<\/th>\n      <th>nombre<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[1,2,3,4]},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+<p>Ahora seleccionamos nuestra muestra de entrenamiento y de validación. Seleccionamos una
+muestra de usuarios y de películas:</p>
+<div class="sourceCode" id="cb460"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb460-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb460-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">28882</span>)</span>
+<span id="cb460-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb460-2" aria-hidden="true" tabindex="-1"></a>usuarios <span class="ot">&lt;-</span> dat_netflix <span class="sc">|&gt;</span> <span class="fu">select</span>(usuario_id) <span class="sc">|&gt;</span> <span class="fu">distinct</span>()</span>
+<span id="cb460-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb460-3" aria-hidden="true" tabindex="-1"></a>valida_usuarios <span class="ot">&lt;-</span> usuarios <span class="sc">|&gt;</span> <span class="fu">sample_frac</span>(<span class="fl">0.2</span>) </span>
+<span id="cb460-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb460-4" aria-hidden="true" tabindex="-1"></a>peliculas <span class="ot">&lt;-</span>  dat_netflix <span class="sc">|&gt;</span> <span class="fu">select</span>(peli_id) <span class="sc">|&gt;</span> <span class="fu">distinct</span>()</span>
+<span id="cb460-5"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb460-5" aria-hidden="true" tabindex="-1"></a>valida_pelis <span class="ot">&lt;-</span> peliculas <span class="sc">|&gt;</span> <span class="fu">sample_frac</span>(<span class="fl">0.2</span>)</span></code></pre></div>
+<p>Y separamos calificaciones de entrenamiento y validación:</p>
+<div class="sourceCode" id="cb461"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb461-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb461-1" aria-hidden="true" tabindex="-1"></a>dat_valida <span class="ot">&lt;-</span> dat_netflix <span class="sc">|&gt;</span> </span>
+<span id="cb461-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb461-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">semi_join</span>(valida_usuarios) <span class="sc">|&gt;</span> </span>
+<span id="cb461-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb461-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">semi_join</span>(valida_pelis) </span></code></pre></div>
+<pre><code>## Joining, by = &quot;usuario_id&quot;</code></pre>
+<pre><code>## Joining, by = &quot;peli_id&quot;</code></pre>
+<div class="sourceCode" id="cb464"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb464-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb464-1" aria-hidden="true" tabindex="-1"></a>dat_entrena <span class="ot">&lt;-</span> dat_netflix <span class="sc">|&gt;</span> </span>
+<span id="cb464-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb464-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">anti_join</span>(dat_valida)</span></code></pre></div>
+<pre><code>## Joining, by = c(&quot;peli_id&quot;, &quot;calif&quot;, &quot;fecha&quot;, &quot;usuario_id&quot;)</code></pre>
+<div class="sourceCode" id="cb466"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb466-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb466-1" aria-hidden="true" tabindex="-1"></a>n_valida <span class="ot">&lt;-</span> dat_valida <span class="sc">|&gt;</span> <span class="fu">tally</span>() <span class="sc">|&gt;</span> <span class="fu">pull</span>(n)</span>
+<span id="cb466-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb466-2" aria-hidden="true" tabindex="-1"></a>n_entrena <span class="ot">&lt;-</span> dat_entrena <span class="sc">|&gt;</span> <span class="fu">tally</span>() <span class="sc">|&gt;</span> <span class="fu">pull</span>(n)</span>
+<span id="cb466-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb466-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;Entrenamiento: %1d, Validación: %2d, Total: %3d&quot;</span>, n_entrena, </span>
+<span id="cb466-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb466-4" aria-hidden="true" tabindex="-1"></a>        n_valida, n_entrena <span class="sc">+</span> n_valida)</span></code></pre></div>
+<pre><code>## [1] &quot;Entrenamiento: 20191991, Validación: 776950, Total: 20968941&quot;</code></pre>
+<p>Ahora construimos predicciones con el modelo simple de arriba y evaluamos con validación:</p>
+<div class="sourceCode" id="cb468"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb468-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb468-1" aria-hidden="true" tabindex="-1"></a>medias_pred <span class="ot">&lt;-</span> dat_entrena <span class="sc">|&gt;</span> <span class="fu">group_by</span>(peli_id) <span class="sc">|&gt;</span></span>
+<span id="cb468-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb468-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media_pred =</span> <span class="fu">mean</span>(calif)) </span>
+<span id="cb468-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb468-3" aria-hidden="true" tabindex="-1"></a>media_total_e <span class="ot">&lt;-</span> dat_entrena <span class="sc">|&gt;</span> <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">media =</span> <span class="fu">mean</span>(calif)) <span class="sc">|&gt;</span> <span class="fu">pull</span>(media)</span>
+<span id="cb468-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb468-4" aria-hidden="true" tabindex="-1"></a>dat_valida_pred <span class="ot">&lt;-</span> dat_valida <span class="sc">|&gt;</span> <span class="fu">left_join</span>(medias_pred <span class="sc">|&gt;</span> <span class="fu">collect</span>()) </span>
+<span id="cb468-5"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb468-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_valida_pred)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 5
+##   peli_id calif fecha      usuario_id media_pred
+##     &lt;dbl&gt; &lt;dbl&gt; &lt;date&gt;          &lt;int&gt;      &lt;dbl&gt;
+## 1       2     5 2005-07-18        116       3.64
+## 2       2     4 2005-06-07        126       3.64
+## 3       2     4 2005-07-30        129       3.64
+## 4       2     1 2005-09-07        131       3.64
+## 5       2     1 2005-02-13        103       3.64
+## 6       8     1 2005-03-21       1007       3.19</code></pre>
+<p>Nota que puede ser que algunas películas seleccionadas en validación no tengan evaluaciones en entrenamiento:</p>
+<div class="sourceCode" id="cb470"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb470-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb470-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">is.na</span>(dat_valida_pred<span class="sc">$</span>media_pred))</span></code></pre></div>
+<pre><code>## 
+##  FALSE 
+## 776950</code></pre>
+<div class="sourceCode" id="cb472"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb472-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb472-1" aria-hidden="true" tabindex="-1"></a>dat_valida_pred <span class="ot">&lt;-</span> <span class="fu">mutate</span>(dat_valida_pred,</span>
+<span id="cb472-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb472-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">media_pred =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(media_pred), media_total_e, media_pred))</span></code></pre></div>
+<p>No sucede en este ejemplo, pero si sucediera podríamos usar el promedio general de las predicciones. Evaluamos ahora el error:</p>
+<div class="sourceCode" id="cb473"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb473-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb473-1" aria-hidden="true" tabindex="-1"></a>recm <span class="ot">&lt;-</span> <span class="cf">function</span>(calif, pred){</span>
+<span id="cb473-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb473-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sqrt</span>(<span class="fu">mean</span>((calif <span class="sc">-</span> pred)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb473-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb473-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb473-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb473-4" aria-hidden="true" tabindex="-1"></a>error <span class="ot">&lt;-</span> dat_valida_pred <span class="sc">|&gt;</span> <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb473-5"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb473-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">error =</span> <span class="fu">mean</span>((calif <span class="sc">-</span> media_pred)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb473-6"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb473-6" aria-hidden="true" tabindex="-1"></a>error</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 1
+##   error
+##   &lt;dbl&gt;
+## 1  1.03</code></pre>
+<p>Este error está en las mismas unidades de las calificaciones (estrellas en este caso).</p>
+<hr />
+<p>Antes de seguir con nuestra refinación del modelo, veremos algunas
+observaciones acerca del uso de escala en análisis de datos:</p>
+<p>Cuando tratamos con datos en escala encontramos un problema técnico que es el uso distinto
+de la escala por los usuarios, muchas veces <strong>independientemente de sus gustos</strong></p>
+<p>Veamos los datos de Netflix para una muestra de usuarios:</p>
+<div class="sourceCode" id="cb475"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb475-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-1" aria-hidden="true" tabindex="-1"></a><span class="co"># muestra de usuarios</span></span>
+<span id="cb475-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-2" aria-hidden="true" tabindex="-1"></a>entrena_usu <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">unique</span>(dat_entrena<span class="sc">$</span>usuario_id), <span class="dv">50</span>)</span>
+<span id="cb475-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-3" aria-hidden="true" tabindex="-1"></a>muestra_graf <span class="ot">&lt;-</span> <span class="fu">filter</span>(dat_entrena, usuario_id <span class="sc">%in%</span> entrena_usu)</span>
+<span id="cb475-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-4" aria-hidden="true" tabindex="-1"></a><span class="co"># medias generales por usuario, ee de la media</span></span>
+<span id="cb475-5"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-5" aria-hidden="true" tabindex="-1"></a>muestra_res <span class="ot">&lt;-</span> muestra_graf <span class="sc">|&gt;</span> <span class="fu">group_by</span>(usuario_id) <span class="sc">|&gt;</span></span>
+<span id="cb475-6"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media_calif =</span> <span class="fu">mean</span>(calif), </span>
+<span id="cb475-7"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">sd_calif =</span> <span class="fu">sd</span>(calif)<span class="sc">/</span><span class="fu">sqrt</span>(<span class="fu">length</span>(calif)))</span>
+<span id="cb475-8"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-8" aria-hidden="true" tabindex="-1"></a>muestra_res<span class="sc">$</span>usuario_id <span class="ot">&lt;-</span> <span class="fu">reorder</span>(<span class="fu">factor</span>(muestra_res<span class="sc">$</span>usuario_id), muestra_res<span class="sc">$</span>media_calif)</span>
+<span id="cb475-9"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(muestra_res, <span class="fu">aes</span>(<span class="at">x=</span><span class="fu">factor</span>(usuario_id), <span class="at">y =</span> media_calif, </span>
+<span id="cb475-10"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">ymin =</span> media_calif <span class="sc">-</span> sd_calif, <span class="at">ymax =</span> media_calif <span class="sc">+</span> sd_calif)) <span class="sc">+</span> </span>
+<span id="cb475-11"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>() <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&#39;Usuario ID&#39;</span>) <span class="sc">+</span></span>
+<span id="cb475-12"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb475-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_blank</span>())</span></code></pre></div>
+<p><img src="04-recomendacion_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Y notamos que hay unos usuarios que tienen promedios por encima de <span class="math inline">\(4.5\)</span>, mientras que otros
+califican por debajo de <span class="math inline">\(3\)</span> en promedio. Aunque esto puede deberse a las películas que han visto,
+generalmente una componente de esta variabilidad se debe a cómo usa la escala cada usuario.</p>
+<ul>
+<li>En primer lugar, quizá uno podría pensar que un modelo base consiste de simplemente
+predecir el promedio de una película sobre todos los usuarios que la calificaron (sin incluir el sesgo de cada persona). Esto no funciona bien porque típicamente hay distintos patrones
+de uso de la escala de calificación, que depende más de forma de uso de escala que de la calidad de los items.</li>
+</ul>
+<p>Hay personas que son:</p>
+<ul>
+<li>Barcos: <span class="math inline">\(5\)</span>,<span class="math inline">\(5\)</span>,<span class="math inline">\(5\)</span>,<span class="math inline">\(4\)</span>,<span class="math inline">\(4\)</span>,<span class="math inline">\(5\)</span></li>
+<li>Estrictos: <span class="math inline">\(2\)</span>,<span class="math inline">\(3\)</span>,<span class="math inline">\(3\)</span>,<span class="math inline">\(1\)</span>,<span class="math inline">\(1\)</span>,<span class="math inline">\(2\)</span></li>
+<li>No se compromete: <span class="math inline">\(3\)</span>,<span class="math inline">\(3\)</span>,<span class="math inline">\(3\)</span>,<span class="math inline">\(3\)</span>,<span class="math inline">\(4\)</span></li>
+<li>Discrimina: <span class="math inline">\(5\)</span>,<span class="math inline">\(4\)</span>,<span class="math inline">\(5\)</span>,<span class="math inline">\(1\)</span>,<span class="math inline">\(2\)</span>,<span class="math inline">\(4\)</span></li>
+</ul>
+<p>El estilo de uso de las escalas varía por persona.
+Puede estar asociado a aspectos culturales (países
+diferentes usan escalas de manera diferente), quizá también de personalidad,
+y a la forma de obtener las evaluaciones (cara a cara, por teléfono, internet).</p>
+<p>Lo primero que vamos a hacer para controlar esta fuente de variación es ajustar las predicciones
+dependiendo del promedio de calificaciones de cada usuario.</p>
+</div>
+<div id="opcional-efectos-en-análisis-de-heterogeneidad-en-uso-de-escala" class="section level3" number="5.3.2">
+<h3><span class="header-section-number">5.3.2</span> (Opcional) Efectos en análisis de heterogeneidad en uso de escala</h3>
+<p>Muchas veces se considera que tratar como numéricos a calificaciones en escala no es muy apropiado, y que el análisis no tiene por qué funcionar pues en realidad las calificaciones están en una escala ordinal. Sin embargo,</p>
+<ul>
+<li><p>La razón principal por las que análisis de datos en escala es difícil <em>no es que usemos valores numéricos para los puntos de la escala</em>. Si esto fuera cierto, entonces por ejemplo, transformar una variable con logaritmo también sería “malo.”</p></li>
+<li><p>La razón de la dificultad es que generalmente tenemos que lidiar con la <strong>heterogeneidad</strong> en uso de la escala antes de poder obtener resultados útiles de nuestro análisis.</p></li>
+</ul>
+<p>Supongamos que <span class="math inline">\(X_1\)</span> y <span class="math inline">\(X_2\)</span> son evaluaciones de dos películas. Por la discusión de arriba, podríamos escribir</p>
+<p><span class="math display">\[X_1 = N +S_1,\]</span>
+<span class="math display">\[X_2 = N + S_2,\]</span></p>
+<p>donde <span class="math inline">\(S_1\)</span> y <span class="math inline">\(S_2\)</span> representan el gusto por la película, y <span class="math inline">\(N\)</span> representa el nivel general
+de calificaciones. Consideramos que son variables aleatorias (<span class="math inline">\(N\)</span> varía con las personas, igual que <span class="math inline">\(S_1\)</span> y <span class="math inline">\(S_2\)</span>).</p>
+<p>Podemos calcular</p>
+<p><span class="math display">\[Cov(X_1,X_2)\]</span></p>
+<p>para estimar el grado de correlación de <em>gusto por las dos películas</em>, como si fueran variables numéricas. Esta no es muy buena idea, pero no tanto porque se
+trate de variables ordinales, sino porque en realidad quisiéramos calcular:</p>
+<p><span class="math display">\[Cov(S_1, S_2)\]</span></p>
+<p>que realmente representa la asociación entre el gusto por las dos películas. El problema
+es que <span class="math inline">\(S_1\)</span> y <span class="math inline">\(S_2\)</span> son variables que no observamos.</p>
+<p>¿Cómo se relacionan estas dos covarianzas?</p>
+<p><span class="math display">\[Cov(X_1,X_2)=Cov(N,N) + Cov(S_1,S_2) + Cov(N, S_2)+Cov(N,S_1)\]</span></p>
+<p>Tenemos que <span class="math inline">\(Cov(N,N)=Var(N)=\sigma_N ^2\)</span>, y suponiendo que el gusto
+no está correlacionado con los niveles generales
+de respuesta, <span class="math inline">\(Cov(N_1, S_2)=0=Cov(N_2,S_1)\)</span>, de modo que</p>
+<p><span class="math display">\[Cov(X_1,X_2)= Cov(S_1,S_2) + \sigma_N^2.\]</span></p>
+<p>donde <span class="math inline">\(\sigma_N^2\)</span> no tiene qué ver nada con el gusto por las películas.</p>
+<p>De forma que al usar estimaciones de <span class="math inline">\(Cov(X_1,X_2)\)</span> para estimar <span class="math inline">\(Cov(S_1,S_2)\)</span> puede
+ser mala idea porque el sesgo hacia arriba puede ser alto, especialmente si la gente varía mucho
+es un sus niveles generales de calificaciones (hay muy barcos y muy estrictos).</p>
+</div>
+<div id="ejemplo" class="section level3" number="5.3.3">
+<h3><span class="header-section-number">5.3.3</span> Ejemplo</h3>
+<p>Los niveles generales de <span class="math inline">\(50\)</span> personas:</p>
+<div class="sourceCode" id="cb476"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb476-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb476-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">128</span>)</span>
+<span id="cb476-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb476-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb476-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb476-3" aria-hidden="true" tabindex="-1"></a>niveles <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">persona =</span> <span class="dv">1</span><span class="sc">:</span>n, <span class="at">nivel =</span> <span class="fu">rnorm</span>(n,<span class="dv">2</span>))</span></code></pre></div>
+<p>Ahora generamos los gustos (latentes) por dos artículos, que suponemos
+con correlación negativa:</p>
+<div class="sourceCode" id="cb477"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb477-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb477-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb477-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb477-2" aria-hidden="true" tabindex="-1"></a>gustos <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">persona=</span><span class="dv">1</span><span class="sc">:</span>n, <span class="at">gusto_1 =</span> x <span class="sc">+</span> <span class="fu">rnorm</span>(n),</span>
+<span id="cb477-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb477-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">gusto_2 =</span> <span class="sc">-</span>x <span class="sc">+</span> <span class="fu">rnorm</span>(n))</span>
+<span id="cb477-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb477-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(gustos,<span class="dv">3</span>)</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 3
+##   persona gusto_1 gusto_2
+##     &lt;int&gt;   &lt;dbl&gt;   &lt;dbl&gt;
+## 1       1   0.948   0.459
+## 2       2   1.15   -0.676
+## 3       3  -1.31    2.58</code></pre>
+<div class="sourceCode" id="cb479"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb479-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb479-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(gustos[,<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>])</span></code></pre></div>
+<pre><code>##            gusto_1    gusto_2
+## gusto_1  1.0000000 -0.5136434
+## gusto_2 -0.5136434  1.0000000</code></pre>
+<p>Estos dos items tienen gusto correlacionado negativamente:</p>
+<div class="sourceCode" id="cb481"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb481-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb481-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(gustos, <span class="fu">aes</span>(<span class="at">x=</span>gusto_1, <span class="at">y=</span>gusto_2)) <span class="sc">+</span> <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb481-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb481-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_smooth</span>()</span></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="04-recomendacion_files/figure-html/unnamed-chunk-16-1.png" width="480" /></p>
+<p>Pero las mediciones no están correlacionadas:</p>
+<div class="sourceCode" id="cb483"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb483-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb483-1" aria-hidden="true" tabindex="-1"></a>medicion_1 <span class="ot">&lt;-</span> niveles<span class="sc">$</span>nivel <span class="sc">+</span> gustos<span class="sc">$</span>gusto_1<span class="sc">+</span><span class="fu">rnorm</span>(n,<span class="fl">0.3</span>)</span>
+<span id="cb483-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb483-2" aria-hidden="true" tabindex="-1"></a>medicion_2 <span class="ot">&lt;-</span> niveles<span class="sc">$</span>nivel <span class="sc">+</span> gustos<span class="sc">$</span>gusto_2<span class="sc">+</span><span class="fu">rnorm</span>(n,<span class="fl">0.3</span>)</span>
+<span id="cb483-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb483-3" aria-hidden="true" tabindex="-1"></a>mediciones <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">persona =</span> <span class="dv">1</span><span class="sc">:</span>n, medicion_1, medicion_2)</span>
+<span id="cb483-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb483-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(mediciones[,<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>])</span></code></pre></div>
+<pre><code>##             medicion_1  medicion_2
+## medicion_1  1.00000000 -0.05825995
+## medicion_2 -0.05825995  1.00000000</code></pre>
+<p>Así que aún cuando el gusto por <span class="math inline">\(1\)</span> y <span class="math inline">\(2\)</span> están correlacionadas negativamente, las
+<strong>mediciones</strong> de gusto no están correlacionadas.</p>
+<div class="sourceCode" id="cb485"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb485-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb485-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(mediciones, <span class="fu">aes</span>(<span class="at">x=</span>medicion_1, <span class="at">y=</span>medicion_2)) <span class="sc">+</span></span>
+<span id="cb485-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb485-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>() <span class="sc">+</span> <span class="fu">geom_smooth</span>()</span></code></pre></div>
+<pre><code>## `geom_smooth()` using method = &#39;loess&#39; and formula &#39;y ~ x&#39;</code></pre>
+<p><img src="04-recomendacion_files/figure-html/unnamed-chunk-18-1.png" width="480" /></p>
+<p><strong>Observaciones</strong>: Un modelado más cuidadoso de este tipo de datos requiere más trabajo. Pero para
+el trabajo usual, generalmente intentamos controlar parte de la heterogeneidad
+<strong>centrando</strong> las calificaciones por usuario. Es decir, a cada calificación
+de una persona le restamos la media de sus calificaciones, que es una estimación
+del nivel general <span class="math inline">\(N\)</span>. Esta idea funciona si <strong><span class="math inline">\(k\)</span> no es muy chico</strong>.</p>
+<p>Si el número de calificaciones por persona (<span class="math inline">\(k\)</span>) es chico,
+entonces tenemos los siguientes problemas:</p>
+<ul>
+<li><p>El promedio de evaluaciones es una estimación ruidosa del nivel general.</p></li>
+<li><p>Podemos terminar con el problema opuesto: nótese que
+si <span class="math inline">\(X_1,\ldots, X_k\)</span> son mediciones de gusto distintos items, entonces
+<span class="math display">\[Cov(X_1-\bar{X}, X_2-\bar{X})=Cov(S_1-\bar{S},S_2-\bar{S}),\]</span>
+<span class="math display">\[=Cov(S_1,S_2)-Cov(S_1,\bar{S})-Cov(S_2,\bar{S}) + Var(\bar{S})\]</span></p></li>
+</ul>
+<p>Si <span class="math inline">\(k\)</span> es chica, suponiendo que los gustos no están correlacionados,
+los términos intermedios puede tener valor negativo relativamente grande
+( es de orden <span class="math inline">\(\frac{1}{k}\)</span>),
+aún cuando el último término sea chico (de orden <span class="math inline">\(\frac{1}{k^2}\)</span>)</p>
+<p>Así que ahora las correlaciones estimadas pueden tener sesgo hacia
+abajo, especialmente si <span class="math inline">\(k\)</span> es chica.</p>
+<p>Más avanzado, enfoque bayesiano: <a href="https://www.jstor.org/stable/2670337" class="uri">https://www.jstor.org/stable/2670337</a></p>
+</div>
+</div>
+<div id="modelo-de-referencia" class="section level2" number="5.4">
+<h2><span class="header-section-number">5.4</span> Modelo de referencia</h2>
+<p>Ahora podemos plantear el modelo base de referencia. Este modelo es útil para hacer
+benchmarking de intentos de predicción, como primera pieza para construcción de modelos
+más complejos, y también como una manera simple de producir estimaciones cuando no hay datos suficientes para hacer otro tipo de predicción.</p>
+
+<div class="resumen">
+Si <span class="math inline">\(x_{ij}\)</span> es el gusto del usuario <span class="math inline">\(i\)</span> por la película <span class="math inline">\(j\)</span>, entonces nuestra predicción
+es
+<span class="math display">\[\hat{x}_{ij} = \hat{b}_j +  (\hat{a}_i-\hat{\mu} ) \]</span>
+donde <span class="math inline">\(a_i\)</span> indica un nivel general de calificaciones del usuario <span class="math inline">\(i\)</span>, y <span class="math inline">\(b_j\)</span> es el nivel general de gusto por la película.
+</div>
+<p>Usualmente ponemos:</p>
+<ol style="list-style-type: decimal">
+<li>Media general
+<span class="math display">\[\hat{\mu} =\frac{1}{T}\sum_{s,t} x_{s,t}\]</span></li>
+<li>Promedio de calificaciones de usuario <span class="math inline">\(i\)</span>
+<span class="math display">\[\hat{a}_i =\frac{1}{M_i}\sum_{t} x_{i,t} \]</span></li>
+<li>Promedio de calificaciones de la película <span class="math inline">\(j\)</span>
+<span class="math display">\[\hat{b}_j =\frac{1}{N_j}\sum_{s} x_{s,j}\]</span></li>
+</ol>
+<p>También podemos escribir, en términos de desviaciones:</p>
+<p><span class="math display">\[\hat{x}_{ij} = \hat{\mu}  +  \hat{c}_i +  \hat{d}_j \]</span>
+donde:</p>
+<ol style="list-style-type: decimal">
+<li>Media general
+<span class="math display">\[\hat{\mu} =\frac{1}{T}\sum_{s,t} x_{st}\]</span></li>
+<li>Desviación de las calificaciones de usuario <span class="math inline">\(i\)</span> respecto a la media general
+<span class="math display">\[\hat{c}_i =\frac{1}{M_i}\sum_{t} x_{it} - \hat{\mu} \]</span></li>
+<li>Desviación de la película <span class="math inline">\(j\)</span> respecto a la media general
+<span class="math display">\[\hat{d_j} =\frac{1}{N_j}\sum_{s} x_{sj}- \hat{\mu}\]</span></li>
+</ol>
+<p>Una vez que observamos una calificación <span class="math inline">\(x_{ij}\)</span>, el residual del modelo de referencia es
+<span class="math display">\[r_{ij} = x_{ij} - \hat{x_{ij}}\]</span></p>
+<div id="ejercicio-modelo-de-referencia-para-netflix" class="section level3 unnumbered">
+<h3>Ejercicio: modelo de referencia para Netflix</h3>
+<p>Calculamos media de películas, usuarios y total:</p>
+<div class="sourceCode" id="cb487"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb487-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb487-1" aria-hidden="true" tabindex="-1"></a>medias_usuarios <span class="ot">&lt;-</span> dat_entrena <span class="sc">|&gt;</span> </span>
+<span id="cb487-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb487-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(usuario_id) <span class="sc">|&gt;</span></span>
+<span id="cb487-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb487-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">media_usu =</span> <span class="fu">mean</span>(calif), <span class="at">num_calif_usu =</span> <span class="fu">length</span>(calif)) <span class="sc">|&gt;</span> </span>
+<span id="cb487-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb487-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(usuario_id, media_usu, num_calif_usu)</span>
+<span id="cb487-5"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb487-5" aria-hidden="true" tabindex="-1"></a>medias_peliculas <span class="ot">&lt;-</span> dat_entrena <span class="sc">|&gt;</span> </span>
+<span id="cb487-6"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb487-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(peli_id) <span class="sc">|&gt;</span> </span>
+<span id="cb487-7"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb487-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">media_peli =</span> <span class="fu">mean</span>(calif), <span class="at">num_calif_peli =</span> <span class="fu">length</span>(calif)) <span class="sc">|&gt;</span> </span>
+<span id="cb487-8"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb487-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(peli_id, media_peli, num_calif_peli)</span>
+<span id="cb487-9"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb487-9" aria-hidden="true" tabindex="-1"></a>media_total_e <span class="ot">&lt;-</span> <span class="fu">mean</span>(dat_entrena<span class="sc">$</span>calif)</span></code></pre></div>
+<p>Y construimos las predicciones para el conjunto de validación</p>
+<div class="sourceCode" id="cb488"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb488-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb488-1" aria-hidden="true" tabindex="-1"></a>dat_valida <span class="ot">&lt;-</span> dat_valida <span class="sc">|&gt;</span> </span>
+<span id="cb488-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb488-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(medias_usuarios) <span class="sc">|&gt;</span></span>
+<span id="cb488-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb488-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(medias_peliculas) <span class="sc">|&gt;</span></span>
+<span id="cb488-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb488-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">media_total =</span> media_total_e) <span class="sc">|&gt;</span></span>
+<span id="cb488-5"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb488-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pred =</span> media_peli <span class="sc">+</span> (media_usu <span class="sc">-</span> media_total)) <span class="sc">|&gt;</span> </span>
+<span id="cb488-6"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb488-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pred =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(pred), media_total, pred))</span></code></pre></div>
+<pre><code>## Joining, by = &quot;usuario_id&quot;</code></pre>
+<pre><code>## Joining, by = &quot;peli_id&quot;</code></pre>
+<p>Nótese que cuando no tenemos predicción bajo este modelo para una combinación de usuario/película, usamos el
+promedio general (por ejemplo).</p>
+<p>Finalmente evaluamos</p>
+<div class="sourceCode" id="cb491"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb491-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb491-1" aria-hidden="true" tabindex="-1"></a>dat_valida <span class="sc">|&gt;</span> <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> <span class="fu">summarise</span>(<span class="at">error =</span> <span class="fu">recm</span>(calif, pred))</span></code></pre></div>
+<pre><code>## # A tibble: 1 × 1
+##   error
+##   &lt;dbl&gt;
+## 1 0.929</code></pre>
+<p><strong>Observación</strong>: ¿Qué tan bueno es este resultado? De
+<a href="https://en.wikipedia.org/wiki/Netflix_Prize">wikipedia</a>:</p>
+<blockquote>
+<p>Prizes were based on improvement over Netflix’s own algorithm, called Cinematch, or the previous year’s score if a team has made improvement beyond a certain threshold. A trivial algorithm that predicts for each movie in the quiz set its average grade from the training data produces an RMSE of <span class="math inline">\(1.0540\)</span>. Cinematch uses “straightforward statistical linear models with a lot of data conditioning.”</p>
+<p>Using only the training data, Cinematch scores an RMSE of <span class="math inline">\(0.9514\)</span> on the quiz data, roughly a 10% improvement over the trivial algorithm. Cinematch has a similar performance on the test set, <span class="math inline">\(0.9525\)</span>. In order to win the grand prize of <span class="math inline">\(1,000,000\)</span>, a participating team had to improve this by another <span class="math inline">\(10%\)</span>, to achieve <span class="math inline">\(0.8572\)</span> on the test set. Such an improvement on the quiz set corresponds to an RMSE of <span class="math inline">\(0.8563\)</span>.
+Aunque nótese que estrictamente hablando no podemos comparar nuestros resultados con estos números,
+en los que se usa una muestra de prueba separada de películas vistas despúes del periodo de entrenamiento.</p>
+</blockquote>
+</div>
+</div>
+<div id="filtrado-colaborativo-similitud" class="section level2" number="5.5">
+<h2><span class="header-section-number">5.5</span> Filtrado colaborativo: similitud</h2>
+<p>Además de usar promedios generales por película, podemos utilizar similitud de películas/personas
+para ajustar predicciones según los gustos de artículos o películas similares. Este es el enfoque
+más simple del filtrado colaborativo.</p>
+<p>Comencemos entonces con la siguiente idea: Supongamos que queremos hacer una predicción
+para el usuario <span class="math inline">\(i\)</span> en la película <span class="math inline">\(j\)</span>, que no ha visto. Si tenemos una
+medida de similitud entre películas, podríamos buscar películas <em>similares</em>
+a <span class="math inline">\(j\)</span> que haya visto <span class="math inline">\(i\)</span>, y ajustar la predicción según la calificación de estas películas similares.</p>
+<p>Tomamos entonces nuestra predicción
+base, que le llamamos <span class="math inline">\(x_{ij}^0\)</span> y hacemos una nueva predicción:</p>
+<p><span class="math display">\[\hat{x}_{ij} = x_{ij}^0 + \frac{1}{k}\sum_{t \in N(i,j)} (x_{it} - x_{it}^0 )\]</span></p>
+<p>donde <span class="math inline">\(N(i,j)\)</span> son películas similares a <span class="math inline">\(j\)</span> <strong>que haya visto</strong> <span class="math inline">\(i\)</span>. Ajustamos <span class="math inline">\(x_{ij}^0\)</span> por el gusto promedio de películas similares a <span class="math inline">\(j\)</span>,
+a partir de las predicciones base. Esto quiere decir
+que si las películas similares a <span class="math inline">\(j\)</span> están evaluadas <strong>por encima del esperado</strong> para el usuario
+<span class="math inline">\(i\)</span>, entonces subimos la predicción, y bajamos la predicción cuando las películas similares
+están evaluadas <strong>por debajo de lo esperado</strong>.</p>
+<p>Nótese que estamos ajustando por los residuales del modelo base. Podemos también utilizar
+un ponderado por gusto según similitud: si la similitud entre las películas <span class="math inline">\(j\)</span> y <span class="math inline">\(t\)</span> es <span class="math inline">\(s_{jt}\)</span>,
+entonces podemos usar</p>
+<p><span class="math display" id="eq:simprom">\[\begin{equation}
+\hat{x}_{ij} = x_{ij}^0 + \frac{\sum_{t \in N(i,j)} s_{jt}(x_{it} - x_{it}^0 )}{\sum_{t \in N(i,j)} s_{jt}} 
+\tag{5.1}
+\end{equation}\]</span></p>
+<p>Cuando no tenemos películas similares que hayan sido calificadas por nuestro usuario,
+<strong>entonces usamos simplemente la predicción base</strong>.</p>
+<div id="simitems" class="section level3" number="5.5.1">
+<h3><span class="header-section-number">5.5.1</span> Cálculo de similitud entre usuarios/películas</h3>
+<p>Proponemos utilizar la distancia coseno de las calificaciones centradas
+por usuario. Como discutimos arriba, antes de calcular similitud conviene centrar las calificaciones por usuario
+para eliminar parte de la heterogeneidad en el uso de la escala.</p>
+</div>
+<div id="ejemplo-18" class="section level3 unnumbered">
+<h3>Ejemplo</h3>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">SWars1</th>
+<th align="right">SWars4</th>
+<th align="right">SWars5</th>
+<th align="right">HPotter1</th>
+<th align="right">HPotter2</th>
+<th align="right">Twilight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">a</td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">b</td>
+<td align="right">3</td>
+<td align="right">NA</td>
+<td align="right">4</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">c</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">5</td>
+<td align="right">4</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">d</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+<td align="right">NA</td>
+<td align="right">5</td>
+<td align="right">4</td>
+</tr>
+<tr class="odd">
+<td align="left">e</td>
+<td align="right">4</td>
+<td align="right">5</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">2</td>
+</tr>
+</tbody>
+</table>
+<p>Calculamos medias por usuarios y centramos:</p>
+<div class="sourceCode" id="cb493"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb493-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb493-1" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(mat.cons,<span class="dv">1</span>, mean, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>##        a        b        c        d        e 
+## 4.250000 3.500000 4.500000 3.000000 3.666667</code></pre>
+<div class="sourceCode" id="cb495"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb495-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb495-1" aria-hidden="true" tabindex="-1"></a>mat.c <span class="ot">&lt;-</span> mat.cons <span class="sc">-</span> <span class="fu">apply</span>(mat.cons,<span class="dv">1</span>, mean, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb495-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb495-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(mat.c, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left"></th>
+<th align="right">SWars1</th>
+<th align="right">SWars4</th>
+<th align="right">SWars5</th>
+<th align="right">HPotter1</th>
+<th align="right">HPotter2</th>
+<th align="right">Twilight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">a</td>
+<td align="right">0.75</td>
+<td align="right">0.75</td>
+<td align="right">0.75</td>
+<td align="right">-2.25</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">b</td>
+<td align="right">-0.50</td>
+<td align="right">NA</td>
+<td align="right">0.50</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">c</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.50</td>
+<td align="right">-0.5</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">d</td>
+<td align="right">-2.00</td>
+<td align="right">NA</td>
+<td align="right">-1.00</td>
+<td align="right">NA</td>
+<td align="right">2.0</td>
+<td align="right">1.00</td>
+</tr>
+<tr class="odd">
+<td align="left">e</td>
+<td align="right">0.33</td>
+<td align="right">1.33</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">-1.67</td>
+</tr>
+</tbody>
+</table>
+<p>Y calculamos similitud coseno entre películas, <strong>suponiendo que las películas
+no evaluadas tienen calificación <span class="math inline">\(0\)</span></strong>:</p>
+<div class="sourceCode" id="cb496"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb496-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb496-1" aria-hidden="true" tabindex="-1"></a>sim_cos <span class="ot">&lt;-</span> <span class="cf">function</span>(x,y){</span>
+<span id="cb496-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb496-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(x<span class="sc">*</span>y, <span class="at">na.rm =</span> T)<span class="sc">/</span>(<span class="fu">sqrt</span>(<span class="fu">sum</span>(x<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm =</span> T))<span class="sc">*</span><span class="fu">sqrt</span>(<span class="fu">sum</span>(y<span class="sc">^</span><span class="dv">2</span>, <span class="at">na.rm =</span> T)))</span>
+<span id="cb496-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb496-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb496-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb496-4" aria-hidden="true" tabindex="-1"></a>mat.c[,<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>##          a          b          c          d          e 
+##  0.7500000 -0.5000000         NA -2.0000000  0.3333333</code></pre>
+<div class="sourceCode" id="cb498"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb498-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb498-1" aria-hidden="true" tabindex="-1"></a>mat.c[,<span class="dv">2</span>]</span></code></pre></div>
+<pre><code>##        a        b        c        d        e 
+## 0.750000       NA       NA       NA 1.333333</code></pre>
+<div class="sourceCode" id="cb500"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb500-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb500-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_cos</span>(mat.c[,<span class="dv">1</span>], mat.c[,<span class="dv">2</span>])</span></code></pre></div>
+<pre><code>## [1] 0.2966402</code></pre>
+<div class="sourceCode" id="cb502"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb502-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb502-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_cos</span>(mat.c[,<span class="dv">1</span>], mat.c[,<span class="dv">6</span>])</span></code></pre></div>
+<pre><code>## [1] -0.5925503</code></pre>
+<p><strong>Observación</strong>:</p>
+<ul>
+<li><p>Hacer este supuesto de valores <span class="math inline">\(0\)</span> cuando no tenemos evaluación no es lo mejor, pero
+como centramos por usuario tiene más sentido hacerlo. Si utilizaramos las calificaciones
+no centradas, entonces estaríamos suponiendo que las no evaluadas están calificadas muy mal (<span class="math inline">\(0\)</span>, por abajo de <span class="math inline">\(1\)</span>,<span class="math inline">\(2\)</span>,<span class="math inline">\(3\)</span>,<span class="math inline">\(4\)</span>,<span class="math inline">\(5\)</span>).</p></li>
+<li><p>Si calculamos similitud entre <em>usuarios</em> de esta forma, las distancia coseno es simplemente el coeficiente de correlación. Nótese que estamos calculando similitud entre <em>items</em>, centrando por usuario, y esto no
+es lo mismo que correlación entre columnas.</p></li>
+</ul>
+</div>
+<div id="ejemplo-cómo-se-ven-las-calificaciones-de-películas-similaresno-similares" class="section level3 unnumbered">
+<h3>Ejemplo: ¿cómo se ven las calificaciones de películas similares/no similares?</h3>
+<p>Centramos las calificaciones por usuario y seleccionamos tres películas que
+pueden ser interesantes.</p>
+<div class="sourceCode" id="cb504"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb504-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb504-1" aria-hidden="true" tabindex="-1"></a>dat_entrena_c <span class="ot">&lt;-</span> dat_entrena <span class="sc">|&gt;</span></span>
+<span id="cb504-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb504-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(usuario_id) <span class="sc">|&gt;</span></span>
+<span id="cb504-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb504-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">calif_c =</span> calif <span class="sc">-</span> <span class="fu">mean</span>(calif))</span>
+<span id="cb504-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb504-4" aria-hidden="true" tabindex="-1"></a><span class="do">## calculamos un id secuencial.</span></span>
+<span id="cb504-5"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb504-5" aria-hidden="true" tabindex="-1"></a>dat_entrena_c<span class="sc">$</span>id_seq <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">factor</span>(dat_entrena_c<span class="sc">$</span>usuario_id))</span>
+<span id="cb504-6"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb504-6" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(pelis_nombres, <span class="fu">str_detect</span>(nombre,<span class="st">&#39;Gremlins&#39;</span>))</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 3
+##   peli_id   año nombre                                 
+##     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                                  
+## 1    2897  1990 Gremlins 2: The New Batch              
+## 2    6482  1984 Gremlins                               
+## 3   10113  2004 The Wiggles: Whoo Hoo! Wiggly Gremlins!</code></pre>
+<div class="sourceCode" id="cb506"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb506-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb506-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(pelis_nombres, <span class="fu">str_detect</span>(nombre,<span class="st">&#39;Harry Met&#39;</span>))</span></code></pre></div>
+<pre><code>## # A tibble: 2 × 3
+##   peli_id   año nombre                                 
+##     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;                                  
+## 1    2660  1989 When Harry Met Sally                   
+## 2   11850  2003 Dumb and Dumberer: When Harry Met Lloyd</code></pre>
+<div class="sourceCode" id="cb508"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb508-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb508-1" aria-hidden="true" tabindex="-1"></a>dat_1 <span class="ot">&lt;-</span> <span class="fu">filter</span>(dat_entrena_c, peli_id<span class="sc">==</span><span class="dv">2897</span>) <span class="co"># Gremlins 2</span></span>
+<span id="cb508-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb508-2" aria-hidden="true" tabindex="-1"></a>dat_2 <span class="ot">&lt;-</span> <span class="fu">filter</span>(dat_entrena_c, peli_id<span class="sc">==</span><span class="dv">6482</span>) <span class="co"># Gremlins 1</span></span>
+<span id="cb508-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb508-3" aria-hidden="true" tabindex="-1"></a>dat_3 <span class="ot">&lt;-</span> <span class="fu">filter</span>(dat_entrena_c, peli_id<span class="sc">==</span><span class="dv">2660</span>) <span class="co"># WHMS</span></span></code></pre></div>
+<p>Juntamos usuarios que calificaron cada par:</p>
+<div class="sourceCode" id="cb509"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb509-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb509-1" aria-hidden="true" tabindex="-1"></a>comunes <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(dat_1[, <span class="fu">c</span>(<span class="st">&#39;usuario_id&#39;</span>,<span class="st">&#39;calif_c&#39;</span>)], dat_2[, <span class="fu">c</span>(<span class="st">&#39;usuario_id&#39;</span>,<span class="st">&#39;calif_c&#39;</span>)] <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">calif_c_2=</span>calif_c))</span></code></pre></div>
+<pre><code>## Joining, by = &quot;usuario_id&quot;</code></pre>
+<div class="sourceCode" id="cb511"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb511-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb511-1" aria-hidden="true" tabindex="-1"></a>comunes_2 <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(dat_1[, <span class="fu">c</span>(<span class="st">&#39;usuario_id&#39;</span>,<span class="st">&#39;calif_c&#39;</span>)], dat_3[, <span class="fu">c</span>(<span class="st">&#39;usuario_id&#39;</span>,<span class="st">&#39;calif_c&#39;</span>)] <span class="sc">|&gt;</span> <span class="fu">rename</span>(<span class="at">calif_c_2=</span>calif_c))</span></code></pre></div>
+<pre><code>## Joining, by = &quot;usuario_id&quot;</code></pre>
+<p>Y ahora graficamos. ¿Por qué se ven bandas en estas gráficas?</p>
+<div class="sourceCode" id="cb513"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb513-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb513-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(comunes, <span class="fu">aes</span>(<span class="at">x=</span>calif_c, <span class="at">y=</span>calif_c_2)) <span class="sc">+</span> </span>
+<span id="cb513-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb513-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">height =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb513-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb513-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&#39;Gremlins 2&#39;</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&#39;Gremlins 1&#39;</span>)</span></code></pre></div>
+<p><img src="04-recomendacion_files/figure-html/unnamed-chunk-29-1.png" width="480" /></p>
+<div class="sourceCode" id="cb514"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb514-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb514-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(comunes_2, <span class="fu">aes</span>(<span class="at">x=</span>calif_c, <span class="at">y=</span>calif_c_2))  <span class="sc">+</span> </span>
+<span id="cb514-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb514-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">height =</span> <span class="fl">0.2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb514-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb514-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>() <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&#39;Gremlins 2&#39;</span>) <span class="sc">+</span> <span class="fu">ylab</span>(<span class="st">&#39;When Harry met Sally&#39;</span>)</span></code></pre></div>
+<p><img src="04-recomendacion_files/figure-html/unnamed-chunk-29-2.png" width="480" /></p>
+<p><strong>Pregunta</strong>: ¿por qué los datos se ven en bandas?</p>
+<p>Y calculamos la similitud coseno:</p>
+<div class="sourceCode" id="cb515"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb515-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb515-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_cos</span>(comunes<span class="sc">$</span>calif_c, comunes<span class="sc">$</span>calif_c_2)</span></code></pre></div>
+<pre><code>## [1] 0.1769532</code></pre>
+<div class="sourceCode" id="cb517"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb517-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb517-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sim_cos</span>(comunes_2<span class="sc">$</span>calif_c, comunes_2<span class="sc">$</span>calif_c_2)</span></code></pre></div>
+<pre><code>## [1] -0.3156217</code></pre>
+<p>Así que las dos Gremlins son algo similares, pero Gremlins <span class="math inline">\(1\)</span> y Harry Met Sally no son similares.</p>
+<hr />
+<p>Podemos ahora seleccionar algunas películas y ver cuáles son películas similares que nos podrían ayudar a hacer recomendaciones:</p>
+<div class="sourceCode" id="cb519"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb519-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-1" aria-hidden="true" tabindex="-1"></a>dat_entrena_2 <span class="ot">&lt;-</span> dat_entrena_c <span class="sc">|&gt;</span> </span>
+<span id="cb519-2"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb519-3"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(peli_id, id_seq, calif_c)</span>
+<span id="cb519-4"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-4" aria-hidden="true" tabindex="-1"></a>ejemplos <span class="ot">&lt;-</span> <span class="cf">function</span>(pelicula, <span class="at">min_pares =</span> <span class="dv">100</span>){</span>
+<span id="cb519-5"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-5" aria-hidden="true" tabindex="-1"></a>  mi_peli <span class="ot">&lt;-</span> <span class="fu">filter</span>(dat_entrena_2, peli_id<span class="sc">==</span>pelicula) <span class="sc">|&gt;</span> </span>
+<span id="cb519-6"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-6" aria-hidden="true" tabindex="-1"></a>             <span class="fu">rename</span>(<span class="at">peli_id_1 =</span> peli_id, <span class="at">calif_c_1 =</span> calif_c)</span>
+<span id="cb519-7"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># vamos a calcular todas las similitudes con mi_peli - esto no es buena</span></span>
+<span id="cb519-8"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># idea y discutiremos más adelante cómo evitarlo</span></span>
+<span id="cb519-9"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-9" aria-hidden="true" tabindex="-1"></a>  datos_comp <span class="ot">&lt;-</span> <span class="fu">left_join</span>(dat_entrena_2, mi_peli) <span class="sc">|&gt;</span> </span>
+<span id="cb519-10"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(peli_id_1) )</span>
+<span id="cb519-11"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># calcular similitudes</span></span>
+<span id="cb519-12"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-12" aria-hidden="true" tabindex="-1"></a>  out_sum <span class="ot">&lt;-</span> datos_comp <span class="sc">|&gt;</span> </span>
+<span id="cb519-13"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">group_by</span>(peli_id) <span class="sc">|&gt;</span></span>
+<span id="cb519-14"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">summarise</span>(<span class="at">similitud =</span> <span class="fu">sim_cos</span>(calif_c, calif_c_1), <span class="at">num_pares =</span> <span class="fu">n</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb519-15"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(num_pares <span class="sc">&gt;</span> min_pares) <span class="sc">|&gt;</span> </span>
+<span id="cb519-16"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(pelis_nombres)</span>
+<span id="cb519-17"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-17" aria-hidden="true" tabindex="-1"></a>  out_sum <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(similitud))  </span>
+<span id="cb519-18"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb519-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Nótese que las similitudes aparentan ser ruidosas si no filtramos por número de evaluaciones:</p>
+<div class="sourceCode" id="cb520"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb520-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb520-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ejemplos</span>(<span class="dv">8199</span>) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">20</span>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div>
+<pre><code>## Joining, by = &quot;id_seq&quot;</code></pre>
+<pre><code>## Joining, by = &quot;peli_id&quot;</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">peli_id</th>
+<th align="right">similitud</th>
+<th align="right">num_pares</th>
+<th align="right">año</th>
+<th align="left">nombre</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">8199</td>
+<td align="right">1.0000000</td>
+<td align="right">1379</td>
+<td align="right">1985</td>
+<td align="left">The Purple Rose of Cairo</td>
+</tr>
+<tr class="even">
+<td align="right">6247</td>
+<td align="right">0.4858263</td>
+<td align="right">431</td>
+<td align="right">1984</td>
+<td align="left">Broadway Danny Rose</td>
+</tr>
+<tr class="odd">
+<td align="right">16171</td>
+<td align="right">0.4670051</td>
+<td align="right">618</td>
+<td align="right">1987</td>
+<td align="left">Radio Days</td>
+</tr>
+<tr class="even">
+<td align="right">1058</td>
+<td align="right">0.3940953</td>
+<td align="right">485</td>
+<td align="right">1972</td>
+<td align="left">Play it Again Sam</td>
+</tr>
+<tr class="odd">
+<td align="right">6610</td>
+<td align="right">0.3814492</td>
+<td align="right">106</td>
+<td align="right">1965</td>
+<td align="left">The Pawnbroker</td>
+</tr>
+<tr class="even">
+<td align="right">17341</td>
+<td align="right">0.3748542</td>
+<td align="right">545</td>
+<td align="right">1983</td>
+<td align="left">Zelig</td>
+</tr>
+<tr class="odd">
+<td align="right">1234</td>
+<td align="right">0.3526710</td>
+<td align="right">115</td>
+<td align="right">1994</td>
+<td align="left">Crooklyn</td>
+</tr>
+<tr class="even">
+<td align="right">12896</td>
+<td align="right">0.3512115</td>
+<td align="right">754</td>
+<td align="right">1994</td>
+<td align="left">Bullets Over Broadway</td>
+</tr>
+<tr class="odd">
+<td align="right">9540</td>
+<td align="right">0.3509817</td>
+<td align="right">101</td>
+<td align="right">1987</td>
+<td align="left">The Decalogue</td>
+</tr>
+<tr class="even">
+<td align="right">2599</td>
+<td align="right">0.3503702</td>
+<td align="right">112</td>
+<td align="right">1959</td>
+<td align="left">Black Orpheus</td>
+</tr>
+<tr class="odd">
+<td align="right">16709</td>
+<td align="right">0.3480806</td>
+<td align="right">342</td>
+<td align="right">1980</td>
+<td align="left">Stardust Memories</td>
+</tr>
+<tr class="even">
+<td align="right">5577</td>
+<td align="right">0.3480255</td>
+<td align="right">158</td>
+<td align="right">1957</td>
+<td align="left">Throne of Blood</td>
+</tr>
+<tr class="odd">
+<td align="right">10605</td>
+<td align="right">0.3479292</td>
+<td align="right">148</td>
+<td align="right">1976</td>
+<td align="left">The Front</td>
+</tr>
+<tr class="even">
+<td align="right">15808</td>
+<td align="right">0.3468051</td>
+<td align="right">165</td>
+<td align="right">1996</td>
+<td align="left">Citizen Ruth</td>
+</tr>
+<tr class="odd">
+<td align="right">10918</td>
+<td align="right">0.3370929</td>
+<td align="right">139</td>
+<td align="right">1987</td>
+<td align="left">Black Adder III</td>
+</tr>
+<tr class="even">
+<td align="right">10601</td>
+<td align="right">0.3349099</td>
+<td align="right">152</td>
+<td align="right">1972</td>
+<td align="left">The Discreet Charm of the Bourgeoisie</td>
+</tr>
+<tr class="odd">
+<td align="right">16889</td>
+<td align="right">0.3294090</td>
+<td align="right">408</td>
+<td align="right">1969</td>
+<td align="left">Take the Money and Run</td>
+</tr>
+<tr class="even">
+<td align="right">6070</td>
+<td align="right">0.3217371</td>
+<td align="right">117</td>
+<td align="right">1989</td>
+<td align="left">Black Adder IV</td>
+</tr>
+<tr class="odd">
+<td align="right">11301</td>
+<td align="right">0.3118192</td>
+<td align="right">137</td>
+<td align="right">1973</td>
+<td align="left">The Wicker Man</td>
+</tr>
+<tr class="even">
+<td align="right">11720</td>
+<td align="right">0.3050482</td>
+<td align="right">108</td>
+<td align="right">1978</td>
+<td align="left">Goin’ South</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb523"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb523-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb523-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ejemplos</span>(<span class="dv">6807</span>) <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">20</span>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div>
+<pre><code>## Joining, by = &quot;id_seq&quot;</code></pre>
+<pre><code>## Joining, by = &quot;peli_id&quot;</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">peli_id</th>
+<th align="right">similitud</th>
+<th align="right">num_pares</th>
+<th align="right">año</th>
+<th align="left">nombre</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">6807</td>
+<td align="right">1.0000000</td>
+<td align="right">2075</td>
+<td align="right">1963</td>
+<td align="left">8 1/2</td>
+</tr>
+<tr class="even">
+<td align="right">16241</td>
+<td align="right">0.7429705</td>
+<td align="right">677</td>
+<td align="right">1960</td>
+<td align="left">La Dolce Vita</td>
+</tr>
+<tr class="odd">
+<td align="right">15303</td>
+<td align="right">0.6768162</td>
+<td align="right">118</td>
+<td align="right">1952</td>
+<td align="left">Umberto D.</td>
+</tr>
+<tr class="even">
+<td align="right">9485</td>
+<td align="right">0.6680970</td>
+<td align="right">269</td>
+<td align="right">1967</td>
+<td align="left">Persona</td>
+</tr>
+<tr class="odd">
+<td align="right">5605</td>
+<td align="right">0.6356236</td>
+<td align="right">141</td>
+<td align="right">1946</td>
+<td align="left">Children of Paradise</td>
+</tr>
+<tr class="even">
+<td align="right">15786</td>
+<td align="right">0.6017523</td>
+<td align="right">564</td>
+<td align="right">1957</td>
+<td align="left">Wild Strawberries</td>
+</tr>
+<tr class="odd">
+<td align="right">2965</td>
+<td align="right">0.5878489</td>
+<td align="right">760</td>
+<td align="right">1957</td>
+<td align="left">The Seventh Seal</td>
+</tr>
+<tr class="even">
+<td align="right">13377</td>
+<td align="right">0.5808940</td>
+<td align="right">123</td>
+<td align="right">1963</td>
+<td align="left">Winter Light</td>
+</tr>
+<tr class="odd">
+<td align="right">10276</td>
+<td align="right">0.5738983</td>
+<td align="right">654</td>
+<td align="right">1950</td>
+<td align="left">Rashomon</td>
+</tr>
+<tr class="even">
+<td align="right">1708</td>
+<td align="right">0.5719259</td>
+<td align="right">328</td>
+<td align="right">1936</td>
+<td align="left">Modern Times</td>
+</tr>
+<tr class="odd">
+<td align="right">1735</td>
+<td align="right">0.5712199</td>
+<td align="right">314</td>
+<td align="right">1974</td>
+<td align="left">Amarcord</td>
+</tr>
+<tr class="even">
+<td align="right">7912</td>
+<td align="right">0.5677752</td>
+<td align="right">243</td>
+<td align="right">1960</td>
+<td align="left">L’Avventura</td>
+</tr>
+<tr class="odd">
+<td align="right">12721</td>
+<td align="right">0.5674579</td>
+<td align="right">283</td>
+<td align="right">1952</td>
+<td align="left">Ikiru</td>
+</tr>
+<tr class="even">
+<td align="right">10661</td>
+<td align="right">0.5665439</td>
+<td align="right">169</td>
+<td align="right">1953</td>
+<td align="left">Tokyo Story</td>
+</tr>
+<tr class="odd">
+<td align="right">17184</td>
+<td align="right">0.5612483</td>
+<td align="right">240</td>
+<td align="right">1939</td>
+<td align="left">The Rules of the Game</td>
+</tr>
+<tr class="even">
+<td align="right">10277</td>
+<td align="right">0.5571376</td>
+<td align="right">717</td>
+<td align="right">1948</td>
+<td align="left">The Bicycle Thief</td>
+</tr>
+<tr class="odd">
+<td align="right">12871</td>
+<td align="right">0.5523090</td>
+<td align="right">123</td>
+<td align="right">1926</td>
+<td align="left">Our Hospitality / Sherlock Jr.</td>
+</tr>
+<tr class="even">
+<td align="right">8790</td>
+<td align="right">0.5516619</td>
+<td align="right">112</td>
+<td align="right">1929</td>
+<td align="left">Man with the Movie Camera</td>
+</tr>
+<tr class="odd">
+<td align="right">840</td>
+<td align="right">0.5498725</td>
+<td align="right">212</td>
+<td align="right">1941</td>
+<td align="left">The Lady Eve</td>
+</tr>
+<tr class="even">
+<td align="right">15016</td>
+<td align="right">0.5497364</td>
+<td align="right">227</td>
+<td align="right">1928</td>
+<td align="left">The Passion of Joan of Arc</td>
+</tr>
+</tbody>
+</table>
+<p>El problema otra vez es similitudes ruidosas que provienen de pocas evaluaciones en común.</p>
+</div>
+<div id="ejercicio-4" class="section level3 unnumbered">
+<h3>Ejercicio</h3>
+<p>Intenta con otras películas que te interesen, y prueba usando un mínimo distinto de pares para
+incluir en la lista</p>
+<div class="sourceCode" id="cb526"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb526-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb526-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ejemplos</span>(<span class="dv">11271</span>)   <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">20</span>)</span></code></pre></div>
+<pre><code>## Joining, by = &quot;id_seq&quot;</code></pre>
+<pre><code>## Joining, by = &quot;peli_id&quot;</code></pre>
+<pre><code>## # A tibble: 20 × 5
+##    peli_id similitud num_pares   año nombre                                     
+##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;                                      
+##  1   11271     1          5583  1994 Friends: Season 1                          
+##  2    5309     0.944      2679  1997 Friends: Season 4                          
+##  3    3078     0.938      3187  1994 The Best of Friends: Season 2              
+##  4    5414     0.934      3335  1996 Friends: Season 3                          
+##  5    2938     0.930      3000  1994 The Best of Friends: Season 1              
+##  6   15307     0.924      2931  1996 The Best of Friends: Season 3              
+##  7    8438     0.920      2903  1998 Friends: Season 5                          
+##  8    7158     0.919      2094  1997 The Best of Friends: Season 4              
+##  9    2942     0.913      2708  1999 Friends: Season 6                          
+## 10   15689     0.912      2894  1994 The Best of Friends: Vol. 1                
+## 11    9909     0.909      2167  2002 Friends: Season 9                          
+## 12    5837     0.908      2554  1999 Friends: Season 7                          
+## 13   16083     0.907      1960  1994 The Best of Friends: Vol. 2                
+## 14    1877     0.907      3123  1995 Friends: Season 2                          
+## 15    1256     0.898      1723  1994 The Best of Friends: Vol. 4                
+## 16   15777     0.898      2478  2001 Friends: Season 8                          
+## 17   14283     0.886      1544  1994 The Best of Friends: Vol. 3                
+## 18    7780     0.858      2481  2004 Friends: The Series Finale                 
+## 19   13042     0.629       416  2001 Will &amp; Grace: Season 4                     
+## 20    1915     0.623       169  2000 Law &amp; Order: Special Victims Unit: The Sec…</code></pre>
+<div class="sourceCode" id="cb530"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb530-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb530-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ejemplos</span>(<span class="dv">11929</span>)  <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">20</span>)</span></code></pre></div>
+<pre><code>## Joining, by = &quot;id_seq&quot;
+## Joining, by = &quot;peli_id&quot;</code></pre>
+<pre><code>## # A tibble: 20 × 5
+##    peli_id similitud num_pares   año nombre                          
+##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;                           
+##  1   11929     1          1955  1997 Anaconda                        
+##  2   11687     0.716       274  1994 Street Fighter                  
+##  3   15698     0.685       175  1995 Fair Game                       
+##  4   13417     0.680       116  1997 Home Alone 3                    
+##  5    1100     0.671       169  2000 Dr. T &amp; the Women               
+##  6   12149     0.671       708  1997 Speed 2: Cruise Control         
+##  7   17221     0.670       645  1993 Look Who&#39;s Talking Now          
+##  8    5366     0.662       139  1999 The Mod Squad                   
+##  9   16146     0.654       146  2003 The Real Cancun                 
+## 10    5106     0.652       129  1994 House Party 3                   
+## 11   12171     0.648       452  2000 Battlefield Earth               
+## 12   16283     0.645       170  1994 Cops &amp; Robbersons               
+## 13   15958     0.644       102  1994 Darkman II: The Return of Durant
+## 14   12517     0.643       284  2003 Gigli                           
+## 15   13607     0.642       137  1992 Stop! Or My Mom Will Shoot      
+## 16    1363     0.640       200  1993 Leprechaun                      
+## 17   12349     0.639       227  1993 Super Mario Bros.               
+## 18    7142     0.637       118  1996 Barb Wire                       
+## 19    3573     0.635       286  1993 Cop and a Half                  
+## 20    5005     0.634       290  1995 Vampire in Brooklyn</code></pre>
+<div class="sourceCode" id="cb533"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb533-1"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#cb533-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ejemplos</span>(<span class="dv">2660</span>)  <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">20</span>)</span></code></pre></div>
+<pre><code>## Joining, by = &quot;id_seq&quot;
+## Joining, by = &quot;peli_id&quot;</code></pre>
+<pre><code>## # A tibble: 20 × 5
+##    peli_id similitud num_pares   año nombre                                     
+##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;                                      
+##  1    2660     1         16940  1989 When Harry Met Sally                       
+##  2   16722     0.509       149  2001 The Godfather Trilogy: Bonus Material      
+##  3   12530     0.458      2861  2004 Sex and the City: Season 6: Part 2         
+##  4    8272     0.451       187  1960 The Andy Griffith Show: Season 1           
+##  5   14648     0.447       680  2003 Finding Nemo (Full-screen)                 
+##  6   11975     0.441       293  2005 Mad Hot Ballroom                           
+##  7   16711     0.441      3305  2003 Sex and the City: Season 6: Part 1         
+##  8    4427     0.433       744  2001 The West Wing: Season 3                    
+##  9   12184     0.430      2676  2002 Sex and the City: Season 5                 
+## 10   13073     0.426      2414  1946 It&#39;s a Wonderful Life                      
+## 11    7639     0.423       171  2004 Star Wars Trilogy: Bonus Material          
+## 12   13556     0.422       923  1999 The West Wing: Season 2                    
+## 13   14567     0.421       136  1959 Ben-Hur: Collector&#39;s Edition: Bonus Materi…
+## 14   14550     0.420     11743  1994 The Shawshank Redemption: Special Edition  
+## 15     270     0.420      3618  2001 Sex and the City: Season 4                 
+## 16    3456     0.419       553  2004 Lost: Season 1                             
+## 17    9909     0.418      1763  2002 Friends: Season 9                          
+## 18   16674     0.414       103  1994 Forrest Gump: Bonus Material               
+## 19    1542     0.410      9277  1993 Sleepless in Seattle                       
+## 20   12870     0.408      9397  1993 Schindler&#39;s List</code></pre>
+</div>
+<div id="implementación" class="section level3" number="5.5.2">
+<h3><span class="header-section-number">5.5.2</span> Implementación</h3>
+<p>Si queremos implementar este tipo de filtrado colaborativo (por
+similitud), el ejemplo de arriba no es práctico pues tenemos que
+calcular todas las posibles similitudes. Sin embargo, como nos interesa
+principalmente encontrar los pares de similitud alta, podemos usar LSH:</p>
+<ul>
+<li>Empezamos haciendo LSH de las películas usando el método de hiperplanos
+aleatorios como función hash (pues este es el método que captura distancias coseno bajas).
+Nuestro resultado son todos los items
+o películas agrupadas en cubetas. Podemos procesar las cubetas para
+eliminar falsos positivos (o items con muy pocas evaluaciones).</li>
+<li>Ahora queremos estimar el rating del usuario <span class="math inline">\(i\)</span> de una película <span class="math inline">\(j\)</span>
+que no ha visto. Extraemos las cubetas donde cae la película <span class="math inline">\(j\)</span>, y
+extraemos todos los items.</li>
+<li>Entre todos estos items, extraemos los que ha visto el usuario <span class="math inline">\(i\)</span>,
+y aplicamos el promedio <a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#eq:simprom">(5.1)</a>.</li>
+</ul>
+<p><strong>Observaciones</strong></p>
+<ul>
+<li>En principio, este análisis podría hacerse usando similitud entre
+usuarios en lugar de items. En la práctica (ver <span class="citation">(<a href="#ref-mmd" role="doc-biblioref">Leskovec, Rajaraman, and Ullman 2014</a>)</span>), el enfoque
+de similitud entre items es superior, pues similitud es un concepto
+que tiene más sentido en items que en usuarios (los usuarios pueden
+tener varios intereses traslapados).</li>
+<li>Nótese que en ningún momento tuvimos que extraer variables de
+películas, imágenes, libros, etc o lo que sea que estamos recomendando.
+Esta es una fortaleza del filtrado colaborativo.</li>
+<li>Por otro lado, cuando tenemos pocas evaluaciones o calificaciones
+este método no funciona bien (por ejemplo, no podemos calcular
+las similitudes pues no hay traslape a lo largo de usuarios). En
+este caso, este método puede combinarse con otros (por ejemplo, agregar
+una parte basado en modelos de gusto por género, año, etc.)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-mmd" class="csl-entry">
+Leskovec, Jure, Anand Rajaraman, and Jeffrey David Ullman. 2014. <em>Mining of Massive Datasets</em>. 2nd ed. New York, NY, USA: Cambridge University Press. <a href="http://www.mmds.org">http://www.mmds.org</a>.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="dvs-y-reducción-de-dimensionalidad.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/felipegonzalez/metodos-analiticos-mcd-2022/edit/master/notas/04-recomendacion.Rmd",
+"text": "Editar"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
