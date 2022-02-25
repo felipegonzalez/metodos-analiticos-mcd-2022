@@ -1130,6 +1130,7 @@ por nuestra aproximación.
 
 
 ## Componentes principales
+
 Componentes principales es la descomposición en valores singulares aplicada
 a una matriz de datos centrada por columna. Esta operación convierte el problema
 de aproximación de matrices de rango bajo en uno de aproximaciones que buscan
@@ -1201,28 +1202,31 @@ qplot(scores[,2], -comps$V2)
 
 ---
   
-### Varianza en componentes principales.
   
+### Varianza en componentes principales {-}
+
   Cuando centramos por columna, la svd es un tipo de análisis de la matriz
 de varianzas y covarianzas de la matriz $X$, dada por
 $$C = \frac{1}{n} \tilde{X}^t \tilde{X}$$
   (Nota: asegúrate de que entiendes por qué esta es la matriz de varianzas y covarianzas
    de $X$). 
+   
 ```{block2, type='comentario'}
-Nótese que las proyecciones (que se llaman **componentes principales**) 
+Nótese que las proyecciones  (que se llaman **componentes principales**) 
 $\tilde{X}v_j = \sigma_j u_j = d_j$ satisfacen que
 1. La media de las proyecciones $d_j$ es igual a cero
 Pues $$\sigma_j \sum_k {u_{j,k}} = \sum_k \sum_i (\tilde{X}_{k,i})v_{j,i} =
   \sum_i v_{j,i}\sum_k (\tilde{X}_{k,i}) = 0,$$
   pues las columnas de $\tilde{X}$ tienen media cero.
-2- $\sigma_j^2$ es la varianza de la proyección $d_j$, pues
-$$Var(d_j) = \sigma_j^2 \sum_k (u_{j,k} - 0)^2 = \sigma_j^2,$$
+2- $\sigma_j^2/n$ es la varianza de la proyección $d_j$, pues
+$$Var(d_j) = \frac{\sigma_j^2}{n} \sum_k (u_{j,k} - 0)^2 = \frac{\sigma_j^2}{n},$$
   y el vector $u_j$ tienen norma 1.
 3. La ortogonalidad de los vectores $u_j$ se interpreta ahora en términos
 de covarianza:
   $$Cov(d_i,d_j) = \frac{1}{n}\sum_{k=1}^n (d_{i,k}-0)(d_{j,k}-0) =
   \frac{1}{n}\sum_{k=1}^n \sigma_j\sigma_i u_{i,k}u_{j,k} = 0$$
 ```
+
   
 Así que 
   
@@ -1238,7 +1242,9 @@ $$||\tilde{X}||^2_F =  \sum_{j=1}^p \sigma_{j}^2$$
   El lado izquierdo se llama *Varianza total* de la matriz $X$. Componentes principales particiona la varianza total de la matriz $X$ en 
 componentes.
 
-### ¿Centrar o no centrar por columna?
+
+### ¿Centrar o no centrar por columna? {-}
+
 Típicamente, antes de aplicar SVD hacemos algunos pasos de procesamiento
 de las variables. En componentes principales, este paso de procesamiento
 es centrar la tabla por columnas. Conviene hacer esto cuando:
@@ -1254,7 +1260,9 @@ de las dimensiones obtenidas.
 Pueden ver análisis detallado en [este artículo](https://www.researchgate.net/publication/255644479_On_Relationships_Between_Uncentred_And_Column-Centred_Principal_Component_Analysis), que
 hace comparaciones a lo largo de varios conjuntos de datos.
 
+
 ### Ejemplo: resultados similares{-}
+
 En el ejemplo de gasto en rubros que vimos arriba, los pesos $v_j$ son muy similares:
   
 ```{r}
@@ -1271,6 +1279,7 @@ Llegaríamos a conclusiones similares si interpretamos cualquiera de los dos an�
 (verifica por ejemplo el ordenamiento de rubros y años en cada dimensión).
 
 ### Ejemplos: donde es buena idea centrar  {-}
+
 Por ejemplo, si hacemos componentes principales con los siguientes datos:
   
 ```{r, message=FALSE}
@@ -1324,7 +1333,9 @@ sd(svd_w$u[,1])
 Como no nos interesa este hecho, podemos mejor centrar desde el principio y trabajar
 con las componentes principales. ¿Cómo se ven las siguientes dos dimensiones
 del análisis no centrado?
-## Ejemplo: donde no centrar funciona bien  {-}
+
+### Ejemplo: donde no centrar funciona bien  {-}
+
 Considera el ejemplo de la tarea con la tabla de gastos en distintas categorías
 de alimentos según el decil de ingreso del hogar. ¿Por qué en este ejemplo centrar
 por columna no es tan buena idea? Si hacemos el centrado, quitamos
@@ -1375,10 +1386,13 @@ a lo largo de las categorías.
 *Observación*: Quizá una solución más natural es hacer el análisis de componentes principales usando la transpuesta de esta matriz (usa la función *prcomp*), donde tiene más sentido
 centrar por categoría de alimento, y pensar que las observaciones son los distintos
 deciles (que en realidad son agrupaciones de observaciones).
-### Otros tipos de centrado
+
+### Otros tipos de centrado {-}
 Es posible hacer doble centrado, por ejemplo (por renglón y por columna). Discute por qué
 el doble centrado puede ser una buena idea para los datos del tipo de Netflix.
-### Reescalando variables
+
+### Reescalando variables {-}
+
 Cuando las columnas tienen distintas unidades (especialmente si las escalas son
 muy diferentes), conviene reescalar la matriz antes de hacer el análisis centrado
 o no centrado. De otra forma, parte del análisis intenta absorber la diferencia en 
@@ -1386,7 +1400,9 @@ unidades, lo cual generalmente no es de interés.
  - En componentes principales, podemos estandarizar las columnas.
  - En el análisis no centrado, podemos poner las variables en escala 0-1, por ejemplo,
  o dividir entre la media (si son variables positivas).
-### Ejemplo {-}
+
+#### Ejemplo {-}
+
 ```{r}
 comp <- princomp(attenu |> select(-station, -event))
 comp$loadings[,1]
