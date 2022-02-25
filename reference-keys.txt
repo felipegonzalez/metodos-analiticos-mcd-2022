@@ -46,8 +46,6 @@ más-de-interpretación-geométrica
 svd-para-películas-de-netflix
 calidad-de-representación-de-svd.
 componentes-principales
-varianza-en-componentes-principales.
-centrar-o-no-centrar-por-columna
 sistemas-de-recomendación-y-filtrado-colaborativo
 enfoques-de-recomendación
 datos
