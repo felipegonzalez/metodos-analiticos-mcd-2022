@@ -2,7 +2,7 @@
 title: "Métodos analíticos, ITAM 2022"
 author: "Felipe González"
 email: felipexgonzalez@gmail.com
-date: "2022-02-25"
+date: "2022-02-28"
 site: bookdown::bookdown_site
 documentclass: book
 bibliography: [referencias.bib, packages.bib]
