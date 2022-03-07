@@ -262,6 +262,10 @@ config$spark.executor.memory <- "2G"
 ```{r}
 # conectar con "cluster" local
 sc <- spark_connect(master = "local", config = config)
+```
+
+
+```{r}
 spark_set_checkpoint_dir(sc, './checkpoint')
 ```
 
