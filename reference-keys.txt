@@ -1,6 +1,7 @@
 eq:valor-propio-derecho
 eq:valor-propio-izquierdo
 eq:simprom
+eq:implicita
 intro
 frecuentes
 datos-de-canastas
@@ -57,3 +58,12 @@ modelo-de-referencia
 filtrado-colaborativo-similitud
 simitems
 implementación
+dimensiones-latentes-para-recomendación
+combinación-con-modelo-base
+factorización-de-matrices
+mínimos-cuadrados-alternados
+mínimos-cuadrados-alternados-con-regularización
+retroalimentación-implícita
+ejemplo-20
+ejemplo-21
+evaluación-para-modelos-implícitos

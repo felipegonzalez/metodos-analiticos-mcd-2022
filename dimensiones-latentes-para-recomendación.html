@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>6 Dimensiones latentes para recomendación | Métodos analíticos, ITAM 2022</title>
+  <meta name="description" content="Notas para métodos analíticos 2022" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="6 Dimensiones latentes para recomendación | Métodos analíticos, ITAM 2022" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Notas para métodos analíticos 2022" />
+  <meta name="github-repo" content="felipexgonzalez/metodos-analiticos-mcd-2022" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="6 Dimensiones latentes para recomendación | Métodos analíticos, ITAM 2022" />
+  
+  <meta name="twitter:description" content="Notas para métodos analíticos 2022" />
+  
+
+<meta name="author" content="Felipe González" />
+
+
+<meta name="date" content="2022-03-07" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="sistemas-de-recomendación-y-filtrado-colaborativo.html"/>
+<link rel="next" href="referencias.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.20/datatables.js"></script>
+<link href="libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Métodos Analíticos</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Temario</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#evaluación"><i class="fa fa-check"></i>Evaluación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introducción</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#simlitud-en-dimensión-alta"><i class="fa fa-check"></i>Simlitud en dimensión alta</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#medidas-de-distancia-o-similitud"><i class="fa fa-check"></i>Medidas de distancia o similitud</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#tipos-de-soluciones"><i class="fa fa-check"></i>Tipos de soluciones</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#proyección-y-búsqueda-de-marginales-interesantes"><i class="fa fa-check"></i>Proyección y búsqueda de marginales interesantes</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#proyecciones-globales"><i class="fa fa-check"></i>Proyecciones globales</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#descripción-de-estructura-local"><i class="fa fa-check"></i>Descripción de estructura local</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#inmersiones-embeddings"><i class="fa fa-check"></i>Inmersiones (embeddings)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="frecuentes.html"><a href="frecuentes.html"><i class="fa fa-check"></i><b>2</b> Análisis de conjuntos frecuentes</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="frecuentes.html"><a href="frecuentes.html#datos-de-canastas"><i class="fa fa-check"></i><b>2.1</b> Datos de canastas</a></li>
+<li class="chapter" data-level="2.2" data-path="frecuentes.html"><a href="frecuentes.html#conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.2</b> Conjuntos frecuentes</a></li>
+<li class="chapter" data-level="2.3" data-path="frecuentes.html"><a href="frecuentes.html#monotonicidad-de-conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.3</b> Monotonicidad de conjuntos frecuentes</a></li>
+<li class="chapter" data-level="2.4" data-path="frecuentes.html"><a href="frecuentes.html#algoritmo-a-priori"><i class="fa fa-check"></i><b>2.4</b> Algoritmo a-priori</a></li>
+<li class="chapter" data-level="2.5" data-path="frecuentes.html"><a href="frecuentes.html#modelos-simples-para-análisis-de-canastas"><i class="fa fa-check"></i><b>2.5</b> Modelos simples para análisis de canastas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-3"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#modelo-de-artículos-independientes"><i class="fa fa-check"></i>Modelo de artículos independientes</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="frecuentes.html"><a href="frecuentes.html#soporte-teórico-y-conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.6</b> Soporte teórico y conjuntos frecuentes</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-4"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="frecuentes.html"><a href="frecuentes.html#reglas-de-asociación"><i class="fa fa-check"></i><b>2.7</b> Reglas de asociación</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-5"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-6"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.8" data-path="frecuentes.html"><a href="frecuentes.html#dificultades-en-el-análisis-de-canastas"><i class="fa fa-check"></i><b>2.8</b> Dificultades en el análisis de canastas</a></li>
+<li class="chapter" data-level="2.9" data-path="frecuentes.html"><a href="frecuentes.html#otras-medidas-de-calidad-de-reglas"><i class="fa fa-check"></i><b>2.9</b> Otras medidas de calidad de reglas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#hyper-lift-bajo-hipótesis-de-independencia"><i class="fa fa-check"></i>Hyper-lift bajo hipótesis de independencia</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#hyper-lift-para-datos-de-canastas"><i class="fa fa-check"></i>Hyper-lift para datos de canastas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.10" data-path="frecuentes.html"><a href="frecuentes.html#selección-de-reglas"><i class="fa fa-check"></i><b>2.10</b> Selección de reglas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-canastas-grandes"><i class="fa fa-check"></i>Ejemplo: canastas grandes</a></li>
+</ul></li>
+<li class="chapter" data-level="2.11" data-path="frecuentes.html"><a href="frecuentes.html#búsqueda-de-reglas-especializadas"><i class="fa fa-check"></i><b>2.11</b> Búsqueda de reglas especializadas</a></li>
+<li class="chapter" data-level="2.12" data-path="frecuentes.html"><a href="frecuentes.html#visualización-de-asociaciones"><i class="fa fa-check"></i><b>2.12</b> Visualización de asociaciones</a>
+<ul>
+<li class="chapter" data-level="2.12.1" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-canastas"><i class="fa fa-check"></i><b>2.12.1</b> Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.13" data-path="frecuentes.html"><a href="frecuentes.html#otras-aplicaciones"><i class="fa fa-check"></i><b>2.13</b> Otras aplicaciones</a></li>
+<li class="chapter" data-level="2.14" data-path="frecuentes.html"><a href="frecuentes.html#ejercicios"><i class="fa fa-check"></i><b>2.14</b> Ejercicios</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="similitud.html"><a href="similitud.html"><i class="fa fa-check"></i><b>3</b> Similitud y vecinos cercanos</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="similitud.html"><a href="similitud.html#similitud-de-conjuntos"><i class="fa fa-check"></i><b>3.1</b> Similitud de conjuntos</a></li>
+<li class="chapter" data-level="3.2" data-path="similitud.html"><a href="similitud.html#representación-de-documentos-como-conjuntos"><i class="fa fa-check"></i><b>3.2</b> Representación de documentos como conjuntos</a></li>
+<li class="chapter" data-level="3.3" data-path="similitud.html"><a href="similitud.html#representación-matricial"><i class="fa fa-check"></i><b>3.3</b> Representación matricial</a></li>
+<li class="chapter" data-level="3.4" data-path="similitud.html"><a href="similitud.html#minhash-y-reducción-probabilística-de-dimensionalidad"><i class="fa fa-check"></i><b>3.4</b> Minhash y reducción probabilística de dimensionalidad</a></li>
+<li class="chapter" data-level="3.5" data-path="similitud.html"><a href="similitud.html#agrupando-textos-de-similitud-alta"><i class="fa fa-check"></i><b>3.5</b> Agrupando textos de similitud alta</a></li>
+<li class="chapter" data-level="3.6" data-path="similitud.html"><a href="similitud.html#ejemplo-tweets"><i class="fa fa-check"></i><b>3.6</b> Ejemplo: tweets</a></li>
+<li class="chapter" data-level="3.7" data-path="similitud.html"><a href="similitud.html#verificar-si-un-nuevo-elemento-es-duplicado"><i class="fa fa-check"></i><b>3.7</b> Verificar si un nuevo elemento es duplicado</a></li>
+<li class="chapter" data-level="3.8" data-path="similitud.html"><a href="similitud.html#controlando-la-sensibilidad-y-umbral-de-similitud"><i class="fa fa-check"></i><b>3.8</b> Controlando la sensibilidad y umbral de similitud</a></li>
+<li class="chapter" data-level="3.9" data-path="similitud.html"><a href="similitud.html#distancia-euclideana-y-lsh"><i class="fa fa-check"></i><b>3.9</b> Distancia euclideana y LSH</a></li>
+<li class="chapter" data-level="3.10" data-path="similitud.html"><a href="similitud.html#locality-sensitive-hashing-lsh"><i class="fa fa-check"></i><b>3.10</b> Locality Sensitive Hashing (LSH)</a></li>
+<li class="chapter" data-level="3.11" data-path="similitud.html"><a href="similitud.html#lsh-para-imágenes"><i class="fa fa-check"></i><b>3.11</b> LSH para imágenes</a></li>
+<li class="chapter" data-level="3.12" data-path="similitud.html"><a href="similitud.html#joins-por-similitud"><i class="fa fa-check"></i><b>3.12</b> Joins por similitud</a></li>
+<li class="chapter" data-level="3.13" data-path="similitud.html"><a href="similitud.html#ejemplo-entity-matching"><i class="fa fa-check"></i><b>3.13</b> Ejemplo: entity matching</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html"><i class="fa fa-check"></i><b>4</b> DVS y reducción de dimensionalidad</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#descomposición-aditiva-en-matrices-de-rango-1"><i class="fa fa-check"></i><b>4.1</b> Descomposición aditiva en matrices de rango 1</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#matrices-de-rango-1"><i class="fa fa-check"></i><b>4.1.1</b> Matrices de rango 1</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-una-matriz-de-rango-1-de-preferencias"><i class="fa fa-check"></i>Ejemplo: una matriz de rango 1 de preferencias</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#aproximación-con-matrices-de-rango-1."><i class="fa fa-check"></i><b>4.2</b> Aproximación con matrices de rango 1.</a>
+<ul>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-12"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="4.2.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#suma-de-matrices-de-rango-1."><i class="fa fa-check"></i><b>4.2.1</b> Suma de matrices de rango 1.</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-películas"><i class="fa fa-check"></i>Ejemplo: películas</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#aproximación-con-matrices-de-rango-bajo"><i class="fa fa-check"></i><b>4.3</b> Aproximación con matrices de rango bajo</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#discusión-aproximación-de-rango-1."><i class="fa fa-check"></i><b>4.3.1</b> Discusión: aproximación de rango 1.</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#interpetación-de-vectores-singulares"><i class="fa fa-check"></i><b>4.4</b> Interpetación de vectores singulares</a>
+<ul>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-14"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="4.4.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#discusión-aproximaciones-de-rango-más-alto"><i class="fa fa-check"></i><b>4.4.1</b> Discusión: aproximaciones de rango más alto</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-15"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#descomposición-en-valores-singulares-svd-o-dvs"><i class="fa fa-check"></i><b>4.5</b> Descomposición en valores singulares (SVD o DVS)</a></li>
+<li class="chapter" data-level="4.6" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#más-de-interpretación-geométrica"><i class="fa fa-check"></i><b>4.6</b> Más de interpretación geométrica</a></li>
+<li class="chapter" data-level="4.7" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#svd-para-películas-de-netflix"><i class="fa fa-check"></i><b>4.7</b> SVD para películas de netflix</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#calidad-de-representación-de-svd."><i class="fa fa-check"></i><b>4.7.1</b> Calidad de representación de SVD.</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-16"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#componentes-principales"><i class="fa fa-check"></i><b>4.8</b> Componentes principales</a>
+<ul>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#varianza-en-componentes-principales"><i class="fa fa-check"></i>Varianza en componentes principales</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#centrar-o-no-centrar-por-columna"><i class="fa fa-check"></i>¿Centrar o no centrar por columna?</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-resultados-similares"><i class="fa fa-check"></i>Ejemplo: resultados similares</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplos-donde-es-buena-idea-centrar"><i class="fa fa-check"></i>Ejemplos: donde es buena idea centrar</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-donde-no-centrar-funciona-bien"><i class="fa fa-check"></i>Ejemplo: donde no centrar funciona bien</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#otros-tipos-de-centrado"><i class="fa fa-check"></i>Otros tipos de centrado</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#reescalando-variables"><i class="fa fa-check"></i>Reescalando variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html"><i class="fa fa-check"></i><b>5</b> Sistemas de recomendación y filtrado colaborativo</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#enfoques-de-recomendación"><i class="fa fa-check"></i><b>5.1</b> Enfoques de recomendación</a></li>
+<li class="chapter" data-level="5.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#datos"><i class="fa fa-check"></i><b>5.2</b> Datos</a>
+<ul>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-18"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#modelos-de-referencia-y-evaluación"><i class="fa fa-check"></i><b>5.3</b> Modelos de referencia y evaluación</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#evaluación-de-predicciones"><i class="fa fa-check"></i><b>5.3.1</b> Evaluación de predicciones</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-datos-de-netflix"><i class="fa fa-check"></i>Ejemplo: datos de Netflix</a></li>
+<li class="chapter" data-level="5.3.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#opcional-efectos-en-análisis-de-heterogeneidad-en-uso-de-escala"><i class="fa fa-check"></i><b>5.3.2</b> (Opcional) Efectos en análisis de heterogeneidad en uso de escala</a></li>
+<li class="chapter" data-level="5.3.3" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo"><i class="fa fa-check"></i><b>5.3.3</b> Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#modelo-de-referencia"><i class="fa fa-check"></i><b>5.4</b> Modelo de referencia</a>
+<ul>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejercicio-modelo-de-referencia-para-netflix"><i class="fa fa-check"></i>Ejercicio: modelo de referencia para Netflix</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#filtrado-colaborativo-similitud"><i class="fa fa-check"></i><b>5.5</b> Filtrado colaborativo: similitud</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#simitems"><i class="fa fa-check"></i><b>5.5.1</b> Cálculo de similitud entre usuarios/películas</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-19"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-cómo-se-ven-las-calificaciones-de-películas-similaresno-similares"><i class="fa fa-check"></i>Ejemplo: ¿cómo se ven las calificaciones de películas similares/no similares?</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejercicio-4"><i class="fa fa-check"></i>Ejercicio</a></li>
+<li class="chapter" data-level="5.5.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#implementación"><i class="fa fa-check"></i><b>5.5.2</b> Implementación</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html"><i class="fa fa-check"></i><b>6</b> Dimensiones latentes para recomendación</a>
+<ul>
+<li class="chapter" data-level="6.0.1" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo"><i class="fa fa-check"></i><b>6.0.1</b> Ejemplo: una dimensión latente</a></li>
+<li class="chapter" data-level="6.0.2" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo"><i class="fa fa-check"></i><b>6.0.2</b> Ejemplo: dos dimensiones latentes</a></li>
+<li class="chapter" data-level="6.0.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#combinación-con-modelo-base"><i class="fa fa-check"></i><b>6.0.3</b> Combinación con modelo base</a></li>
+<li class="chapter" data-level="6.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#factorización-de-matrices"><i class="fa fa-check"></i><b>6.1</b> Factorización de matrices</a></li>
+<li class="chapter" data-level="6.2" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#mínimos-cuadrados-alternados"><i class="fa fa-check"></i><b>6.2</b> Mínimos cuadrados alternados</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#mínimos-cuadrados-alternados-con-regularización"><i class="fa fa-check"></i><b>6.2.1</b> Mínimos cuadrados alternados con regularización</a></li>
+<li class="chapter" data-level="" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejercicio-5"><i class="fa fa-check"></i>Ejercicio</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#retroalimentación-implícita"><i class="fa fa-check"></i><b>6.3</b> Retroalimentación implícita</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejemplo-20"><i class="fa fa-check"></i><b>6.3.1</b> Ejemplo</a></li>
+<li class="chapter" data-level="6.3.2" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejemplo-21"><i class="fa fa-check"></i><b>6.3.2</b> Ejemplo</a></li>
+<li class="chapter" data-level="6.3.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#evaluación-para-modelos-implícitos"><i class="fa fa-check"></i><b>6.3.3</b> Evaluación para modelos implícitos</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/felipegonzalez/metodos-analiticos-mcd-2022" target="blank">Repositorio de Github</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Métodos analíticos, ITAM 2022</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="dimensiones-latentes-para-recomendación" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Dimensiones latentes para recomendación</h1>
+<p>En las similitudes que vimos arriba, es razonable pensar que hay ciertos “conceptos”
+que agrupan o separan películas, y así mismo, que los usuarios se distinguen por el gusto o no
+que tienen por estos “conceptos.”</p>
+<p>En esta parte, consideramos la idea de utilizar reducción de dimensionalidad para
+hacer recomendaciones. Esta idea propone que hay ciertos factores latentes (no observados)
+que describen películas con “contenido implícito similar,” y usuarios según su interés en esa dimensión.</p>
+<p>Otra manera de llamar estos factores latentes es <strong>embedding</strong>: buscamos un <strong>embedding</strong> (una
+representación numérica en cierta dimensión no muy alta) que nos permita predecir el gusto
+de un usuario por una película.</p>
+<p>Este método nos permitirá también controlar mejor los resultados ruidosos que
+obtuvimos en los ejemplos anteriores (usando regularización y reducción
+de dimensión).</p>
+<div id="ejemplo" class="section level3" number="6.0.1">
+<h3><span class="header-section-number">6.0.1</span> Ejemplo: una dimensión latente</h3>
+<p>Por ejemplo: consideramos una dimensión de películas serias contra películas divertidas.
+<span class="math inline">\(3\)</span> películas podrían describirse con</p>
+<p><span class="math display">\[v=(-2,0,1)\]</span>,</p>
+<p>lo que interpretamos como la película <span class="math inline">\(1\)</span> es divertida (negativa en seriedad-diversión), la película <span class="math inline">\(2\)</span> está en promedio, y la película <span class="math inline">\(3\)</span> es más seria que las dos anteriores.</p>
+<p>Por otro lado, tenemos descriptores de 5 usuarios:</p>
+<p><span class="math display">\[u=(2,3,-3,0,1)\]</span>
+que dice que a los primeros dos usuarios les gustan las películas serias, al tercero le gustan las divertidas, y los dos últimos no tienen preferencia clara a lo largo de esta dimensión.</p>
+<p>Qusiéramos predecir el gusto usando estos dos vectores. Nuestras predicciones (considerando que <span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span> son matrices de una columna) serían simplemente</p>
+<p><span class="math display">\[\widetilde{X} = u v^t\]</span></p>
+<div class="sourceCode" id="cb536"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb536-1"><a href="dimensiones-latentes-para-recomendación.html#cb536-1" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="sc">-</span><span class="dv">3</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb536-2"><a href="dimensiones-latentes-para-recomendación.html#cb536-2" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb536-3"><a href="dimensiones-latentes-para-recomendación.html#cb536-3" aria-hidden="true" tabindex="-1"></a>gustos <span class="ot">&lt;-</span> u <span class="sc">%*%</span> <span class="fu">t</span>(v)</span>
+<span id="cb536-4"><a href="dimensiones-latentes-para-recomendación.html#cb536-4" aria-hidden="true" tabindex="-1"></a>gustos</span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]   -4    0    2
+## [2,]   -6    0    3
+## [3,]    6    0   -3
+## [4,]    0    0    0
+## [5,]   -2    0    1</code></pre>
+<p>Así que al usuario <span class="math inline">\(1\)</span> le recomndamos la película <span class="math inline">\(3\)</span>, pero al usuario <span class="math inline">\(3\)</span> le recomendamos la película <span class="math inline">\(1\)</span>.</p>
+<hr />
+<p>La idea es entonces encontrar pesos para películas <span class="math inline">\(u\)</span> y para usuarios <span class="math inline">\(v\)</span> de forma que
+<span class="math inline">\(X\approx \widetilde{X} = uv^t\)</span>: podemos reproducir las calificaciones observadas a partir de nuestro modelo de factores latentes.</p>
+<p>Nótese sin embargo que hay varias dimensiones que pueden describir a películas y usuarios:
+por ejemplo, seria-divertida, artística-hollywood, ciencia ficción, con/sin violencia, etc.
+Podemos proponer más dimensiones latentes de la siguiente forma:</p>
+</div>
+<div id="ejemplo" class="section level3" number="6.0.2">
+<h3><span class="header-section-number">6.0.2</span> Ejemplo: dos dimensiones latentes</h3>
+<p>Tenemos la dimensión anterior de seria-divertida</p>
+<div class="sourceCode" id="cb538"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb538-1"><a href="dimensiones-latentes-para-recomendación.html#cb538-1" aria-hidden="true" tabindex="-1"></a>v_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span>
+<span id="cb538-2"><a href="dimensiones-latentes-para-recomendación.html#cb538-2" aria-hidden="true" tabindex="-1"></a>u_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">3</span>,<span class="sc">-</span><span class="dv">3</span>,<span class="dv">0</span>,<span class="dv">1</span>)</span></code></pre></div>
+<p>Y supongamos que tenemos otra dimensión con violencia - sin violencia</p>
+<div class="sourceCode" id="cb539"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb539-1"><a href="dimensiones-latentes-para-recomendación.html#cb539-1" aria-hidden="true" tabindex="-1"></a>v_2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="dv">2</span>,<span class="dv">2</span>)</span>
+<span id="cb539-2"><a href="dimensiones-latentes-para-recomendación.html#cb539-2" aria-hidden="true" tabindex="-1"></a>u_2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>,<span class="sc">-</span><span class="dv">3</span>,<span class="dv">0</span>,<span class="sc">-</span><span class="dv">2</span>,<span class="dv">4</span>)</span></code></pre></div>
+<p>Que quiere decir que las películas <span class="math inline">\(2, 3\)</span> tienen volencia, pero la película <span class="math inline">\(1\)</span> no. Por otra parte, a los usuarios <span class="math inline">\(1,2\)</span> y <span class="math inline">\(5\)</span> no les gustan las películas con violencia, mientras que al usuario <span class="math inline">\(5\)</span> si les gustan.</p>
+<p>La idea ahora es que el gusto de una persona por una película se escribe como combinación de las dos dimensiones. Por ejemplo, para la persona <span class="math inline">\(1\)</span> tenemos, y la película <span class="math inline">\(1\)</span>, empezamos haciendo</p>
+<div class="sourceCode" id="cb540"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb540-1"><a href="dimensiones-latentes-para-recomendación.html#cb540-1" aria-hidden="true" tabindex="-1"></a>u_1[<span class="dv">1</span>]<span class="sc">*</span>v_1[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>## [1] -4</code></pre>
+<div class="sourceCode" id="cb542"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb542-1"><a href="dimensiones-latentes-para-recomendación.html#cb542-1" aria-hidden="true" tabindex="-1"></a>u_2[<span class="dv">1</span>]<span class="sc">*</span>v_2[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>## [1] 9</code></pre>
+<p>lo que quiere decir que el hecho de que la película <span class="math inline">\(1\)</span> no sea seria le resta <span class="math inline">\(4\)</span> en gusto (pues la película <span class="math inline">\(1\)</span> está del lado “divertido”), pero le suma <span class="math inline">\(9\)</span> en gusto, pues es una película sin violencia y esta persona está del lado “sin violencia.”</p>
+<p>Sumamos para encontrar el gusto total</p>
+<div class="sourceCode" id="cb544"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb544-1"><a href="dimensiones-latentes-para-recomendación.html#cb544-1" aria-hidden="true" tabindex="-1"></a>u_1[<span class="dv">1</span>]<span class="sc">*</span>v_1[<span class="dv">1</span>] <span class="sc">+</span> u_2[<span class="dv">1</span>]<span class="sc">*</span>v_2[<span class="dv">1</span>]</span></code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<p>Para calcular los gustos sobre todas las personas y películas, haríamos</p>
+<div class="sourceCode" id="cb546"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb546-1"><a href="dimensiones-latentes-para-recomendación.html#cb546-1" aria-hidden="true" tabindex="-1"></a>U <span class="ot">&lt;-</span> <span class="fu">cbind</span>(u_1, u_2)</span>
+<span id="cb546-2"><a href="dimensiones-latentes-para-recomendación.html#cb546-2" aria-hidden="true" tabindex="-1"></a>V <span class="ot">&lt;-</span> <span class="fu">cbind</span>(v_1, v_2)</span>
+<span id="cb546-3"><a href="dimensiones-latentes-para-recomendación.html#cb546-3" aria-hidden="true" tabindex="-1"></a>U</span></code></pre></div>
+<pre><code>##      u_1 u_2
+## [1,]   2  -3
+## [2,]   3  -3
+## [3,]  -3   0
+## [4,]   0  -2
+## [5,]   1   4</code></pre>
+<div class="sourceCode" id="cb548"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb548-1"><a href="dimensiones-latentes-para-recomendación.html#cb548-1" aria-hidden="true" tabindex="-1"></a>V</span></code></pre></div>
+<pre><code>##      v_1 v_2
+## [1,]  -2  -3
+## [2,]   0   2
+## [3,]   1   2</code></pre>
+<div class="sourceCode" id="cb550"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb550-1"><a href="dimensiones-latentes-para-recomendación.html#cb550-1" aria-hidden="true" tabindex="-1"></a>U <span class="sc">%*%</span> <span class="fu">t</span>(V)</span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    5   -6   -4
+## [2,]    3   -6   -3
+## [3,]    6    0   -3
+## [4,]    6   -4   -4
+## [5,]  -14    8    9</code></pre>
+<ul>
+<li>El renglón <span class="math inline">\(j\)</span> de <span class="math inline">\(U\)</span> son los valores en las dimensiones latentes para
+la película <span class="math inline">\(i\)</span> (descriptores de usuarios).</li>
+<li>El renglón <span class="math inline">\(j\)</span> de <span class="math inline">\(V\)</span> son los valores en las dimensiones latentes para
+el usuario <span class="math inline">\(j\)</span> (descriptores de películas)</li>
+</ul>
+
+<div class="resumen">
+<p>Con <span class="math inline">\(k\)</span> dimensiones latentes, el modelo que proponemos es:</p>
+<p><span class="math display">\[\widetilde{X} = UV^t\]</span></p>
+<p>donde <span class="math inline">\(U\)</span> es una matrix de <span class="math inline">\(n\times k\)</span> (<span class="math inline">\(n=\)</span> número de usuarios), y <span class="math inline">\(V\)</span> es una matriz
+de <span class="math inline">\(p \times k\)</span>, donde <span class="math inline">\(p\)</span> es el número de películas.</p>
+<p>Buscamos que, si <span class="math inline">\(X\)</span> son las verdaderas calificaciones, entonces
+<span class="math display">\[X\approx \widetilde{X}.\]</span></p>
+y nótese que esta aproximación es en el sentido de las entradas de <span class="math inline">\(X\)</span> que <strong>son observadas</strong>. Sin embargo, <span class="math inline">\(\widetilde{X}\)</span> nos da predicciones para <strong>todos los pares película-persona</strong>.
+</div>
+<p>Bajo este modelo, la predicción para el usuario <span class="math inline">\(i\)</span> y la película <span class="math inline">\(j\)</span>
+es la siguiente suma sobre las dimensiones latentes:</p>
+<p><span class="math display">\[\widetilde{x}_{ij} =\sum_k u_{ik} v_{jk}\]</span></p>
+<p>que expresa el hecho de que el gusto de <span class="math inline">\(i\)</span> por <span class="math inline">\(j\)</span> depende de una combinación (suma)
+de factores latentes de películas ponderados por gusto por esos factores del usuario.</p>
+<p>El número de factores latentes <span class="math inline">\(k\)</span> debe ser seleccionado (por ejemplo, según el error de validación). Dado <span class="math inline">\(k\)</span>, para encontrar <span class="math inline">\(U\)</span> y <span class="math inline">\(V\)</span> (un total de <span class="math inline">\(k(n+p)\)</span> parámetros) buscamos
+minimizar</p>
+<p><span class="math display">\[\sum_{(i,j)\, obs} (x_{ij}-\widetilde{x}_{ij})^2,\]</span></p>
+<p>que también podemos escribir este problema (recuérdese que <span class="math inline">\(u_i\)</span> y
+<span class="math inline">\(v_j\)</span> aquí son vectores renglón) como</p>
+<p><span class="math display">\[\min_{U,V}\sum_{(i,j)\, obs} (x_{ij}-u_iv_j^t)^2\]</span>
+donde <span class="math inline">\(u_i\)</span> es el renglón <span class="math inline">\(i\)</span>-esimo de <span class="math inline">\(U\)</span> (gustos latentes del usuario <span class="math inline">\(i\)</span> en cada dimensión), y <span class="math inline">\(v_j\)</span> es el renglón <span class="math inline">\(j\)</span>-ésimo de la matriz <span class="math inline">\(V\)</span> (calificación latente de la película en cada dimensión)</p>
+
+<div class="resumen">
+<p><strong>¿Por qué funciona la idea de factores latentes?</strong></p>
+<ul>
+<li><p>El método de factorización de matrices de grado bajo (<span class="math inline">\(k\)</span>)
+funciona compartiendo información a lo largo de películas y usuarios. Como tenemos
+que ajustar los datos observados, y solo tenemos a nuestra disposición <span class="math inline">\(k\)</span>
+descriptores para cada película y usuario, una minimización exitosa
+captura regularidades en los datos.</p></li>
+<li><p>Es importante que la representación sea de grado relativamente bajo,
+pues esta “compresión” es la que permite que las dimensiones
+latentes capturen regularidades que están en los datos observados (que
+esperamos encontrar en el proceso de ajuste).</p></li>
+<li><p>Al reducir la dimensión, también funcionan mejor métricas relativamente
+simples para calcular similitud entre usuarios o películas.</p>
+</div></li>
+</ul>
+<p>Por ejemplo, supongamos que el gusto por las películas sólo depende de
+una dimensión sería - divertida. Si ajustamos un modelo de un solo
+factor latente, un <strong>mínimo</strong> se alcanzaría separando con la dimensión latente
+las películas serias de las divertidas, y los usuarios que prefieren películas
+serias o divertidas. Esta sería una buena explicación de los datos observados,
+y las predicciones para películas no vistas sería buena usando simplemente
+el valor en seriedad de la película (extraída de otras personas con gustos
+divertido o serio) y el gusto por seriedad de esa persona (extraida de la
+observación de que le gustan otras películas serias u otras divertidas).</p>
+</div>
+<div id="combinación-con-modelo-base" class="section level3" number="6.0.3">
+<h3><span class="header-section-number">6.0.3</span> Combinación con modelo base</h3>
+<p>Podemos usar también ideas de nuestro modelo base y modelar desviaciones en lugar de calificaciones directamente:</p>
+<p>Si <span class="math inline">\(X^0\)</span> son las predicciones del modelo de referencia, y
+<span class="math display">\[R = X-X^0\]</span>
+son los residuales del modelo base, buscamos mejor
+<span class="math display">\[R\approx \widetilde{X} = UV^t\]</span>
+de manera que las predicciones finales son
+<span class="math display">\[X^0 + \widetilde{X}\]</span></p>
+<p>Veremos también más adelante cómo regularizar estos sesgos como
+parte de la construcción del modelo.</p>
+</div>
+<div id="factorización-de-matrices" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Factorización de matrices</h2>
+<p>Como vimos arriba, reexpresamos nuestro problema como un problema
+de factorización de matrices (encontrar <span class="math inline">\(U\)</span> y <span class="math inline">\(V\)</span>). Hay varias alternativas populares para atacarlo:</p>
+<ul>
+<li>Descomposición en valores singulares (SVD).</li>
+<li>Mínimos cuadrados alternados.</li>
+<li>Descenso en gradiente estocástico.</li>
+</ul>
+<p>No vamos a ver más de este enfoque de SVD que discutimos anteriormente, pues no
+es del todo apropiado: nuestras matrices tienen muchos datos faltantes, y SVD no está diseñado para lidiar con este problema. Se pueden hacer ciertas imputaciones (por ejemplo, insertar 0’s una vez que centramos por usuario), pero los siguientes dos métodos están mejor adaptados para
+nuestro problema.</p>
+</div>
+<div id="mínimos-cuadrados-alternados" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> Mínimos cuadrados alternados</h2>
+<p>Supongamos entonces que queremos encontrar matrices <span class="math inline">\(U\)</span> y <span class="math inline">\(V\)</span>, donde <span class="math inline">\(U\)</span> es una matrix de <span class="math inline">\(n \times k\)</span> (<span class="math inline">\(n=\)</span> número de usuarios), y <span class="math inline">\(V\)</span> es una matriz
+de <span class="math inline">\(p \times k\)</span>, donde <span class="math inline">\(p\)</span> es el número de películas que nos de una
+aproximación de la matrix <span class="math inline">\(X\)</span> de calificaciones
+<span class="math display">\[
+X \approx UV^t
+\]</span>
+Ahora supongamos que conocemos <span class="math inline">\(V_1\)</span>. Si este es el caso, entonces queremos
+resolver para <span class="math inline">\(U_1\)</span>:
+<span class="math display">\[ \min_{U_1}|| X - U_1V_1^t||_{obs}^2\]</span>
+Como <span class="math inline">\(V_1^t\)</span> están fijas, este es un problema de mínimos cuadrados usual, y puede resolverse analíticamente (o usar descenso en gradiente, que
+es simple de calcular de forma analítica) para encontrar <span class="math inline">\(U_1\)</span>. Una vez que encontramos <span class="math inline">\(U_1\)</span>, la fijamos, e intentamos ahora resolver para <span class="math inline">\(V\)</span>:</p>
+<p><span class="math display">\[ \min_{V_2}|| X - U_1V_2^t||_{obs}^2\]</span>
+Y una vez que encontramos <span class="math inline">\(V_2\)</span> resolvemos</p>
+<p><span class="math display">\[ \min_{U_2}|| X - U_2V_2^t||_{obs}^2\]</span></p>
+<p>Continuamos este proceso hasta encontrar un mínimo local o hasta cierto número de iteraciones. Para inicializar <span class="math inline">\(V_1\)</span>, en <span class="citation">(<a href="#ref-alsreg" role="doc-biblioref">Zhou et al. 2008</a>)</span> se recomienda tomar como primer
+renglón el promedio de las calificaciones de las películas, y el resto
+números aleatorios chicos (por ejemplo <span class="math inline">\(U(0,1)\)</span>). También pueden inicializarse con números
+aleatorios chicos las dos matrices.</p>
+<div id="mínimos-cuadrados-alternados-con-regularización" class="section level3" number="6.2.1">
+<h3><span class="header-section-number">6.2.1</span> Mínimos cuadrados alternados con regularización</h3>
+<p>Para agregar regularización y lidiar con los datos ralos, podemos
+incluir un coeficiente adicional. Minimizamos entonces (como en
+<span class="citation">(<a href="#ref-alsreg" role="doc-biblioref">Zhou et al. 2008</a>)</span>):</p>
+<p><span class="math display">\[\min_{U,V}\sum_{(i,j)\, obs} (x_{ij}-u_i^tv_j)^2 + 
+\lambda \left ( \sum_i n_{i}||u_i||^2 + \sum_j m_{j} ||v_j||^2 \right)\]</span></p>
+<p>y modificamos de manera correspondiente cada paso de mínimos cuadrados
+mostrado arriba. <span class="math inline">\(n_{i}\)</span> es el número de evaluaciones del usuario <span class="math inline">\(i\)</span>, y
+<span class="math inline">\(m_j\)</span> es el número de evaluaciones de la película <span class="math inline">\(j\)</span>.</p>
+<p><strong>Observaciones</strong>:</p>
+<ul>
+<li>Nótese que penalizamos el tamaños de los vectores <span class="math inline">\(u_i\)</span> y <span class="math inline">\(v_j\)</span> para evitar sobreajuste (como en regresión ridge).</li>
+<li>Nótese también que los pesos <span class="math inline">\(n_i\)</span> y <span class="math inline">\(m_j\)</span> en esta regularización hace comparables el término que aparece en la suma de los residuales al cuadrado
+(la primera suma),
+y el término de regularización: por ejemplo, si el usuario <span class="math inline">\(i\)</span> hizo
+<span class="math inline">\(n_i\)</span> evaluaciones, entonces habrá <span class="math inline">\(n_i\)</span> términos en la suma de la izquierda. Lo mismo podemos decir acerca de las películas.</li>
+<li>Este no es el único término de regularización posible. Por ejemplo, podríamos <em>no</em> usar los pesos <span class="math inline">\(n_i\)</span> y <span class="math inline">\(m_j\)</span>, y obtendríamos
+un esquema razonable también, donde hay más regularización relativa
+para usuarios/películas que tengan pocas evaluaciones.</li>
+</ul>
+<p>Este método está implementado en <a href="https://spark.apache.org/docs/3.0.0/mllib-collaborative-filtering.html">spark</a>. La implementación está basada parcialmente en <span class="citation">(<a href="#ref-alsreg" role="doc-biblioref">Zhou et al. 2008</a>)</span>. La inicialización
+es diferente en spark, ver <a href="https://github.com/apache/spark/blob/v3.0.0/mllib/src/main/scala/org/apache/spark/ml/recommendation/ALS.scala">el código</a>, donde cada renglón se inicializa con
+un vector de <span class="math inline">\(N(0,1)\)</span> normalizado.</p>
+<p>En este caso, copiamos nuestra tabla a spark (nota: esto es algo que normalmente no haríamos, los datos habrían sido cargados en el cluster
+de spark de otra forma):</p>
+<div class="sourceCode" id="cb552"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb552-1"><a href="dimensiones-latentes-para-recomendación.html#cb552-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb552-2"><a href="dimensiones-latentes-para-recomendación.html#cb552-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sparklyr)</span>
+<span id="cb552-3"><a href="dimensiones-latentes-para-recomendación.html#cb552-3" aria-hidden="true" tabindex="-1"></a><span class="co"># configuración para spark</span></span>
+<span id="cb552-4"><a href="dimensiones-latentes-para-recomendación.html#cb552-4" aria-hidden="true" tabindex="-1"></a><span class="fu">spark_install</span>(<span class="at">version =</span> <span class="st">&quot;3.1.2&quot;</span>)</span>
+<span id="cb552-5"><a href="dimensiones-latentes-para-recomendación.html#cb552-5" aria-hidden="true" tabindex="-1"></a>config <span class="ot">&lt;-</span> <span class="fu">spark_config</span>()</span>
+<span id="cb552-6"><a href="dimensiones-latentes-para-recomendación.html#cb552-6" aria-hidden="true" tabindex="-1"></a>config<span class="sc">$</span><span class="st">`</span><span class="at">spark.env.SPARK_LOCAL_IP.local</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="st">&quot;0.0.0.0&quot;</span></span>
+<span id="cb552-7"><a href="dimensiones-latentes-para-recomendación.html#cb552-7" aria-hidden="true" tabindex="-1"></a>config<span class="sc">$</span><span class="st">`</span><span class="at">sparklyr.shell.driver-memory</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="st">&quot;8G&quot;</span></span>
+<span id="cb552-8"><a href="dimensiones-latentes-para-recomendación.html#cb552-8" aria-hidden="true" tabindex="-1"></a>config<span class="sc">$</span>spark.executor.memory <span class="ot">&lt;-</span> <span class="st">&quot;2G&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb553"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb553-1"><a href="dimensiones-latentes-para-recomendación.html#cb553-1" aria-hidden="true" tabindex="-1"></a><span class="co"># conectar con &quot;cluster&quot; local</span></span>
+<span id="cb553-2"><a href="dimensiones-latentes-para-recomendación.html#cb553-2" aria-hidden="true" tabindex="-1"></a>sc <span class="ot">&lt;-</span> <span class="fu">spark_connect</span>(<span class="at">master =</span> <span class="st">&quot;local&quot;</span>, <span class="at">config =</span> config)</span></code></pre></div>
+<div class="sourceCode" id="cb554"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb554-1"><a href="dimensiones-latentes-para-recomendación.html#cb554-1" aria-hidden="true" tabindex="-1"></a><span class="fu">spark_set_checkpoint_dir</span>(sc, <span class="st">&#39;./checkpoint&#39;</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb555"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb555-1"><a href="dimensiones-latentes-para-recomendación.html#cb555-1" aria-hidden="true" tabindex="-1"></a>dat_tbl <span class="ot">&lt;-</span> <span class="fu">spark_read_csv</span>(sc, <span class="at">name=</span><span class="st">&quot;netflix&quot;</span>, <span class="st">&quot;../datos/netflix/dat_muestra_nflix.csv&quot;</span>) </span>
+<span id="cb555-2"><a href="dimensiones-latentes-para-recomendación.html#cb555-2" aria-hidden="true" tabindex="-1"></a>dat_tbl <span class="ot">&lt;-</span> dat_tbl <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>fecha)</span></code></pre></div>
+<div class="sourceCode" id="cb556"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb556-1"><a href="dimensiones-latentes-para-recomendación.html#cb556-1" aria-hidden="true" tabindex="-1"></a>usuario_val <span class="ot">&lt;-</span> dat_tbl <span class="sc">|&gt;</span> <span class="fu">select</span>(usuario_id) <span class="sc">|&gt;</span> </span>
+<span id="cb556-2"><a href="dimensiones-latentes-para-recomendación.html#cb556-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sdf_distinct</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb556-3"><a href="dimensiones-latentes-para-recomendación.html#cb556-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sdf_sample</span>(<span class="at">fraction =</span> <span class="fl">0.1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb556-4"><a href="dimensiones-latentes-para-recomendación.html#cb556-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compute</span>(<span class="st">&quot;usuario_val&quot;</span>)</span>
+<span id="cb556-5"><a href="dimensiones-latentes-para-recomendación.html#cb556-5" aria-hidden="true" tabindex="-1"></a>pelicula_val <span class="ot">&lt;-</span> dat_tbl <span class="sc">|&gt;</span> <span class="fu">select</span>(peli_id) <span class="sc">|&gt;</span></span>
+<span id="cb556-6"><a href="dimensiones-latentes-para-recomendación.html#cb556-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sdf_distinct</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb556-7"><a href="dimensiones-latentes-para-recomendación.html#cb556-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sdf_sample</span>(<span class="at">fraction =</span> <span class="fl">0.1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb556-8"><a href="dimensiones-latentes-para-recomendación.html#cb556-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compute</span>(<span class="st">&quot;pelicula_val&quot;</span>)</span>
+<span id="cb556-9"><a href="dimensiones-latentes-para-recomendación.html#cb556-9" aria-hidden="true" tabindex="-1"></a>valida_tbl <span class="ot">&lt;-</span> dat_tbl <span class="sc">|&gt;</span> </span>
+<span id="cb556-10"><a href="dimensiones-latentes-para-recomendación.html#cb556-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(usuario_val) <span class="sc">|&gt;</span> </span>
+<span id="cb556-11"><a href="dimensiones-latentes-para-recomendación.html#cb556-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">inner_join</span>(pelicula_val) <span class="sc">|&gt;</span> </span>
+<span id="cb556-12"><a href="dimensiones-latentes-para-recomendación.html#cb556-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compute</span>(<span class="st">&quot;valida_tbl&quot;</span>)</span></code></pre></div>
+<pre><code>## Joining, by = &quot;usuario_id&quot;</code></pre>
+<pre><code>## Joining, by = &quot;peli_id&quot;</code></pre>
+<div class="sourceCode" id="cb559"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb559-1"><a href="dimensiones-latentes-para-recomendación.html#cb559-1" aria-hidden="true" tabindex="-1"></a>entrena_tbl <span class="ot">&lt;-</span> dat_tbl <span class="sc">|&gt;</span> <span class="fu">anti_join</span>(valida_tbl) <span class="sc">|&gt;</span> </span>
+<span id="cb559-2"><a href="dimensiones-latentes-para-recomendación.html#cb559-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">compute</span>(<span class="st">&quot;entrena_tbl&quot;</span>)</span></code></pre></div>
+<pre><code>## Joining, by = c(&quot;peli_id&quot;, &quot;usuario_id_orig&quot;, &quot;calif&quot;, &quot;usuario_id&quot;)</code></pre>
+<div class="sourceCode" id="cb561"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb561-1"><a href="dimensiones-latentes-para-recomendación.html#cb561-1" aria-hidden="true" tabindex="-1"></a>entrena_tbl <span class="sc">|&gt;</span> <span class="fu">tally</span>()</span></code></pre></div>
+<pre><code>## # Source: spark&lt;?&gt; [?? x 1]
+##          n
+##      &lt;dbl&gt;
+## 1 20798606</code></pre>
+<div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="dimensiones-latentes-para-recomendación.html#cb563-1" aria-hidden="true" tabindex="-1"></a>valida_tbl <span class="sc">|&gt;</span> <span class="fu">tally</span>()</span></code></pre></div>
+<pre><code>## # Source: spark&lt;?&gt; [?? x 1]
+##        n
+##    &lt;dbl&gt;
+## 1 190242</code></pre>
+<p>Vamos a hacer primero una descomposición en <span class="math inline">\(15\)</span> factores,
+con regularización relativamente alta:</p>
+<div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="dimensiones-latentes-para-recomendación.html#cb565-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> <span class="fu">ml_als</span>(entrena_tbl, </span>
+<span id="cb565-2"><a href="dimensiones-latentes-para-recomendación.html#cb565-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">rating_col =</span> <span class="st">&#39;calif&#39;</span>,</span>
+<span id="cb565-3"><a href="dimensiones-latentes-para-recomendación.html#cb565-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">user_col =</span> <span class="st">&#39;usuario_id&#39;</span>,</span>
+<span id="cb565-4"><a href="dimensiones-latentes-para-recomendación.html#cb565-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">item_col =</span> <span class="st">&#39;peli_id&#39;</span>, </span>
+<span id="cb565-5"><a href="dimensiones-latentes-para-recomendación.html#cb565-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">rank =</span> <span class="dv">15</span>, <span class="at">reg_param =</span> <span class="fl">0.05</span>,</span>
+<span id="cb565-6"><a href="dimensiones-latentes-para-recomendación.html#cb565-6" aria-hidden="true" tabindex="-1"></a>              <span class="at">checkpoint_interval =</span> <span class="dv">4</span>,</span>
+<span id="cb565-7"><a href="dimensiones-latentes-para-recomendación.html#cb565-7" aria-hidden="true" tabindex="-1"></a>              <span class="at">max_iter =</span> <span class="dv">50</span>)</span>
+<span id="cb565-8"><a href="dimensiones-latentes-para-recomendación.html#cb565-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Nota: checkpoint evita que la gráfica de cálculo</span></span>
+<span id="cb565-9"><a href="dimensiones-latentes-para-recomendación.html#cb565-9" aria-hidden="true" tabindex="-1"></a><span class="co"># sea demasiado grande. Cada 4 iteraciones hace una</span></span>
+<span id="cb565-10"><a href="dimensiones-latentes-para-recomendación.html#cb565-10" aria-hidden="true" tabindex="-1"></a><span class="co"># nueva gráfica con los resultados de la última iteración.</span></span></code></pre></div>
+<div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="dimensiones-latentes-para-recomendación.html#cb566-1" aria-hidden="true" tabindex="-1"></a>modelo</span></code></pre></div>
+<pre><code>## ALSModel (Transformer)
+## &lt;als__57b97773_e05b_484e_8a4e_c2915666db39&gt; 
+##  (Parameters -- Column Names)
+##   cold_start_strategy: nan
+##   item_col: peli_id
+##   prediction_col: prediction
+##   user_col: usuario_id
+##  (Transformer Info)
+##   item_factors: &lt;tbl_spark&gt; 
+##   rank:  int 15 
+##   recommend_for_all_items: &lt;function&gt; 
+##   recommend_for_all_users: &lt;function&gt; 
+##   user_factors: &lt;tbl_spark&gt;</code></pre>
+<p>Hacemos predicciones para el conjunto de validación:</p>
+<div class="sourceCode" id="cb568"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb568-1"><a href="dimensiones-latentes-para-recomendación.html#cb568-1" aria-hidden="true" tabindex="-1"></a>preds <span class="ot">&lt;-</span> <span class="fu">ml_predict</span>(modelo, valida_tbl) <span class="sc">|&gt;</span></span>
+<span id="cb568-2"><a href="dimensiones-latentes-para-recomendación.html#cb568-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prediction =</span> <span class="fu">ifelse</span>(<span class="fu">isnan</span>(prediction), <span class="fl">3.5</span>, prediction))</span>
+<span id="cb568-3"><a href="dimensiones-latentes-para-recomendación.html#cb568-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ml_regression_evaluator</span>(preds, <span class="at">label_col =</span> <span class="st">&quot;calif&quot;</span>, <span class="at">prediction_col =</span> <span class="st">&quot;prediction&quot;</span>,</span>
+<span id="cb568-4"><a href="dimensiones-latentes-para-recomendación.html#cb568-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric_name =</span> <span class="st">&quot;rmse&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] 0.8451304</code></pre>
+<p>Y podemos traer a R los datos de validación (que son chicos) para examinar:</p>
+<div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="dimensiones-latentes-para-recomendación.html#cb570-1" aria-hidden="true" tabindex="-1"></a>preds_df <span class="ot">&lt;-</span> preds <span class="sc">|&gt;</span> <span class="fu">collect</span>() <span class="co">#traemos a R con collect</span></span>
+<span id="cb570-2"><a href="dimensiones-latentes-para-recomendación.html#cb570-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(preds_df, <span class="fu">aes</span>(<span class="at">x =</span> prediction)) <span class="sc">+</span> <span class="fu">geom_histogram</span>()</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="05-recomendacion-latente_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>Y redujimos considerablemente el error del modelo base. Examinamos
+ahora las dimensiones asociadas con películas:</p>
+<div class="sourceCode" id="cb572"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb572-1"><a href="dimensiones-latentes-para-recomendación.html#cb572-1" aria-hidden="true" tabindex="-1"></a>modelo<span class="sc">$</span>item_factors </span></code></pre></div>
+<pre><code>## # Source: spark&lt;?&gt; [?? x 3]
+##       id features   features_1
+##    &lt;int&gt; &lt;list&gt;          &lt;dbl&gt;
+##  1    10 &lt;dbl [15]&gt;     -0.606
+##  2    20 &lt;dbl [15]&gt;     -0.507
+##  3    30 &lt;dbl [15]&gt;     -0.721
+##  4    40 &lt;dbl [15]&gt;     -0.760
+##  5    50 &lt;dbl [15]&gt;     -0.676
+##  6    60 &lt;dbl [15]&gt;     -0.343
+##  7    70 &lt;dbl [15]&gt;     -0.592
+##  8    80 &lt;dbl [15]&gt;     -1.06 
+##  9    90 &lt;dbl [15]&gt;     -0.500
+## 10   100 &lt;dbl [15]&gt;     -0.710
+## # … with more rows</code></pre>
+<div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="dimensiones-latentes-para-recomendación.html#cb574-1" aria-hidden="true" tabindex="-1"></a>V_df <span class="ot">&lt;-</span> modelo<span class="sc">$</span>item_factors <span class="sc">|&gt;</span></span>
+<span id="cb574-2"><a href="dimensiones-latentes-para-recomendación.html#cb574-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, features) <span class="sc">|&gt;</span> <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb574-3"><a href="dimensiones-latentes-para-recomendación.html#cb574-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(features, <span class="at">names_sep =</span> <span class="st">&quot;_&quot;</span>)</span></code></pre></div>
+<p>Nota: La columna <em>features</em> contiene la misma información de <em>feature_1,feature_2,…</em>, pero en forma de lista.</p>
+<p>Examinemos la interpretación de los factores latentes de las
+películas.</p>
+<div class="sourceCode" id="cb575"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb575-1"><a href="dimensiones-latentes-para-recomendación.html#cb575-1" aria-hidden="true" tabindex="-1"></a>pelis_nombres <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;../datos/netflix/movies_title_fix.csv&#39;</span>, <span class="at">col_names =</span> <span class="cn">FALSE</span>, <span class="at">na =</span> <span class="fu">c</span>(<span class="st">&quot;&quot;</span>, <span class="st">&quot;NA&quot;</span>, <span class="st">&quot;NULL&quot;</span>))</span></code></pre></div>
+<pre><code>## Rows: 17770 Columns: 3</code></pre>
+<pre><code>## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## chr (1): X3
+## dbl (2): X1, X2</code></pre>
+<pre><code>## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode" id="cb579"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb579-1"><a href="dimensiones-latentes-para-recomendación.html#cb579-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(pelis_nombres) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;peli_id&#39;</span>,<span class="st">&#39;año&#39;</span>,<span class="st">&#39;nombre&#39;</span>)</span>
+<span id="cb579-2"><a href="dimensiones-latentes-para-recomendación.html#cb579-2" aria-hidden="true" tabindex="-1"></a>medias_peliculas <span class="ot">&lt;-</span> entrena_tbl <span class="sc">|&gt;</span> <span class="fu">group_by</span>(peli_id) <span class="sc">|&gt;</span> </span>
+<span id="cb579-3"><a href="dimensiones-latentes-para-recomendación.html#cb579-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">num_calif_peli =</span> <span class="fu">n</span>(), <span class="at">media_peli =</span> <span class="fu">mean</span>(calif)) <span class="sc">|&gt;</span> </span>
+<span id="cb579-4"><a href="dimensiones-latentes-para-recomendación.html#cb579-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect</span>()</span></code></pre></div>
+<pre><code>## Warning: Missing values are always removed in SQL.
+## Use `mean(x, na.rm = TRUE)` to silence this warning
+## This warning is displayed only once per session.</code></pre>
+<div class="sourceCode" id="cb581"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb581-1"><a href="dimensiones-latentes-para-recomendación.html#cb581-1" aria-hidden="true" tabindex="-1"></a>latentes_pelis <span class="ot">&lt;-</span> V_df <span class="sc">|&gt;</span> </span>
+<span id="cb581-2"><a href="dimensiones-latentes-para-recomendación.html#cb581-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">peli_id =</span> id) <span class="sc">|&gt;</span> </span>
+<span id="cb581-3"><a href="dimensiones-latentes-para-recomendación.html#cb581-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(pelis_nombres <span class="sc">|&gt;</span> <span class="fu">left_join</span>(medias_peliculas))</span></code></pre></div>
+<pre><code>## Joining, by = &quot;peli_id&quot;</code></pre>
+<pre><code>## Joining, by = &quot;peli_id&quot;</code></pre>
+<div class="sourceCode" id="cb584"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb584-1"><a href="dimensiones-latentes-para-recomendación.html#cb584-1" aria-hidden="true" tabindex="-1"></a>latentes_pelis <span class="ot">&lt;-</span> latentes_pelis <span class="sc">|&gt;</span> </span>
+<span id="cb584-2"><a href="dimensiones-latentes-para-recomendación.html#cb584-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">num_grupo =</span> <span class="fu">ntile</span>(num_calif_peli, <span class="dv">10</span>))</span></code></pre></div>
+<p>Podemos examinar las dimensiones latentes:</p>
+<div class="sourceCode" id="cb585"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb585-1"><a href="dimensiones-latentes-para-recomendación.html#cb585-1" aria-hidden="true" tabindex="-1"></a>top_tail <span class="ot">&lt;-</span> <span class="cf">function</span>(latentes_pelis, feature){</span>
+<span id="cb585-2"><a href="dimensiones-latentes-para-recomendación.html#cb585-2" aria-hidden="true" tabindex="-1"></a>top_df <span class="ot">&lt;-</span> <span class="fu">arrange</span>(latentes_pelis, {{ feature }} ) <span class="sc">|&gt;</span> </span>
+<span id="cb585-3"><a href="dimensiones-latentes-para-recomendación.html#cb585-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(nombre, {{ feature }}, media_peli, num_calif_peli) <span class="sc">|&gt;</span> </span>
+<span id="cb585-4"><a href="dimensiones-latentes-para-recomendación.html#cb585-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(num_calif_peli <span class="sc">&gt;</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb585-5"><a href="dimensiones-latentes-para-recomendación.html#cb585-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">100</span>) </span>
+<span id="cb585-6"><a href="dimensiones-latentes-para-recomendación.html#cb585-6" aria-hidden="true" tabindex="-1"></a>tail_df <span class="ot">&lt;-</span> <span class="fu">arrange</span>(latentes_pelis, <span class="fu">desc</span>({{ feature }}) ) <span class="sc">|&gt;</span> </span>
+<span id="cb585-7"><a href="dimensiones-latentes-para-recomendación.html#cb585-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(nombre, {{ feature }}, media_peli, num_calif_peli) <span class="sc">|&gt;</span> </span>
+<span id="cb585-8"><a href="dimensiones-latentes-para-recomendación.html#cb585-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(num_calif_peli <span class="sc">&gt;</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb585-9"><a href="dimensiones-latentes-para-recomendación.html#cb585-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">100</span>)</span>
+<span id="cb585-10"><a href="dimensiones-latentes-para-recomendación.html#cb585-10" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(top_df)</span>
+<span id="cb585-11"><a href="dimensiones-latentes-para-recomendación.html#cb585-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tail_df)</span>
+<span id="cb585-12"><a href="dimensiones-latentes-para-recomendación.html#cb585-12" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(top_df, tail_df)</span>
+<span id="cb585-13"><a href="dimensiones-latentes-para-recomendación.html#cb585-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb585-14"><a href="dimensiones-latentes-para-recomendación.html#cb585-14" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">top_tail</span>(latentes_pelis, features_3)</span></code></pre></div>
+<pre><code>## # A tibble: 100 × 4
+##    nombre                      features_3 media_peli num_calif_peli
+##    &lt;chr&gt;                            &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
+##  1 Pretty Woman                    -0.478       3.91          40217
+##  2 Friends: Season 2               -0.463       3.92           6206
+##  3 The Best of Friends: Vol. 1     -0.442       4.04           4999
+##  4 Friends: Season 3               -0.438       4.08           4844
+##  5 The Best of Friends: Vol. 2     -0.431       4.11           3024
+##  6 Friends: The Series Finale      -0.415       4.12           3809
+##  7 Stepmom                         -0.413       3.52          20952
+##  8 Top Gun                         -0.409       3.82          31756
+##  9 Rudy                            -0.397       3.90           9341
+## 10 Father of the Bride             -0.393       3.58          22329
+## # … with 90 more rows
+## # A tibble: 100 × 4
+##    nombre                    features_3 media_peli num_calif_peli
+##    &lt;chr&gt;                          &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
+##  1 Brazil                          1.27       3.81           4557
+##  2 Hellraiser                      1.13       3.39           3582
+##  3 Evil Dead 2: Dead by Dawn       1.11       3.72           4148
+##  4 Dawn of the Dead                1.08       3.59           3432
+##  5 Night of the Living Dead        1.08       3.55           4722
+##  6 Dead Man                        1.07       3.63           2345
+##  7 The Evil Dead                   1.07       3.76           4240
+##  8 A Clockwork Orange              1.06       3.72          15551
+##  9 Repo Man                        1.05       3.47           2662
+## 10 Mars Attacks!                   1.00       3.01           3516
+## # … with 90 more rows</code></pre>
+<p>Otra dimensión latente:</p>
+<div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb587-1"><a href="dimensiones-latentes-para-recomendación.html#cb587-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">top_tail</span>(latentes_pelis, features_4)</span></code></pre></div>
+<pre><code>## # A tibble: 100 × 4
+##    nombre                                 features_4 media_peli num_calif_peli
+##    &lt;chr&gt;                                       &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
+##  1 But I&#39;m a Cheerleader                      -0.645       3.38           3087
+##  2 Hocus Pocus                                -0.611       3.33           4131
+##  3 Bio-Dome                                   -0.585       2.80           2249
+##  4 The Craft                                  -0.584       3.43           4000
+##  5 Romy and Michele&#39;s High School Reunion     -0.574       3.18           3696
+##  6 The Sweetest Thing                         -0.570       3.16           3067
+##  7 Now and Then                               -0.551       3.60           2712
+##  8 Practical Magic                            -0.541       3.57           6232
+##  9 Don&#39;t Tell Mom the Babysitter&#39;s Dead       -0.534       3.18           3585
+## 10 Connie and Carla                           -0.501       3.37           2570
+## # … with 90 more rows
+## # A tibble: 100 × 4
+##    nombre                           features_4 media_peli num_calif_peli
+##    &lt;chr&gt;                                 &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
+##  1 Patton                                 1.17       3.99           7820
+##  2 Lawrence of Arabia                     1.12       4.13           8092
+##  3 The Bridge on the River Kwai           1.08       4.12           8184
+##  4 The Longest Day                        1.07       4.03           2403
+##  5 Seven Samurai                          1.07       4.20           6498
+##  6 Ben-Hur: Collector&#39;s Edition           1.06       3.97           5490
+##  7 The Treasure of the Sierra Madre       1.05       4.01           2903
+##  8 High Noon                              1.03       3.91           4473
+##  9 The Godfather                          1.03       4.50          22253
+## 10 The Good the Bad and the Ugly          1.01       4.04           9050
+## # … with 90 more rows</code></pre>
+<p><strong>Nota</strong>: Podemos usar <strong>ml_recommend</strong> para producir recomendaciones de películas para
+usuarios, o para cada película los usuarios más afines.</p>
+<div class="sourceCode" id="cb589"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb589-1"><a href="dimensiones-latentes-para-recomendación.html#cb589-1" aria-hidden="true" tabindex="-1"></a><span class="co">#top_recom &lt;- ml_recommend(modelo, type = &quot;items&quot;, n = 1) </span></span></code></pre></div>
+<div class="sourceCode" id="cb590"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb590-1"><a href="dimensiones-latentes-para-recomendación.html#cb590-1" aria-hidden="true" tabindex="-1"></a>sparklyr<span class="sc">::</span><span class="fu">spark_disconnect_all</span>()</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+</div>
+<div id="ejercicio-5" class="section level3 unnumbered">
+<h3>Ejercicio</h3>
+<p>Examina otras dimensiones latentes, ¿qué puedes interpretar?</p>
+</div>
+</div>
+<div id="retroalimentación-implícita" class="section level2" number="6.3">
+<h2><span class="header-section-number">6.3</span> Retroalimentación implícita</h2>
+<p>Esta sección está basada en <span class="citation">(<a href="#ref-recomendacion-implicita" role="doc-biblioref">Hu, Koren, and Volinsky 2008</a>)</span>.</p>
+<p>En el ejemplo que vimos arriba, la retroalimentación es expícita en el
+sentido de que los usuarios califican los artículos (<span class="math inline">\(1-\)</span> no me gustó nada,
+hasta <span class="math inline">\(5-\)</span> me gustó mucho). Sin embargo, es común encontrar casos
+donde no existe esta retroalimentación explícita, y solo tenemos medidas
+del gusto implícito, por ejemplo:</p>
+<ul>
+<li>Cuántas veces un usuario ha pedido un cierto artículo.</li>
+<li>Qué porcentaje del programa fue visto.</li>
+<li>Cuánto tiempo pasó en la página web.</li>
+<li>Cuántas veces oyó una canción.</li>
+</ul>
+<p>Estos datos tienen la ventaja de que describen acciones del usuario,
+en lugar de un rating que puede estar influido por sesgos de imagen
+o de la calificación que “debería” tener un artículo además
+de la preferencia: quizá
+disfruto muchísimo <em>Buffy the Vampire Slayer</em>, pero lo califico con un <span class="math inline">\(3\)</span>,
+aunque un documental de ballenas que simplemente me gustó le pongo un <span class="math inline">\(5\)</span>.
+En los datos implícitos se vería de todas formas mi consumo frecuente
+de <em>Buffy the Vampire Slayer</em>, y quizá unos cuantos de documentales
+famosos.</p>
+<p>Sea <span class="math inline">\(r_{ij}\)</span> una medida implícita como las mencionadas arriba, para el usuario
+<span class="math inline">\(i\)</span> y el artículo <span class="math inline">\(j\)</span>. Ponemos <span class="math inline">\(r_{i,j}=0\)</span> cuando no se ha observado interacción
+entre este usuario y el artículo.</p>
+<p>Una diferencia importante con los ratings explícitos es que los datos
+implícitos son en un sentido menos informativos que los explícitos:</p>
+<ul>
+<li><p>Puede ser que el valor de <span class="math inline">\(r_{ij}\)</span> sea relativamente bajo (pocas interacciones), pero de todas formas se trate de un artículo que es muy preferido (por ejemplo, solo vi Star Wars I una vez, pero me gusta mucho, o nunca he encontrado Star Wars I en el catálogo). Esto no pasa con los ratings, pues ratings bajos indican baja preferencia.</p></li>
+<li><p>Sin embargo, estamos seguros de que niveles altos de interacción (oyó muchas veces una canción, etc.), es indicación de preferencia alta.</p></li>
+<li><p>Usualmente la medida <span class="math inline">\(r_{ij}\)</span> <strong>no</strong> tiene faltantes, o tiene un valor implícito para faltantes. Por ejemplo, si la medida es % de la película que vi, todas las películas con las que no he interactuado tienen <span class="math inline">\(r_{ij}=0\)</span>.</p></li>
+</ul>
+<p>Así que en nuestro modelo no necesariamente queremos predecir directamente la variable <span class="math inline">\(r_{ij}\)</span>: puede haber artículos con predicción baja de <span class="math inline">\(r_{ij}\)</span> que
+descubramos de todas formas van a ser altamente preferidos. Un modelo que haga
+una predicción de <span class="math inline">\(r_{îj}\)</span> reflejaría más los patrones de consumo actual en lugar
+de permitirnos descubrir artículos preferidos con los que no necesariamente existe interacción.</p>
+<div id="ejemplo-20" class="section level3" number="6.3.1">
+<h3><span class="header-section-number">6.3.1</span> Ejemplo</h3>
+<p>Consideremos los siguientes usuarios, donde medimos por ejemplo el número de minutos
+que pasó cada usuario viendo cada película:</p>
+<div class="sourceCode" id="cb592"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb592-1"><a href="dimensiones-latentes-para-recomendación.html#cb592-1" aria-hidden="true" tabindex="-1"></a>imp <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">usuario =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>,</span>
+<span id="cb592-2"><a href="dimensiones-latentes-para-recomendación.html#cb592-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">StarWars1 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">150</span>, <span class="dv">300</span>, <span class="dv">250</span>),</span>
+<span id="cb592-3"><a href="dimensiones-latentes-para-recomendación.html#cb592-3" aria-hidden="true" tabindex="-1"></a>              <span class="at">StarWars2 =</span> <span class="fu">c</span>(<span class="dv">250</span>,  <span class="dv">200</span>, <span class="dv">0</span>, <span class="dv">200</span>, <span class="dv">220</span>,<span class="dv">180</span>), </span>
+<span id="cb592-4"><a href="dimensiones-latentes-para-recomendación.html#cb592-4" aria-hidden="true" tabindex="-1"></a>              <span class="at">StarWars3 =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">250</span>, <span class="dv">300</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>),</span>
+<span id="cb592-5"><a href="dimensiones-latentes-para-recomendación.html#cb592-5" aria-hidden="true" tabindex="-1"></a>              <span class="at">Psycho =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">2</span>)) </span>
+<span id="cb592-6"><a href="dimensiones-latentes-para-recomendación.html#cb592-6" aria-hidden="true" tabindex="-1"></a>imp</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 5
+##   usuario StarWars1 StarWars2 StarWars3 Psycho
+##     &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
+## 1       1         0       250         0      5
+## 2       2         0       200       250      1
+## 3       3         0         0       300      0
+## 4       4       150       200         0      0
+## 5       5       300       220         0      0
+## 6       6       250       180         0      2</code></pre>
+<p>Quiséramos encontrar una manera de considerar los 0’s como información más suave (es decir, alguien puede tener valores bajos de interacción con una película, pero esto no implica necesariamente que no sea preferida). Esto implica que es más importante ajustar
+los valores altos del indicador implícito de preferencia.</p>
+<hr />
+<p>Una solución propuesta en <span class="citation">(<a href="#ref-recomendacion-implicita" role="doc-biblioref">Hu, Koren, and Volinsky 2008</a>)</span> (e implementada en
+spark) es darle menos importancia al valor <span class="math inline">\(r_{ij}\)</span> en la construcción
+de los factores latentes, especialmente si tiene valores bajos.</p>
+<p>Para hacer esto, primero definimos la variable de preferencia</p>
+<p><span class="math display">\[p_{ij} = 
+\begin{cases}
+1, &amp;\mbox{si } r_{ij}&gt;0,\\ 
+0, &amp;\mbox{si } r_{ij}=0.\\
+\end{cases}\]</span></p>
+<p>Esta variable <span class="math inline">\(p_{ij}\)</span>, cuando vale uno, indica algún nivel de confianza en la preferencia.
+¿Pero qué tanto valor debemos darle a esta preferencia? Definimos la confianza
+como
+<span class="math display">\[c_{ij} = 1+ \alpha r_{ui},\]</span>
+donde <span class="math inline">\(\alpha\)</span> es un parámetro que hay que afinar (por ejemplo <span class="math inline">\(\alpha\)</span> entre <span class="math inline">\(1\)</span> y <span class="math inline">\(50\)</span>). Para predicciones de vistas de TV, en <span class="citation">(<a href="#ref-recomendacion-implicita" role="doc-biblioref">Hu, Koren, and Volinsky 2008</a>)</span> utilizan
+<span class="math inline">\(\alpha = 40\)</span>, donde <span class="math inline">\(r_{ij}\)</span> es el número de veces que el usuario ha visto
+un programa (contando vistas parciales, así que es un número real).</p>
+<p>La función objetivo (sin regularización) se define como</p>
+<p><span class="math display" id="eq:implicita">\[\begin{equation}
+L =  \sum_{(i,j)} c_{ij}(p_{ij}  - \sum_{l=1}^k u_{i,l}v_{j,l})^2
+\tag{6.1}
+\end{equation}\]</span></p>
+<p>Nótese que :</p>
+<ul>
+<li>Cuando <span class="math inline">\(c_ij\)</span> es alta (porque <span class="math inline">\(r_{i,j}\)</span> es alta), para minimizar
+esta cantidad tenemos que hacer la predicción de $p_{ij}cercana a 1, pues el error
+se multiplica por <span class="math inline">\(c_{ij}\)</span>. Sin embargo,</li>
+<li>Cuando <span class="math inline">\(r_{i,j}\)</span> es bajo, no es tan
+importante ajustar esta información con precisión: si <span class="math inline">\(p_{ij} = 1\)</span>, puede ser
+que <span class="math inline">\(\sum_{l=1}^k u_{i,l}v_{j,l}\)</span> sea muy bajo, y si <span class="math inline">\(p_{ij}=0\)</span>, puede ser
+que <span class="math inline">\(\sum_{l=1}^k u_{i,l}v_{j,l}\)</span> sea cercano a 1 sin afectar tanto el error.</li>
+<li>Esto permite que en el ajuste podamos descubrir artículos con <span class="math inline">\(p_{ij}\)</span> alta para algún usuario, aún cuando <span class="math inline">\(r_{ij}\)</span> es cero o muy chico.</li>
+</ul>
+</div>
+<div id="ejemplo-21" class="section level3" number="6.3.2">
+<h3><span class="header-section-number">6.3.2</span> Ejemplo</h3>
+<p>Veamos cómo se ven soluciones de un factor</p>
+<div class="sourceCode" id="cb594"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb594-1"><a href="dimensiones-latentes-para-recomendación.html#cb594-1" aria-hidden="true" tabindex="-1"></a>imp_mat <span class="ot">&lt;-</span> imp <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>usuario) <span class="sc">|&gt;</span> <span class="fu">as.matrix</span>()</span>
+<span id="cb594-2"><a href="dimensiones-latentes-para-recomendación.html#cb594-2" aria-hidden="true" tabindex="-1"></a>error_explicito <span class="ot">&lt;-</span> <span class="cf">function</span>(uv){</span>
+<span id="cb594-3"><a href="dimensiones-latentes-para-recomendación.html#cb594-3" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">&lt;-</span> <span class="fu">matrix</span>(uv[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>], <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb594-4"><a href="dimensiones-latentes-para-recomendación.html#cb594-4" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> <span class="fu">matrix</span>(uv[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>], <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb594-5"><a href="dimensiones-latentes-para-recomendación.html#cb594-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>((imp_mat <span class="sc">-</span> u <span class="sc">%*%</span> <span class="fu">t</span>(v))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb594-6"><a href="dimensiones-latentes-para-recomendación.html#cb594-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb594-7"><a href="dimensiones-latentes-para-recomendación.html#cb594-7" aria-hidden="true" tabindex="-1"></a>error_implicito <span class="ot">&lt;-</span> <span class="cf">function</span>(uv){</span>
+<span id="cb594-8"><a href="dimensiones-latentes-para-recomendación.html#cb594-8" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">&lt;-</span> <span class="fu">matrix</span>(uv[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>], <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb594-9"><a href="dimensiones-latentes-para-recomendación.html#cb594-9" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> <span class="fu">matrix</span>(uv[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>], <span class="at">ncol =</span> <span class="dv">1</span>)</span>
+<span id="cb594-10"><a href="dimensiones-latentes-para-recomendación.html#cb594-10" aria-hidden="true" tabindex="-1"></a>  pref_mat <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(imp_mat <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">-</span> u <span class="sc">%*%</span> <span class="fu">t</span>(v)</span>
+<span id="cb594-11"><a href="dimensiones-latentes-para-recomendación.html#cb594-11" aria-hidden="true" tabindex="-1"></a>  confianza <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.1</span> <span class="sc">*</span> imp_mat</span>
+<span id="cb594-12"><a href="dimensiones-latentes-para-recomendación.html#cb594-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>((confianza <span class="sc">*</span> pref_mat)<span class="sc">^</span><span class="dv">2</span> )</span>
+<span id="cb594-13"><a href="dimensiones-latentes-para-recomendación.html#cb594-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Si intentamos ajustar los ratings implícitos como si fueran explícitos, obtenemos
+los siguientes ajustados con un solo factor latente:</p>
+<div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb595-1"><a href="dimensiones-latentes-para-recomendación.html#cb595-1" aria-hidden="true" tabindex="-1"></a>uv_inicial <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">10</span>)</span>
+<span id="cb595-2"><a href="dimensiones-latentes-para-recomendación.html#cb595-2" aria-hidden="true" tabindex="-1"></a>opt_exp <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> uv_inicial, error_explicito, <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>)</span>
+<span id="cb595-3"><a href="dimensiones-latentes-para-recomendación.html#cb595-3" aria-hidden="true" tabindex="-1"></a>opt_exp<span class="sc">$</span>par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div>
+<pre><code>## [1] 21.0883231 26.1360702  6.6256137  0.1706499</code></pre>
+<div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb597-1"><a href="dimensiones-latentes-para-recomendación.html#cb597-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">t</span>(opt_exp<span class="sc">$</span>par[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])) <span class="sc">%*%</span> <span class="fu">t</span>(opt_exp<span class="sc">$</span>par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>]) <span class="sc">|&gt;</span> <span class="fu">round</span>()</span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3] [,4]
+## [1,]  118  146   37    1
+## [2,]  124  154   39    1
+## [3,]   36   44   11    0
+## [4,]  151  187   47    1
+## [5,]  217  269   68    2
+## [6,]  180  223   56    1</code></pre>
+<p>Nótese que esta solución no es muy buena: una componente intenta capturar
+los patrones de consumo de estas cuatro películas.</p>
+<p>Si usamos preferencias y confianza, obtenemos:</p>
+<div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb599-1"><a href="dimensiones-latentes-para-recomendación.html#cb599-1" aria-hidden="true" tabindex="-1"></a>opt_imp <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> uv_inicial, error_implicito, <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>)</span>
+<span id="cb599-2"><a href="dimensiones-latentes-para-recomendación.html#cb599-2" aria-hidden="true" tabindex="-1"></a>opt_imp<span class="sc">$</span>par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div>
+<pre><code>## [1] 1.0005594 1.0021592 0.9978968 0.6215736</code></pre>
+<div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb601-1"><a href="dimensiones-latentes-para-recomendación.html#cb601-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">t</span>(opt_imp<span class="sc">$</span>par[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])) <span class="sc">%*%</span> <span class="fu">t</span>(opt_imp<span class="sc">$</span>par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>]) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3] [,4]
+## [1,]    1    1 0.99 0.62
+## [2,]    1    1 1.00 0.62
+## [3,]    1    1 1.00 0.62
+## [4,]    1    1 0.99 0.62
+## [5,]    1    1 1.00 0.62
+## [6,]    1    1 1.00 0.62</code></pre>
+<p>que indica que la información en esta matriz es consistente con que todos
+los usuarios tienen preferencia alta por las tres películas de Star Wars, y
+menos por la cuarta.</p>
+<hr />
+<p>Igual que en los ejemplos anteriores, usualmente se agregan términos
+de regularización para los vectores renglón <span class="math inline">\(u_i\)</span> y <span class="math inline">\(v_j\)</span>.</p>
+</div>
+<div id="evaluación-para-modelos-implícitos" class="section level3" number="6.3.3">
+<h3><span class="header-section-number">6.3.3</span> Evaluación para modelos implícitos</h3>
+<p>La evaluación para modelos implícitos no es tan simple como
+en el caso explícito, pues no estamos modelando
+directamente los valores observados <span class="math inline">\(r_{ij}\)</span>. Medidas
+como RECM o MAD que usamos en el caso explícito
+no son tan apropiadas para este problema.</p>
+<p>Una alternativa es, para cada usuario <span class="math inline">\(i\)</span>, ordenar los artículos de
+mayor a menor valor de <span class="math inline">\(\hat{p}_{ij} = u_iv_j^t\)</span> (canciones, pellículas), y calculamos:</p>
+<p><span class="math display">\[
+rank = \frac{\sum_{j} p_{ij}rank_{i,j}}{\sum_j p_{ij}}
+\]</span></p>
+<p>donde <span class="math inline">\(rank_{ij}\)</span> es el percentil del artículo <span class="math inline">\(j\)</span> en la lista ordenada
+de artículos. <span class="math inline">\(rank_{ij}=0\)</span> para el mejor artículo, y <span class="math inline">\(rank_{ij}=1\)</span> para el peor. Es
+decir, obtenemos valores más bajos si observamos que los usuarios interactúan
+con artículos que están más arriba en el ranking.</p>
+<p>Esta suma es un promedio sobre los rankings del usuario con <span class="math inline">\(p_{ij}=1\)</span>,
+y <strong>menores valores son mejores</strong> (quiere decir que hubo alguna preferencia
+por los items con <span class="math inline">\(rank_{ij}\)</span> bajo, es decir, los mejores de nuestra lista predicha. Es posible también hacer un promedio ponderado
+por <span class="math inline">\(r_{ij}\)</span>:
+<span class="math display">\[
+rank = \frac{\sum_{j} r_{ij}rank_{i,j}}{\sum_j r_{ij}}
+\]</span></p>
+<p>que es lo mismo que la ecuación anterior pero ponderando por el interés mostrado
+en cada artículo con <span class="math inline">\(p_{ij}=1\)</span>.</p>
+<ul>
+<li>Menores valores de <span class="math inline">\(rank\)</span> son mejores.</li>
+<li>Si escogemos al azar el ordenamiento de los artículos, el valor esperado de <span class="math inline">\(rank_{ij}\)</span> es <span class="math inline">\(0.5\)</span> (en medio de la lista), lo que implica que el valor esperado
+de <span class="math inline">\(rank\)</span> es <span class="math inline">\(0.50\)</span>. Cualquier modelo con <span class="math inline">\(rank\geq 0.5\)</span> es peor que dar recomendaciones al azar.</li>
+</ul>
+<p>Esta cantidad la podemos evaluar en entrenamiento y en validación. Para construir
+el conjunto de validación podemos hacer:</p>
+<ul>
+<li>Escogemos un número de usuarios para validación (por ejemplo <span class="math inline">\(20\%\)</span>)</li>
+<li>Ponemos <span class="math inline">\(50\%\)</span> de los artículos evaluados por estas personas en validación, por ejemplo.</li>
+</ul>
+<p>Estas cantidades dependen de cuántos datos tengamos, como siempre, para tener
+un tamaño razonable de datos de validación.</p>
+
+</div>
+</div>
+</div>
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-recomendacion-implicita" class="csl-entry">
+Hu, Y., Y. Koren, and C. Volinsky. 2008. <span>“Collaborative Filtering for Implicit Feedback Datasets.”</span> In <em>2008 Eighth IEEE International Conference on Data Mining</em>, 263–72. <a href="https://doi.org/10.1109/ICDM.2008.22">https://doi.org/10.1109/ICDM.2008.22</a>.
+</div>
+<div id="ref-alsreg" class="csl-entry">
+Zhou, Yunhong, Dennis Wilkinson, Robert Schreiber, and Rong Pan. 2008. <span>“Large-Scale Parallel Collaborative Filtering for the Netflix Prize.”</span> In <em>Algorithmic Aspects in Information and Management</em>, edited by Rudolf Fleischer and Jinhui Xu, 337–48. Berlin, Heidelberg: Springer Berlin Heidelberg.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="sistemas-de-recomendación-y-filtrado-colaborativo.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/felipegonzalez/metodos-analiticos-mcd-2022/edit/master/notas/05-recomendacion-latente.Rmd",
+"text": "Editar"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

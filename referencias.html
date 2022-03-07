@@ -24,14 +24,14 @@
 <meta name="author" content="Felipe González" />
 
 
-<meta name="date" content="2022-02-28" />
+<meta name="date" content="2022-03-07" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="sistemas-de-recomendación-y-filtrado-colaborativo.html"/>
+<link rel="prev" href="dimensiones-latentes-para-recomendación.html"/>
 
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -309,6 +309,24 @@ div.csl-indent {
 <li class="chapter" data-level="5.5.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#implementación"><i class="fa fa-check"></i><b>5.5.2</b> Implementación</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="6" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html"><i class="fa fa-check"></i><b>6</b> Dimensiones latentes para recomendación</a>
+<ul>
+<li class="chapter" data-level="6.0.1" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo"><i class="fa fa-check"></i><b>6.0.1</b> Ejemplo: una dimensión latente</a></li>
+<li class="chapter" data-level="6.0.2" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo"><i class="fa fa-check"></i><b>6.0.2</b> Ejemplo: dos dimensiones latentes</a></li>
+<li class="chapter" data-level="6.0.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#combinación-con-modelo-base"><i class="fa fa-check"></i><b>6.0.3</b> Combinación con modelo base</a></li>
+<li class="chapter" data-level="6.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#factorización-de-matrices"><i class="fa fa-check"></i><b>6.1</b> Factorización de matrices</a></li>
+<li class="chapter" data-level="6.2" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#mínimos-cuadrados-alternados"><i class="fa fa-check"></i><b>6.2</b> Mínimos cuadrados alternados</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#mínimos-cuadrados-alternados-con-regularización"><i class="fa fa-check"></i><b>6.2.1</b> Mínimos cuadrados alternados con regularización</a></li>
+<li class="chapter" data-level="" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejercicio-5"><i class="fa fa-check"></i>Ejercicio</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#retroalimentación-implícita"><i class="fa fa-check"></i><b>6.3</b> Retroalimentación implícita</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejemplo-20"><i class="fa fa-check"></i><b>6.3.1</b> Ejemplo</a></li>
+<li class="chapter" data-level="6.3.2" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejemplo-21"><i class="fa fa-check"></i><b>6.3.2</b> Ejemplo</a></li>
+<li class="chapter" data-level="6.3.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#evaluación-para-modelos-implícitos"><i class="fa fa-check"></i><b>6.3.3</b> Evaluación para modelos implícitos</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/felipegonzalez/metodos-analiticos-mcd-2022" target="blank">Repositorio de Github</a></li>
@@ -347,10 +365,16 @@ Hahsler, Michael, and Kurt Hornik. 2008. <span>“New Probabilistic Interest Mea
 Hastie, Trevor, Robert Tibshirani, and Jerome Friedman. 2017. <em>The Elements of Statistical Learning</em>. Springer Series in Statistics. Springer New York Inc. <a href="http://web.stanford.edu/~hastie/ElemStatLearn/">http://web.stanford.edu/~hastie/ElemStatLearn/</a>.
 </div>
 <div class="csl-entry">
+Hu, Y., Y. Koren, and C. Volinsky. 2008. <span>“Collaborative Filtering for Implicit Feedback Datasets.”</span> In <em>2008 Eighth IEEE International Conference on Data Mining</em>, 263–72. <a href="https://doi.org/10.1109/ICDM.2008.22">https://doi.org/10.1109/ICDM.2008.22</a>.
+</div>
+<div class="csl-entry">
 Jurafsky, Daniel, and James H. Martin. 2000. <em>Speech and Language Processing: An Introduction to Natural Language Processing, Computational Linguistics, and Speech Recognition</em>. 1st ed. Upper Saddle River, NJ, USA: Prentice Hall PTR.
 </div>
 <div class="csl-entry">
 Leskovec, Jure, Anand Rajaraman, and Jeffrey David Ullman. 2014. <em>Mining of Massive Datasets</em>. 2nd ed. New York, NY, USA: Cambridge University Press. <a href="http://www.mmds.org">http://www.mmds.org</a>.
+</div>
+<div class="csl-entry">
+Zhou, Yunhong, Dennis Wilkinson, Robert Schreiber, and Rong Pan. 2008. <span>“Large-Scale Parallel Collaborative Filtering for the Netflix Prize.”</span> In <em>Algorithmic Aspects in Information and Management</em>, edited by Rudolf Fleischer and Jinhui Xu, 337–48. Berlin, Heidelberg: Springer Berlin Heidelberg.
 </div>
 </div>
 </div>
@@ -359,7 +383,7 @@ Leskovec, Jure, Anand Rajaraman, and Jeffrey David Ullman. 2014. <em>Mining of M
           </div>
         </div>
       </div>
-<a href="sistemas-de-recomendación-y-filtrado-colaborativo.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="dimensiones-latentes-para-recomendación.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
     </div>
   </div>
