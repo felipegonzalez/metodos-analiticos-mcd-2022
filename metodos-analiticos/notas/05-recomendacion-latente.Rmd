@@ -253,6 +253,7 @@ de spark de otra forma):
 library(tidyverse)
 library(sparklyr)
 # configuración para spark
+spark_install()
 config <- spark_config()
 config$`spark.env.SPARK_LOCAL_IP.local` <- "0.0.0.0"
 config$`sparklyr.shell.driver-memory` <- "8G"
