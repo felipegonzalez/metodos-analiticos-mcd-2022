@@ -24,7 +24,7 @@
 <meta name="author" content="Felipe González" />
 
 
-<meta name="date" content="2022-03-16" />
+<meta name="date" content="2022-03-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -65,6 +65,9 @@
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
 
 
 <style type="text/css">
@@ -325,6 +328,44 @@ div.csl-indent {
 <li class="chapter" data-level="6.3.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejemplo-20"><i class="fa fa-check"></i><b>6.3.1</b> Ejemplo</a></li>
 <li class="chapter" data-level="6.3.2" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejemplo-21"><i class="fa fa-check"></i><b>6.3.2</b> Ejemplo</a></li>
 <li class="chapter" data-level="6.3.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#evaluación-para-modelos-implícitos"><i class="fa fa-check"></i><b>6.3.3</b> Evaluación para modelos implícitos</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html"><i class="fa fa-check"></i><b>7</b> Pagerank y análisis de redes</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#introducción"><i class="fa fa-check"></i><b>7.1</b> Introducción</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#centralidad-en-redes"><i class="fa fa-check"></i><b>7.1.1</b> Centralidad en redes</a></li>
+<li class="chapter" data-level="" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#ejemplo-de-moviegalaxies.com-pulp-fiction"><i class="fa fa-check"></i>Ejemplo de Moviegalaxies.com: Pulp Fiction</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#tipos-de-redes-y-su-representación"><i class="fa fa-check"></i><b>7.2</b> Tipos de redes y su representación</a></li>
+<li class="chapter" data-level="7.3" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#visualización-de-redes"><i class="fa fa-check"></i><b>7.3</b> Visualización de redes</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#ejercicio-6"><i class="fa fa-check"></i><b>7.3.1</b> Ejercicio</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#medidas-de-centralidad-para-redes"><i class="fa fa-check"></i><b>7.4</b> Medidas de centralidad para redes</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#grado"><i class="fa fa-check"></i><b>7.4.1</b> Grado</a></li>
+<li class="chapter" data-level="7.4.2" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#medida-de-centralidad-betweeness-o-intermediación"><i class="fa fa-check"></i><b>7.4.2</b> Medida de centralidad: <em>Betweeness</em> o <em>Intermediación</em></a></li>
+<li class="chapter" data-level="7.4.3" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#medida-de-centralidad-cercanía"><i class="fa fa-check"></i><b>7.4.3</b> Medida de centralidad: Cercanía</a></li>
+<li class="chapter" data-level="7.4.4" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#centralidad-de-eigenvector"><i class="fa fa-check"></i><b>7.4.4</b> Centralidad de eigenvector</a></li>
+<li class="chapter" data-level="" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#matrices-irreducibles-y-gráficas-fuertemente-conexas"><i class="fa fa-check"></i>Matrices irreducibles y gráficas fuertemente conexas</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#gráficas-dirigidas"><i class="fa fa-check"></i><b>7.5</b> Gráficas dirigidas</a>
+<ul>
+<li><a href="pagerank-y-análisis-de-redes.html#ejemplos-qué-pasa-si-a-es-no-reducible">Ejemplos: ¿qué pasa si <span class="math inline">\(A\)</span> es no reducible?</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank"><i class="fa fa-check"></i><b>7.6</b> Pagerank</a>
+<ul>
+<li class="chapter" data-level="" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#ejemplo-24"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="7.6.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#la-matriz-m-es-estocástica"><i class="fa fa-check"></i><b>7.6.1</b> La matriz <span class="math inline">\(M\)</span> es estocástica</a></li>
+<li class="chapter" data-level="7.6.2" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#primeras-dificultades"><i class="fa fa-check"></i><b>7.6.2</b> Primeras dificultades</a></li>
+<li class="chapter" data-level="7.6.3" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#el-proceso-estocástico-cadena-de-markov-asociado-al-pagerank-versión-simple"><i class="fa fa-check"></i><b>7.6.3</b> El proceso estocástico (cadena de Markov) asociado al Pagerank, versión simple</a></li>
+<li class="chapter" data-level="7.6.4" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#matriz-de-transición"><i class="fa fa-check"></i><b>7.6.4</b> Matriz de transición</a></li>
+<li class="chapter" data-level="7.6.5" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#distribución-de-equilibrio-versión-simple"><i class="fa fa-check"></i><b>7.6.5</b> Distribución de equilibrio (versión simple)</a></li>
+<li class="chapter" data-level="7.6.6" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#distribución-de-equilibrio-y-probabilidades-a-largo-plazo"><i class="fa fa-check"></i><b>7.6.6</b> Distribución de equilibrio y probabilidades a largo plazo</a></li>
+<li class="chapter" data-level="7.6.7" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#matriz-de-transición-a-k-pasos"><i class="fa fa-check"></i><b>7.6.7</b> Matriz de transición a <span class="math inline">\(k\)</span> pasos</a></li>
+<li class="chapter" data-level="7.6.8" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank-teletransportaciónperturbación-de-la-matriz-m"><i class="fa fa-check"></i><b>7.6.8</b> Pagerank: teletransportación/perturbación de la matriz <span class="math inline">\(M\)</span></a></li>
+<li class="chapter" data-level="7.6.9" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank-para-buscador"><i class="fa fa-check"></i><b>7.6.9</b> Pagerank para buscador</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
@@ -926,7 +967,7 @@ kaggle</a>.</p>
 <span id="cb165-2"><a href="similitud.html#cb165-2" aria-hidden="true" tabindex="-1"></a>num_tweets <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
 <span id="cb165-3"><a href="similitud.html#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[<span class="dv">1</span><span class="sc">:</span>num_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   3.097   0.043   3.145</code></pre>
+##    2.71    0.02    2.73</code></pre>
 <div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="similitud.html#cb167-1" aria-hidden="true" tabindex="-1"></a>tejas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> <span class="dv">1</span><span class="sc">:</span>num_tweets, <span class="at">tejas =</span> tejas_doc)</span>
 <span id="cb167-2"><a href="similitud.html#cb167-2" aria-hidden="true" tabindex="-1"></a>hash_f <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="sc">~</span> <span class="fu">generar_hash</span>())</span>
 <span id="cb167-3"><a href="similitud.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
@@ -934,7 +975,7 @@ kaggle</a>.</p>
 <span id="cb167-5"><a href="similitud.html#cb167-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
 <span id="cb167-6"><a href="similitud.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##  33.928   0.014  33.948</code></pre>
+##  26.019   0.019  26.053</code></pre>
 <div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="similitud.html#cb169-1" aria-hidden="true" tabindex="-1"></a>docs_firmas</span></code></pre></div>
 <pre><code>## # A tibble: 100,000 × 2
 ##    doc_id firma     
@@ -1016,7 +1057,7 @@ el proceso exactamente como procesamos los datos originales. Por ejemplo:</p>
 <span id="cb186-4"><a href="similitud.html#cb186-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
 <span id="cb186-5"><a href="similitud.html#cb186-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.008   0.000   0.009</code></pre>
+##   0.008   0.000   0.008</code></pre>
 <div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="similitud.html#cb188-1" aria-hidden="true" tabindex="-1"></a>docs_nuevas_firmas</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 2
 ##   doc_id firma     
@@ -1230,7 +1271,7 @@ normales con desviación estándar relativamente grande</p>
 <span id="cb222-14"><a href="similitud.html#cb222-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">dist =</span> <span class="fu">map2_dbl</span>(vec_1, vec_2, dist_e))</span>
 <span id="cb222-15"><a href="similitud.html#cb222-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.031   0.000   0.031</code></pre>
+##   0.026   0.000   0.025</code></pre>
 <div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="similitud.html#cb224-1" aria-hidden="true" tabindex="-1"></a>pares_tbl <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 5
 ##    id_1 vec_1      id_2 vec_2      dist

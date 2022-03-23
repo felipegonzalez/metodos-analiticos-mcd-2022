@@ -24,14 +24,14 @@
 <meta name="author" content="Felipe González" />
 
 
-<meta name="date" content="2022-03-16" />
+<meta name="date" content="2022-03-23" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="dimensiones-latentes-para-recomendación.html"/>
+<link rel="prev" href="pagerank-y-análisis-de-redes.html"/>
 
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -65,6 +65,9 @@
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
 <script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
 
 
 <style type="text/css">
@@ -327,6 +330,44 @@ div.csl-indent {
 <li class="chapter" data-level="6.3.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#evaluación-para-modelos-implícitos"><i class="fa fa-check"></i><b>6.3.3</b> Evaluación para modelos implícitos</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="7" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html"><i class="fa fa-check"></i><b>7</b> Pagerank y análisis de redes</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#introducción"><i class="fa fa-check"></i><b>7.1</b> Introducción</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#centralidad-en-redes"><i class="fa fa-check"></i><b>7.1.1</b> Centralidad en redes</a></li>
+<li class="chapter" data-level="" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#ejemplo-de-moviegalaxies.com-pulp-fiction"><i class="fa fa-check"></i>Ejemplo de Moviegalaxies.com: Pulp Fiction</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#tipos-de-redes-y-su-representación"><i class="fa fa-check"></i><b>7.2</b> Tipos de redes y su representación</a></li>
+<li class="chapter" data-level="7.3" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#visualización-de-redes"><i class="fa fa-check"></i><b>7.3</b> Visualización de redes</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#ejercicio-6"><i class="fa fa-check"></i><b>7.3.1</b> Ejercicio</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#medidas-de-centralidad-para-redes"><i class="fa fa-check"></i><b>7.4</b> Medidas de centralidad para redes</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#grado"><i class="fa fa-check"></i><b>7.4.1</b> Grado</a></li>
+<li class="chapter" data-level="7.4.2" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#medida-de-centralidad-betweeness-o-intermediación"><i class="fa fa-check"></i><b>7.4.2</b> Medida de centralidad: <em>Betweeness</em> o <em>Intermediación</em></a></li>
+<li class="chapter" data-level="7.4.3" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#medida-de-centralidad-cercanía"><i class="fa fa-check"></i><b>7.4.3</b> Medida de centralidad: Cercanía</a></li>
+<li class="chapter" data-level="7.4.4" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#centralidad-de-eigenvector"><i class="fa fa-check"></i><b>7.4.4</b> Centralidad de eigenvector</a></li>
+<li class="chapter" data-level="" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#matrices-irreducibles-y-gráficas-fuertemente-conexas"><i class="fa fa-check"></i>Matrices irreducibles y gráficas fuertemente conexas</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#gráficas-dirigidas"><i class="fa fa-check"></i><b>7.5</b> Gráficas dirigidas</a>
+<ul>
+<li><a href="pagerank-y-análisis-de-redes.html#ejemplos-qué-pasa-si-a-es-no-reducible">Ejemplos: ¿qué pasa si <span class="math inline">\(A\)</span> es no reducible?</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank"><i class="fa fa-check"></i><b>7.6</b> Pagerank</a>
+<ul>
+<li class="chapter" data-level="" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#ejemplo-24"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="7.6.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#la-matriz-m-es-estocástica"><i class="fa fa-check"></i><b>7.6.1</b> La matriz <span class="math inline">\(M\)</span> es estocástica</a></li>
+<li class="chapter" data-level="7.6.2" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#primeras-dificultades"><i class="fa fa-check"></i><b>7.6.2</b> Primeras dificultades</a></li>
+<li class="chapter" data-level="7.6.3" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#el-proceso-estocástico-cadena-de-markov-asociado-al-pagerank-versión-simple"><i class="fa fa-check"></i><b>7.6.3</b> El proceso estocástico (cadena de Markov) asociado al Pagerank, versión simple</a></li>
+<li class="chapter" data-level="7.6.4" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#matriz-de-transición"><i class="fa fa-check"></i><b>7.6.4</b> Matriz de transición</a></li>
+<li class="chapter" data-level="7.6.5" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#distribución-de-equilibrio-versión-simple"><i class="fa fa-check"></i><b>7.6.5</b> Distribución de equilibrio (versión simple)</a></li>
+<li class="chapter" data-level="7.6.6" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#distribución-de-equilibrio-y-probabilidades-a-largo-plazo"><i class="fa fa-check"></i><b>7.6.6</b> Distribución de equilibrio y probabilidades a largo plazo</a></li>
+<li class="chapter" data-level="7.6.7" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#matriz-de-transición-a-k-pasos"><i class="fa fa-check"></i><b>7.6.7</b> Matriz de transición a <span class="math inline">\(k\)</span> pasos</a></li>
+<li class="chapter" data-level="7.6.8" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank-teletransportaciónperturbación-de-la-matriz-m"><i class="fa fa-check"></i><b>7.6.8</b> Pagerank: teletransportación/perturbación de la matriz <span class="math inline">\(M\)</span></a></li>
+<li class="chapter" data-level="7.6.9" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank-para-buscador"><i class="fa fa-check"></i><b>7.6.9</b> Pagerank para buscador</a></li>
+</ul></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/felipegonzalez/metodos-analiticos-mcd-2022" target="blank">Repositorio de Github</a></li>
@@ -383,7 +424,7 @@ Zhou, Yunhong, Dennis Wilkinson, Robert Schreiber, and Rong Pan. 2008. <span>“
           </div>
         </div>
       </div>
-<a href="dimensiones-latentes-para-recomendación.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="pagerank-y-análisis-de-redes.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
 
     </div>
   </div>
