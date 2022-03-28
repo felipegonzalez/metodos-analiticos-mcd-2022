@@ -1142,8 +1142,8 @@ red_p
 ```
 
 ```
-## IGRAPH d55c85a D--- 4 8 -- 
-## + edges from d55c85a:
+## IGRAPH ceca9a3 D--- 4 8 -- 
+## + edges from ceca9a3:
 ## [1] 1->2 1->4 1->3 2->1 2->4 3->1 4->3 2->3
 ```
 
@@ -1750,7 +1750,7 @@ microbenchmark(r_1 <- M_t %*% r, times=10, unit = 'ms')
 ```
 ## Unit: milliseconds
 ##              expr    min     lq    mean median     uq    max neval
-##  r_1 <- M_t %*% r 0.1466 0.1485 0.32964 0.1494 0.1531 1.9316    10
+##  r_1 <- M_t %*% r 0.1458 0.1463 0.38652 0.1477 0.1555 2.4794    10
 ```
 
 ```r
@@ -1760,8 +1760,8 @@ microbenchmark(r_1 <- MM %*% r, times=10, unit = 'ms')
 
 ```
 ## Unit: milliseconds
-##             expr     min      lq    mean  median      uq     max neval
-##  r_1 <- MM %*% r 40.4092 40.4581 40.5982 40.5136 40.5512 41.5227    10
+##             expr     min      lq     mean   median      uq     max neval
+##  r_1 <- MM %*% r 47.7528 48.0711 48.71151 48.42415 49.1489 51.1867    10
 ```
 
 
