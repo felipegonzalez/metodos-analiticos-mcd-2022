@@ -1,0 +1,248 @@
+---
+title: "Tarea spark y recomendación implícita para last-fm 360K"
+output: html_notebook
+---
+
+Para hacer este ejercicio, puedes usar este código o escribir nuevo código de python pyspark y también enviar 
+sql usando pysparksql.
+
+En cualquier caso, recuerda tener cuidado al hacer *collect* y traer datos 
+a tu sesión de R o python, pues puedes agotar la memoria de 
+
+**Pregunta 1**: Bajar los siguientes datos. ¿De qué tamaño son los datos descomprimidos?:
+
+Datos de preferencia implícita de Lastfm, <http://ocelma.net/MusicRecommendationDataset/index.html>. También los
+puedes encontrar [aquí](https://ma-recomendacion.s3.amazonaws.com/lastfm-dataset-360K.tar.gz). 
+
+
+### Leer datos
+
+**Pregunta 2**: Arranca spark en tu entorno local, y ajusta el número de cores dependiendo de tu ambiente, y lee los datos a spark:
+
+```{r, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(sparklyr)
+config <- spark_config()
+config$`sparklyr.shell.driver-memory` <- "4G"
+config$`sparklyr.connect.cores.local` <- 6
+config$`sparklyr.shell.executor-memory` <- "2G"
+#config$`spark.env.SPARK_LOCAL_IP.local` <- "0.0.0.0"
+sc <- spark_connect(master = "local", config = config)
+spark_set_checkpoint_dir(sc, './checkpoint')
+```
+
+Leemos datos
+
+```{r}
+#http://ocelma.net/MusicRecommendationDataset/lastfm-360K.html
+path <- '../datos/lastfm-dataset-360K/usersha1-artmbid-artname-plays.tsv'
+lastfm_tbl <- spark_read_csv(sc, 
+    name = "last_fm", path = path, header = FALSE, infer_schema = FALSE,
+    columns = c("user_id" = "character", "artist_id" = "character", "name" = "character", 
+                "plays" = "integer"),
+    delim = "\t", quote="\"",  overwrite = TRUE)
+lastfm_tbl
+```
+
+
+**Pregunta 3** usando spark, calcula
+cuáles son los artistas con más "plays" (usa artist_id y name). También calcula
+cuántos artistas distintos hay en los datos (nota: recuerda revisar las funciones
+sdf_* de sparklyr que a veces tienes que usar en lugar de la versión de R).
+
+```{r}
+top_100 <- lastfm_tbl |> group_by(artist_id, name) |> count() |> 
+  arrange(desc(n)) |> head(40) 
+# hacemos collect porque estos son datos chicos: solo 100 renglones:
+top_100 |> collect()
+```
+
+**Pregunta 4** En spark hay operaciones que pueden hacerse de forma
+aproximada, lo cual muchas veces es suficiente, de manera más rápida. Compara 
+las dos siguientes ejemplos. ¿Cuál es la diferencia relativa de tiempo? 
+¿Cuál es la diferencia relativa del resultado aproximado?
+
+```{r}
+system.time(
+  res_approx <- lastfm_tbl |>
+    mutate(user_artist = concat(artist_id, user_id)) |> 
+    summarise(distintos = approx_count_distinct(user_artist)) |> 
+  collect())
+res_approx
+```
+```{r}
+system.time(
+res_exacto <- lastfm_tbl |>
+  mutate(user_artist = concat(artist_id, user_id)) |> 
+  summarise(distintos = n_distinct(user_artist)) |> 
+  collect())
+res_exacto
+```
+
+Nota: si quieres saber cómo funciona este algoritmo puedes empezar por
+la idea básica de la sección 4.4.2 de nuestro libro de texto, y puedes ver más detalles técnicos del hyperloglog [aquí](https://static.googleusercontent.com/media/research.google.com/es//pubs/archive/40671.pdf).
+
+
+
+### Limpieza de datos
+
+
+Limpiamos algunos na's y vemos la distribución de número de *plays*
+
+```{r}
+lastfm_tbl <- lastfm_tbl |> 
+  filter(!is.na(plays)) |>
+  filter(!is.na(artist_id)) 
+resumen <- lastfm_tbl |> summarise(p_1 = percentile_approx(plays, 0.01),
+              p_50 = percentile_approx(plays, 0.55),
+              p_99 = percentile_approx(plays, 0.99),
+              max = max(plays, na.rm = T), n = n()) |> collect()
+resumen
+```
+
+En la cola superior hay valores muy grandes (casi medio millón de veces para
+un usuario y una canción). Podemos filtrar estos valores atípicos. Probamos
+por ejemplo con 5000 veces para una canción y un usuario:
+
+```{r}
+lastfm_tbl |> 
+  summarise(mayor_5000 = sum(as.integer(plays > 5000), na.rm = TRUE)) |> collect()
+lastfm_tbl <- lastfm_tbl |> filter(plays <= 5000)
+```
+Filtramos también artistas desconocidos:
+
+```{r}
+#Filtramos artista desconocido (buscar el id)
+desconocidos <- lastfm_tbl |> 
+  filter(artist_id=='125ec42a-7229-4250-afc5-e057484327fe') |> 
+  select(artist_id, name) |> sdf_distinct() |> collect()
+desconocidos
+lastfm_tbl <- lastfm_tbl |> 
+  filter(artist_id != '125ec42a-7229-4250-afc5-e057484327fe')
+```
+
+
+**Pregunta 5**: Haz un histograma de número del logaritmo del número plays por usuario.
+¿Cómo describirías la distribución de plays sobre los usuarios?
+
+Nótese que en general no conviene hacer este cálculo en nuestro driver, y preferimos
+hacerlo distribuido en spark. En spark, la división en cubetas se hace en paralelo
+y sólo traemos a nuestra sesión los datos para graficar:
+
+```{r}
+#install.packages("dbplot")
+library(dbplot)
+histograma_plays <- lastfm_tbl |>
+  filter(plays!= 0) |> 
+  group_by(user_id) |> 
+  summarise(plays = sum(plays)) |> 
+  db_compute_bins(plays, binwidth = 5)
+
+ggplot(histograma_plays, aes(x = plays, y = count)) + geom_col()
+```
+
+
+
+## ALS para calificaciones implícitas
+
+Creamos índices numéricos para usuarios y artistas (que usalmente estarían en la base de datos), y usaremos el logaritmo de plays para nuestra señal implícita (r). Nótese que usamos *compute* para forzar en este punto la creación de las variables derivadas,
+aunque normalmente son calculadas más tarde si son necesarias (de forma *lazy*):
+
+```{r}
+lastfm_tbl <- lastfm_tbl |> 
+    ft_string_indexer("user_id", "user_num") |> 
+    ft_string_indexer("artist_id", "artist_num") |> 
+    mutate(log_plays = log10(1 + plays)) |> 
+  compute()
+# construimos una tabla de artistas para usar después
+artistas <- lastfm_tbl |> 
+  group_by(artist_num, artist_id) |>
+  summarise(total_plays = sum(plays, na.rm = TRUE), name = first_value(name)) |>
+  arrange(desc(total_plays))
+lastfm_tbl
+```
+
+
+
+```{r als-spark}
+modelo_imp <- ml_als(lastfm_tbl |> select(user_num, artist_num, log_plays), 
+    rating_col = "log_plays", user_col = "user_num", item_col = "artist_num", 
+    rank = 10, reg_param = 0.01, alpha = 20,
+    implicit_prefs = TRUE, checkpoint_interval = 5, max_iter = 10)
+# Nota: checkpoint evita que la gráfica de cálculo
+# sea demasiado grande. Cada 5 iteraciones hace una
+# nueva gráfica con los resultados de la última iteración.
+```
+
+
+**Pregunta 6**: Busca un usuario que le guste mucho Britney Spears. ¿Qué otras recomendaciones sugiere el  modelo?
+
+```{r}
+# escribe tu código para correr en spark y buscar gente que
+# le guste britney spears
+```
+
+
+
+Podemos examinar predicciones para un usuario. Primero vemos qué escuchó este usuario:
+
+```{r}
+# a esta persona le gusta mucho britney spears
+usuario_num <- 229101
+usuario_plays_df <- lastfm_tbl |> filter(user_num == usuario_num) |> 
+  arrange(desc(plays)) 
+usuario_plays_df |> select(name, plays)
+```
+
+Calculamos scores para este usuario sobre todos los artistas:
+
+```{r}
+usuario_df <- artistas |> 
+  mutate(user_num = 229101) 
+# predicciones para este usario y todos los artistas
+usuario_scores_tbl <- ml_predict(modelo_imp, usuario_df) 
+usuario_scores_tbl
+```
+
+**Pregunta 7**: ¿escogerías los artistas con ranking más alto para
+recomendar "descubrir nuevos artistas" ¿Por qué no?
+
+
+**Pregunta 8**: Filtramos todos los que no ha escuchado y examina los resultados.
+Finalmente copia esta tabla de recomendaciones (las 20 más altas) a spark:
+
+```{r}
+anti_join(usuario_scores_tbl, usuario_plays_df |> select(artist_num)) |> 
+  arrange(desc(prediction)) |> select(artist_num, name, prediction)
+```
+
+
+**Pregunta 9**: Filtra a algún otro usuario y corre el código de arriba.
+
+**Pregunta 10**: Después del ajuste, explica de manera sucinta 
+cuáles son los **objetos o cantidades** que
+se utilizan para calcular la columna *prediction* de las tablas de arriba. Finalmente, explica cómo se ajustan esos **objetos o cantidades**.
+
+
+
+
+
+
+
+
+
+
+
+Y ahora veamos cuáles artistas son similares según nuestros factores (haz
+algunas pruebas):
+
+```{r}
+# por ejemplo
+# 1 beatles
+# 63 Britney Spears
+# 3 red hot chili peppers
+# 5  metallica
+
+```{r}
+spark_disconnect(sc)
+```
