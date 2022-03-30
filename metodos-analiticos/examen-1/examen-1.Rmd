@@ -1,0 +1,68 @@
+---
+title: "Examen 1: componentes principales"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+Consideramos  datos nutricionales de cereales. Nuestro objetivo es reducir dimensionalidad
+de estos datos para visualizar los distintos tipos de cereal que existen.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+cereales_tbl <- read_csv("datos/cereales.csv")
+```
+
+```{r}
+names(cereales_tbl)
+```
+cereal name [name]
+manufacturer (e.g., Kellogg's) [mfr]
+type (cold/hot) [type] 
+calories (number) [calories]
+protein(g) [protein]
+fat(g) [fat]
+sodium(mg) [sodium]
+dietary fiber(g) [fiber]
+complex carbohydrates(g) [carbo]
+sugars(g) [sugars]
+display shelf (1, 2, or 3, counting from the floor) [shelf]
+potassium(mg) [potass] 
+vitamins & minerals (0, 25, or 100, respectively indicating 'none added'; 'enriched, often to 25% FDA recommended'; '100% of  FDA recommended') [vitamins]
+weight (in ounces) of one serving (serving size) [weight]
+cups per serving [cups]
+
+
+```{r}
+library(skimr)
+skimr::skim(cereales_tbl)
+```
+
+
+**Pregunta 1**: Explica por qué conviene escalar estos datos antes de intentar hacer
+reducción de dimensionalidad. ¿Qué pasa si intentas correr componentes principales
+con los datos no estandarizados?
+
+**Pregunta 2**: Corre componentes principales con los datos estandarizados (en R usa prcomp,
+en python sklearn.decomposition.PCA). Como nos interesan más los datos nutricionales,
+puedes quitar las variables weight, cups y shelf.
+
+**Pregunta 3** De la varianza total de la matriz escalada, 
+¿cuánto explican las primeras tres componentes? Muestra cómo se calcula este número usando
+los valores singulares de la descomposición en valores singulares de los datos escalados.
+
+**Pregunta 4**: Haz una gráfica de todos los cereales
+en sus primeras dos componentes principales. ¿Qué tipo de cereales están en cada parte de la gráfica?
+
+**Pregunta 5**. Complementa tu explicación de la pregunta anterior viendo los pesos de las
+variables originales para las primeras dos componentes principales. Según estos pesos,
+¿cómo interpretas cada una de estas dos dimensiones? Para un cereal dado, muestra cómo
+se calculan sus dos componentes principales utilizando la matriz de pesos y los datos
+originales estandarizados.
+
+**Pregunta 6**: Agrega a la gráfica de cereales de la pregunta 3 los cereales de la tabla 
+nuevos_cereales.csv. Nota: no recalcules la DVS ni la estandarización, proyecta estos nuevos puntos en el espacio de las primeras dos componentes principales (recuerda cómo es la proyección de los datos originales sobre el espacio de componentes: z = Xv).
+
