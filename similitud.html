@@ -24,7 +24,7 @@
 <meta name="author" content="Felipe González" />
 
 
-<meta name="date" content="2022-03-28" />
+<meta name="date" content="2022-03-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -967,7 +967,7 @@ kaggle</a>.</p>
 <span id="cb165-2"><a href="similitud.html#cb165-2" aria-hidden="true" tabindex="-1"></a>num_tweets <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
 <span id="cb165-3"><a href="similitud.html#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[<span class="dv">1</span><span class="sc">:</span>num_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   2.833   0.035   2.868</code></pre>
+##    3.21    0.06    3.27</code></pre>
 <div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="similitud.html#cb167-1" aria-hidden="true" tabindex="-1"></a>tejas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> <span class="dv">1</span><span class="sc">:</span>num_tweets, <span class="at">tejas =</span> tejas_doc)</span>
 <span id="cb167-2"><a href="similitud.html#cb167-2" aria-hidden="true" tabindex="-1"></a>hash_f <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="sc">~</span> <span class="fu">generar_hash</span>())</span>
 <span id="cb167-3"><a href="similitud.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
@@ -975,7 +975,7 @@ kaggle</a>.</p>
 <span id="cb167-5"><a href="similitud.html#cb167-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
 <span id="cb167-6"><a href="similitud.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##  27.238   0.023  27.267</code></pre>
+##  29.828   0.008  29.846</code></pre>
 <div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="similitud.html#cb169-1" aria-hidden="true" tabindex="-1"></a>docs_firmas</span></code></pre></div>
 <pre><code>## # A tibble: 100,000 × 2
 ##    doc_id firma     
@@ -1057,7 +1057,7 @@ el proceso exactamente como procesamos los datos originales. Por ejemplo:</p>
 <span id="cb186-4"><a href="similitud.html#cb186-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
 <span id="cb186-5"><a href="similitud.html#cb186-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.008   0.000   0.007</code></pre>
+##   0.008   0.000   0.008</code></pre>
 <div class="sourceCode" id="cb188"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb188-1"><a href="similitud.html#cb188-1" aria-hidden="true" tabindex="-1"></a>docs_nuevas_firmas</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 2
 ##   doc_id firma     
@@ -1271,7 +1271,7 @@ normales con desviación estándar relativamente grande</p>
 <span id="cb222-14"><a href="similitud.html#cb222-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">dist =</span> <span class="fu">map2_dbl</span>(vec_1, vec_2, dist_e))</span>
 <span id="cb222-15"><a href="similitud.html#cb222-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.026   0.000   0.026</code></pre>
+##   0.028   0.000   0.028</code></pre>
 <div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="similitud.html#cb224-1" aria-hidden="true" tabindex="-1"></a>pares_tbl <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 5
 ##    id_1 vec_1      id_2 vec_2      dist
