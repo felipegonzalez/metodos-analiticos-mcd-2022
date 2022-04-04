@@ -200,15 +200,15 @@ red_vis <- visNetwork(nodes = tibble(id = 1:20, label = 1:20),
              forceAtlas2Based = list(gravitationalConstant = - 50, # negativo!
                               centralGravity = 0.01, 
                               springLength = 100,
-                              springConstant = 0.08,
-                              avoidOverlap = 0
+                              springConstant = 1,
+                              avoidOverlap = 1
                               ))
 red_vis
 ```
 
 ```{=html}
 <div id="htmlwidget-d702bf6449cc05af9583" style="width:100%;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d702bf6449cc05af9583">{"x":{"nodes":{"id":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"label":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]},"edges":{"from":[4,5,8,1,1,8,10,6,8,11,6,11,9,16,2,4,5,11,16,13,17,18],"to":[8,8,10,12,13,13,14,15,15,15,16,17,18,18,19,19,19,19,19,20,20,20]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"physics":{"solver":"forceAtlas2Based","forceAtlas2Based":{"gravitationalConstant":-50,"centralGravity":0.01,"springLength":100,"springConstant":0.08,"avoidOverlap":0}}},"groups":null,"width":"100%","height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-d702bf6449cc05af9583">{"x":{"nodes":{"id":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"label":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]},"edges":{"from":[4,5,8,1,1,8,10,6,8,11,6,11,9,16,2,4,5,11,16,13,17,18],"to":[8,8,10,12,13,13,14,15,15,15,16,17,18,18,19,19,19,19,19,20,20,20]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"physics":{"solver":"forceAtlas2Based","forceAtlas2Based":{"gravitationalConstant":-50,"centralGravity":0.01,"springLength":100,"springConstant":1,"avoidOverlap":1}}},"groups":null,"width":"100%","height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 ```
 
 
@@ -1142,8 +1142,8 @@ red_p
 ```
 
 ```
-## IGRAPH 266b1de D--- 4 8 -- 
-## + edges from 266b1de:
+## IGRAPH 19d2232 D--- 4 8 -- 
+## + edges from 19d2232:
 ## [1] 1->2 1->4 1->3 2->1 2->4 3->1 4->3 2->3
 ```
 
@@ -1432,11 +1432,12 @@ a navegar desde ahí, o quizá empezaríamos en un nodo fijo, por ejemplo, el $1
 nuestra pregunta sigue siendo **¿cuál es la probabilidad que en distintos
 momentos el navegador aleatorio se encuentre en una página dada?**
 
-En primer lugar, solamente con el supuesto de conexidad fuerte (irreducibilidad) 
-no podemos contestar esta pregunta de manera simple. Esto es porque si 
-no existe conexidad, entonces claramente los lugares donde podemos
-encontrar al navegador depende de dónde empezó, y la respuesta es compleja. Veremos
-que además, necesitamos un supuesto de aperiodicidad. 
+En primer lugar, necesitamos el supuesto de conexidad fuerte (irreducibilidad),
+pues en otro caso los lugares donde puede estar el navegador aleatorio
+dependen de dónde empezo, y la respuesta es más complicada. Veremos
+que además, necesitamos un supuesto de aperiodicidad, pues ciclos periódicos
+en la red puede forzar a que sólo en ciertos momentos sean permitidos
+ciertos estados, otra vez, dependiendo de dónde empezó el navegador aleatorio.
 
 Requerimos entonces:
 
@@ -1552,11 +1553,10 @@ Nótese que en el ejemplo anterior $P$ no es aperiódica. Con esta condición (n
   
 Si $P$ es una matriz irreducible y aperiódica, y $\pi$ es su distribución de equilibrio, entonces 
 $$\lim_{n\to \infty} P(X_n=i) = \pi_i,$$
-independientemente de la distribución inicial.</div>\EndKnitrBlock{resumen}
+independientemente de la distribución o nodo inicial.</div>\EndKnitrBlock{resumen}
 
 
-Se puede demostrar ahora que, independiente de la distribución inicial,
-si la distribución de equilibrio es $\pi$:
+De esta forma tenemos que:
 
 Sea $v$ una distribución inicial sobre los estados (cualquiera). Entonces, 
 si $P$ es irreducible y aperiódica,
@@ -1661,7 +1661,7 @@ Verifica que la matriz $M_1$ construida arriba es en realidad una matriz estocá
 No es buena idea preprocesar desde el principio la matriz $M$ para evitar estos casos (la matriz $M$ es típicamente rala, pues hay relativamente pocas ligas en cada página comparado con el total de nodos, y no queremos llenar los renglones igual a cero con 
 una cantidad fija). En lugar de eso, podemos hacer los siguiente:
 
-Supongamos entonces que queremos calcular $x' = M_1 x$, tomando en cuenta callejones sin salida. Podemos hacer, para $x$ distribución inicial:
+Supongamos entonces queremos calcular $x' = M_1 x$, tomando en cuenta callejones sin salida. Podemos hacer, para $x$ distribución inicial:
 
 - Calcular $y = \alpha M^t x$ (operación con matriz rala).
 - Nótese que los renglones de $M$ que son iguales a cero deben ser sustituidos por $1/N$ (callejones sin salida). Esto
@@ -1749,8 +1749,8 @@ microbenchmark(r_1 <- M_t %*% r, times=10, unit = 'ms')
 
 ```
 ## Unit: milliseconds
-##              expr   min     lq    mean median     uq    max neval
-##  r_1 <- M_t %*% r 0.163 0.1714 0.47328  0.173 0.1918 3.1293    10
+##              expr    min    lq    mean  median     uq    max neval
+##  r_1 <- M_t %*% r 0.1422 0.143 0.36505 0.14505 0.1493 2.3171    10
 ```
 
 ```r
@@ -1760,8 +1760,8 @@ microbenchmark(r_1 <- MM %*% r, times=10, unit = 'ms')
 
 ```
 ## Unit: milliseconds
-##             expr     min      lq     mean   median      uq     max neval
-##  r_1 <- MM %*% r 46.5308 46.6545 47.15746 47.01215 47.4353 48.3746    10
+##             expr     min      lq     mean   median    uq     max neval
+##  r_1 <- MM %*% r 35.7681 36.3798 37.14964 36.71025 37.34 40.8391    10
 ```
 
 

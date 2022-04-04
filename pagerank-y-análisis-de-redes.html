@@ -24,7 +24,7 @@
 <meta name="author" content="Felipe González" />
 
 
-<meta name="date" content="2022-03-30" />
+<meta name="date" content="2022-04-04" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -542,12 +542,12 @@ básico de estos algoritmos:</p>
 <span id="cb613-7"><a href="pagerank-y-análisis-de-redes.html#cb613-7" aria-hidden="true" tabindex="-1"></a>             <span class="at">forceAtlas2Based =</span> <span class="fu">list</span>(<span class="at">gravitationalConstant =</span> <span class="sc">-</span> <span class="dv">50</span>, <span class="co"># negativo!</span></span>
 <span id="cb613-8"><a href="pagerank-y-análisis-de-redes.html#cb613-8" aria-hidden="true" tabindex="-1"></a>                              <span class="at">centralGravity =</span> <span class="fl">0.01</span>, </span>
 <span id="cb613-9"><a href="pagerank-y-análisis-de-redes.html#cb613-9" aria-hidden="true" tabindex="-1"></a>                              <span class="at">springLength =</span> <span class="dv">100</span>,</span>
-<span id="cb613-10"><a href="pagerank-y-análisis-de-redes.html#cb613-10" aria-hidden="true" tabindex="-1"></a>                              <span class="at">springConstant =</span> <span class="fl">0.08</span>,</span>
-<span id="cb613-11"><a href="pagerank-y-análisis-de-redes.html#cb613-11" aria-hidden="true" tabindex="-1"></a>                              <span class="at">avoidOverlap =</span> <span class="dv">0</span></span>
+<span id="cb613-10"><a href="pagerank-y-análisis-de-redes.html#cb613-10" aria-hidden="true" tabindex="-1"></a>                              <span class="at">springConstant =</span> <span class="dv">1</span>,</span>
+<span id="cb613-11"><a href="pagerank-y-análisis-de-redes.html#cb613-11" aria-hidden="true" tabindex="-1"></a>                              <span class="at">avoidOverlap =</span> <span class="dv">1</span></span>
 <span id="cb613-12"><a href="pagerank-y-análisis-de-redes.html#cb613-12" aria-hidden="true" tabindex="-1"></a>                              ))</span>
 <span id="cb613-13"><a href="pagerank-y-análisis-de-redes.html#cb613-13" aria-hidden="true" tabindex="-1"></a>red_vis</span></code></pre></div>
 <div id="htmlwidget-d702bf6449cc05af9583" style="width:100%;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-d702bf6449cc05af9583">{"x":{"nodes":{"id":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"label":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]},"edges":{"from":[4,5,8,1,1,8,10,6,8,11,6,11,9,16,2,4,5,11,16,13,17,18],"to":[8,8,10,12,13,13,14,15,15,15,16,17,18,18,19,19,19,19,19,20,20,20]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"physics":{"solver":"forceAtlas2Based","forceAtlas2Based":{"gravitationalConstant":-50,"centralGravity":0.01,"springLength":100,"springConstant":0.08,"avoidOverlap":0}}},"groups":null,"width":"100%","height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-d702bf6449cc05af9583">{"x":{"nodes":{"id":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"label":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]},"edges":{"from":[4,5,8,1,1,8,10,6,8,11,6,11,9,16,2,4,5,11,16,13,17,18],"to":[8,8,10,12,13,13,14,15,15,15,16,17,18,18,19,19,19,19,19,20,20,20]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"physics":{"solver":"forceAtlas2Based","forceAtlas2Based":{"gravitationalConstant":-50,"centralGravity":0.01,"springLength":100,"springConstant":1,"avoidOverlap":1}}},"groups":null,"width":"100%","height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
 <div id="ejercicio-6" class="section level3" number="7.3.1">
 <h3><span class="header-section-number">7.3.1</span> Ejercicio</h3>
 <ul>
@@ -1181,8 +1181,8 @@ donde la suma es sobre las ligas de entrada a <span class="math inline">\(j\)</s
 <p>Escribe las ecuaciones de las dos formas mostradas arriba para la
 red</p>
 <div class="sourceCode" id="cb678"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb678-1"><a href="pagerank-y-análisis-de-redes.html#cb678-1" aria-hidden="true" tabindex="-1"></a>red_p </span></code></pre></div>
-<pre><code>## IGRAPH 266b1de D--- 4 8 -- 
-## + edges from 266b1de:
+<pre><code>## IGRAPH 19d2232 D--- 4 8 -- 
+## + edges from 19d2232:
 ## [1] 1-&gt;2 1-&gt;4 1-&gt;3 2-&gt;1 2-&gt;4 3-&gt;1 4-&gt;3 2-&gt;3</code></pre>
 </div>
 <div id="ejemplo-pagerank-simple" class="section level4 unnumbered">
@@ -1389,11 +1389,12 @@ equilibrio <span class="math inline">\(\pi\)</span>. Lo que haríamos sería esc
 a navegar desde ahí, o quizá empezaríamos en un nodo fijo, por ejemplo, el <span class="math inline">\(1\)</span>, y
 nuestra pregunta sigue siendo <strong>¿cuál es la probabilidad que en distintos
 momentos el navegador aleatorio se encuentre en una página dada?</strong></p>
-<p>En primer lugar, solamente con el supuesto de conexidad fuerte (irreducibilidad)
-no podemos contestar esta pregunta de manera simple. Esto es porque si
-no existe conexidad, entonces claramente los lugares donde podemos
-encontrar al navegador depende de dónde empezó, y la respuesta es compleja. Veremos
-que además, necesitamos un supuesto de aperiodicidad.</p>
+<p>En primer lugar, necesitamos el supuesto de conexidad fuerte (irreducibilidad),
+pues en otro caso los lugares donde puede estar el navegador aleatorio
+dependen de dónde empezo, y la respuesta es más complicada. Veremos
+que además, necesitamos un supuesto de aperiodicidad, pues ciclos periódicos
+en la red puede forzar a que sólo en ciertos momentos sean permitidos
+ciertos estados, otra vez, dependiendo de dónde empezó el navegador aleatorio.</p>
 <p>Requerimos entonces:</p>
 <ul>
 <li>Conexidad fuerte (irreducibilidad)</li>
@@ -1468,10 +1469,9 @@ Decimos que <span class="math inline">\(P\)</span> irreducible es aperiódica cu
 <p><strong>Distribución a largo plazo</strong></p>
 Si <span class="math inline">\(P\)</span> es una matriz irreducible y aperiódica, y <span class="math inline">\(\pi\)</span> es su distribución de equilibrio, entonces
 <span class="math display">\[\lim_{n\to \infty} P(X_n=i) = \pi_i,\]</span>
-independientemente de la distribución inicial.
+independientemente de la distribución o nodo inicial.
 </div>
-<p>Se puede demostrar ahora que, independiente de la distribución inicial,
-si la distribución de equilibrio es <span class="math inline">\(\pi\)</span>:</p>
+<p>De esta forma tenemos que:</p>
 <p>Sea <span class="math inline">\(v\)</span> una distribución inicial sobre los estados (cualquiera). Entonces,
 si <span class="math inline">\(P\)</span> es irreducible y aperiódica,
 <span class="math display">\[(P^n)^t v \to \pi\]</span>
@@ -1538,7 +1538,7 @@ es irreducible y aperiódica.</li>
 <hr />
 <p>No es buena idea preprocesar desde el principio la matriz <span class="math inline">\(M\)</span> para evitar estos casos (la matriz <span class="math inline">\(M\)</span> es típicamente rala, pues hay relativamente pocas ligas en cada página comparado con el total de nodos, y no queremos llenar los renglones igual a cero con
 una cantidad fija). En lugar de eso, podemos hacer los siguiente:</p>
-<p>Supongamos entonces que queremos calcular <span class="math inline">\(x&#39; = M_1 x\)</span>, tomando en cuenta callejones sin salida. Podemos hacer, para <span class="math inline">\(x\)</span> distribución inicial:</p>
+<p>Supongamos entonces queremos calcular <span class="math inline">\(x&#39; = M_1 x\)</span>, tomando en cuenta callejones sin salida. Podemos hacer, para <span class="math inline">\(x\)</span> distribución inicial:</p>
 <ul>
 <li><p>Calcular <span class="math inline">\(y = \alpha M^t x\)</span> (operación con matriz rala).</p></li>
 <li><p>Nótese que los renglones de <span class="math inline">\(M\)</span> que son iguales a cero deben ser sustituidos por <span class="math inline">\(1/N\)</span> (callejones sin salida). Esto
@@ -1594,13 +1594,13 @@ y las componentes del vector resultante deben sumar uno.</p></li>
 <span id="cb725-3"><a href="pagerank-y-análisis-de-redes.html#cb725-3" aria-hidden="true" tabindex="-1"></a>M_t <span class="ot">&lt;-</span> <span class="fu">t</span>(M)</span>
 <span id="cb725-4"><a href="pagerank-y-análisis-de-redes.html#cb725-4" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(r_1 <span class="ot">&lt;-</span> M_t <span class="sc">%*%</span> r, <span class="at">times=</span><span class="dv">10</span>, <span class="at">unit =</span> <span class="st">&#39;ms&#39;</span>)</span></code></pre></div>
 <pre><code>## Unit: milliseconds
-##              expr   min     lq    mean median     uq    max neval
-##  r_1 &lt;- M_t %*% r 0.163 0.1714 0.47328  0.173 0.1918 3.1293    10</code></pre>
+##              expr    min    lq    mean  median     uq    max neval
+##  r_1 &lt;- M_t %*% r 0.1422 0.143 0.36505 0.14505 0.1493 2.3171    10</code></pre>
 <div class="sourceCode" id="cb727"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb727-1"><a href="pagerank-y-análisis-de-redes.html#cb727-1" aria-hidden="true" tabindex="-1"></a>MM <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(M_t)</span>
 <span id="cb727-2"><a href="pagerank-y-análisis-de-redes.html#cb727-2" aria-hidden="true" tabindex="-1"></a><span class="fu">microbenchmark</span>(r_1 <span class="ot">&lt;-</span> MM <span class="sc">%*%</span> r, <span class="at">times=</span><span class="dv">10</span>, <span class="at">unit =</span> <span class="st">&#39;ms&#39;</span>)</span></code></pre></div>
 <pre><code>## Unit: milliseconds
-##             expr     min      lq     mean   median      uq     max neval
-##  r_1 &lt;- MM %*% r 46.5308 46.6545 47.15746 47.01215 47.4353 48.3746    10</code></pre>
+##             expr     min      lq     mean   median    uq     max neval
+##  r_1 &lt;- MM %*% r 35.7681 36.3798 37.14964 36.71025 37.34 40.8391    10</code></pre>
 <p>Así que podemos hacer nuestro algoritmo:</p>
 <div class="sourceCode" id="cb729"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb729-1"><a href="pagerank-y-análisis-de-redes.html#cb729-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">6012</span>)<span class="sc">/</span><span class="dv">6012</span></span>
 <span id="cb729-2"><a href="pagerank-y-análisis-de-redes.html#cb729-2" aria-hidden="true" tabindex="-1"></a></span>
