@@ -440,7 +440,7 @@ A_red
 
 ```{r}
 desc_A <- eigen(A_red)
-print(desc_A, digits = 2)
+desc_A |> map( ~ round(.x, 3))
 ```
 
 Las medida de centralidad de eigenvector da entonces, en este caso:
@@ -470,7 +470,7 @@ Nótese que los eigenvectores $1$ y $2$ son no negativos, y están asociados a
 vectores propios no negativos:
 ```{r}
 desc_A <- eigen(A_red)
-print(desc_A, digits = 2)
+desc_A|> map( ~ round(.x, 3))
 ```
 
 **Nota**: si encontramos un vector propio $x$ con entradas negativas o cero,
@@ -542,7 +542,7 @@ Ahora calculamos centralidad de eigenvector.
 ```{r fig.width=3, fig.asp=1, out.width="200px", out.height="200px"}
 A <- igraph::get.adjacency(ukf.und)
 desc_A <- eigen(as.matrix(A))
-desc_A$values
+desc_A$values |> map_dbl( ~ round(.x, 3))
 ```
 
 ```{r}
@@ -558,7 +558,7 @@ colores_1 <- colores(length(e_vector))
 nodos <- data.frame(id=1:length(vec), value = e_vector, 
                     color = colores_1[rank(e_vector)])
 
-visNetwork(nodos, dat_1 |> select(-weight), 
+visNetwork(nodos, dat_1 |> select(-weight) |> mutate(colour = "#999999"), 
            width = "100%") |>
   visPhysics(solver ='forceAtlas2Based', 
              stabilization = TRUE) |>
@@ -574,7 +574,7 @@ uk_tbl <- ukf.und |> as_tbl_graph() |>
   mutate(importancia = centrality_eigen())
 ggraph(uk_tbl, layout = 'fr') +
   geom_edge_link(alpha=0.2) +
-  geom_node_point(aes(size = importancia), colour = 'salmon') +
+  geom_node_point(aes(size = importancia^2, colour = factor(Group))) +
   theme_graph(base_family = 'sans')
 ```
 
@@ -658,7 +658,7 @@ red <- igraph::graph(c(1,2,2,3,3,4,4,3), directed = TRUE)
 par(mar=c(0,0,0,0)); plot(red, vertex.size = 40)
 A_red <- as.matrix(igraph::get.adjacency(red))
 A_red
-eigen(t(A_red))
+eigen(t(A_red)) |> map( ~ round(.x, 2))
 ```
 
 Si la gráfica es disconexa, podemos tener valores propios no 
@@ -666,11 +666,11 @@ simples con distintos
 vectores propios no negativos:
 
 ```{r fig.width=3, fig.asp=1, out.width="200px", out.height="200px"}
-red <- igraph::graph(c(1,2,2,3,1,1,4,5,5,4), directed = TRUE)
+red <- igraph::graph(c(1,2,2,3,3,2,4,5,5,4), directed = TRUE)
 par(mar=c(0,0,0,0)); plot(red, vertex.size = 20)
 A_red <- as.matrix(igraph::get.adjacency(red))
 A_red
-eigen(t(A_red))
+eigen(t(A_red))|> map( ~ round(.x, 2))
 ```
 
 O ningún valor propio positivo:
@@ -679,7 +679,7 @@ red <- igraph::graph(c(1, 2, 2, 3), directed = TRUE)
 par(mar=c(0,0,0,0)); plot(red, vertex.size = 20)
 A_red <- as.matrix(igraph::get.adjacency(red))
 A_red
-print(eigen(t(A_red)), digits = 2)
+eigen(t(A_red)) |> map( ~ round(.x, 2))
 ```
 
 
