@@ -1,0 +1,182 @@
+---
+title: "Examen 1: componentes principales"
+output: html_document
+date: "`r Sys.Date()`"
+---
+
+Consideramos  datos nutricionales de cereales. Nuestro objetivo es reducir dimensionalidad
+de estos datos para visualizar los distintos tipos de cereal que existen.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+cereales_tbl <- read_csv("datos/cereales.csv")
+```
+
+```{r}
+names(cereales_tbl)
+```
+cereal name [name]
+manufacturer (e.g., Kellogg's) [mfr]
+type (cold/hot) [type] 
+calories (number) [calories]
+protein(g) [protein]
+fat(g) [fat]
+sodium(mg) [sodium]
+dietary fiber(g) [fiber]
+complex carbohydrates(g) [carbo]
+sugars(g) [sugars]
+display shelf (1, 2, or 3, counting from the floor) [shelf]
+potassium(mg) [potass] 
+vitamins & minerals (0, 25, or 100, respectively indicating 'none added'; 'enriched, often to 25% FDA recommended'; '100% of  FDA recommended') [vitamins]
+weight (in ounces) of one serving (serving size) [weight]
+cups per serving [cups]
+
+
+```{r}
+library(skimr)
+skimr::skim(cereales_tbl)
+```
+
+
+**Pregunta 1**: Explica por qué conviene escalar estos datos antes de intentar hacer
+reducción de dimensionalidad. ¿Qué pasa si intentas correr componentes principales
+con los datos no estandarizados?
+
+De los resúmenes simples vemos que las variables tienen escalas muy distintas, y
+Las unidades de las variables son distintas (calorías, gramos, miligramos, etc), así
+que es mejor quitar la escala.  Si no hacemos escalamiento, el análsis será dominado
+por las variables con escala más grande, lo cual no es interpretable pues las unidades
+son distintas.
+
+
+**Pregunta 2**: Corre componentes principales con los datos estandarizados (en R usa prcomp,
+en python sklearn.decomposition.PCA). Como nos interesan más los datos nutricionales,
+puedes quitar las variables weight, cups y shelf.
+
+```{r}
+cereales_num <- cereales_tbl |> select(-c(shelf, cups, weight)) |> select(where(is.numeric))
+medias <- cereales_num |> summarise(across(everything(), mean))
+sdev <- cereales_num |> summarise(across(everything(), sd))
+cereales_esc <- cereales_num |> scale(center = medias, scale = sdev)
+```
+
+```{r}
+prs <- prcomp(cereales_esc)
+summary(prs)
+```
+
+
+**Pregunta 3** De la varianza total de la matriz escalada, 
+¿cuánto explican las primeras tres componentes? Muestra cómo se calcula este número usando
+los valores singulares de la descomposición en valores singulares de los datos escalados.
+
+Según el resumen de arriba, es 0.6961. Podemos calcularlo también como:
+
+```{r}
+svd_cereales <- svd(cereales_esc)
+sigma <- svd_cereales$d
+sigma[1:3]^2
+sum(sigma[1:3]^2) / sum(sigma^2)
+```
+o también como
+
+```{r}
+sum(sigma[1:3]^2) / sum(cereales_esc^2)
+
+```
+
+
+
+**Pregunta 4**: Haz una gráfica de todos los cereales
+en sus primeras dos componentes principales. ¿Qué tipo de cereales están en cada parte de la gráfica?
+
+```{r}
+library(ggrepel)
+graf_cereales <- as_tibble(prs$x) |> mutate(cereal = cereales_tbl$name) 
+graf_cereales |> 
+  ggplot(aes(x= PC1, y = PC2, label = cereal)) + 
+  geom_vline(xintercept = 0, colour = "red") + geom_hline(yintercept = 0, colour = "red") +
+  geom_point() +
+  geom_text_repel(size = 2.5)
+```
+
+Del lado izquierdo están cereales más ligeros, y del lado derecho más nutricionales y fibrosos.
+Abajo están cereales con más contenido de azúcar y arriba con menos contenido de azúcar.
+
+
+
+**Pregunta 5**. Complementa tu explicación de la pregunta anterior viendo los pesos de las
+variables originales para las primeras dos componentes principales. Según estos pesos,
+¿cómo interpretas cada una de estas dos dimensiones? Para un cereal dado, muestra cómo
+se calculan sus dos componentes principales utilizando la matriz de pesos y los datos
+originales estandarizados.
+
+```{r}
+library(gt)
+tabla_pesos <- prs$rotation[,1:3] |> round(2) |> as_tibble(rownames = "variable") 
+tabla_pesos <- tabla_pesos |> arrange(desc(PC1)) 
+tabla_pesos |>  gt() |> 
+ data_color(
+    columns = PC1:PC3,
+    colors = scales::col_numeric(
+      rev(c("#63be7b", "#ffffff", "#f87274")),
+      domain = c(-0.8, 0.8))
+  )
+```
+
+Multiplicamos la tabla original por los pesos de cada componente:
+
+```{r}
+proyeccion_1 <- cereales_esc %*% prs$rotation[,1]
+plot(proyeccion_1, prs$x[,1])
+proyeccion_2 <- cereales_esc %*% prs$rotation[,2]
+plot(proyeccion_2, prs$x[,2])
+```
+
+
+
+**Pregunta 6**: Agrega a la gráfica de cereales de la pregunta 3 los cereales de la tabla 
+nuevos_cereales.csv. Nota: no recalcules la DVS ni la estandarización, proyecta estos nuevos puntos en el espacio de las primeras dos componentes principales (recuerda cómo es la proyección de los datos originales sobre el espacio de componentes: z = Xv).
+
+```{r}
+# Leemos y escalamos, luego proyectamos
+nuevos <- read_csv("datos/cereales_nuevos.csv")
+nuevos_esc <- nuevos |> select(-c(shelf, cups, weight))|> 
+  select(where(is.numeric)) |> scale(center = medias, scale = sdev)
+nuevos_proy <- nuevos_esc %*% prs$rotation
+```
+
+
+```{r}
+graf_tbl <- graf_cereales |> select(all_of(c("PC1", "PC2", "cereal")))
+graf_tbl$nuevo <- "N"
+
+nuevos_tbl <- nuevos_proy[,1:2] |> 
+  as_tibble() |> 
+  mutate(nuevo = "S") |> 
+  mutate(cereal = nuevos$name)
+graf <- bind_rows(graf_tbl, nuevos_tbl)
+graf |>  
+  ggplot(aes(x= PC1, y = PC2, label = cereal, colour = nuevo)) + 
+  geom_point() + geom_text_repel(size = 3)
+```
+
+O usando la función predict:
+
+```{r}
+prs <- prcomp(cereales_num, center = TRUE, scale. = TRUE)
+pred_proy <- predict(prs, nuevos)[,1:2]
+nuevos_tbl <- pred_proy |> 
+  as_tibble() |> 
+  mutate(nuevo = "S") |> 
+  mutate(cereal = nuevos$name)
+graf <- bind_rows(graf_tbl, nuevos_tbl)
+graf |>  
+  ggplot(aes(x= PC1, y = PC2, label = cereal, colour = nuevo)) + 
+  geom_point() + geom_text_repel(size = 3)
+```
+
