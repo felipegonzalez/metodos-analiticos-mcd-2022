@@ -24,7 +24,7 @@
 <meta name="author" content="Felipe González" />
 
 
-<meta name="date" content="2022-04-04" />
+<meta name="date" content="2022-04-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -368,6 +368,11 @@ div.csl-indent {
 <li class="chapter" data-level="7.6.9" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank-para-buscador"><i class="fa fa-check"></i><b>7.6.9</b> Pagerank para buscador</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="8" data-path="detección-de-comunidades.html"><a href="detección-de-comunidades.html"><i class="fa fa-check"></i><b>8</b> Detección de comunidades</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="detección-de-comunidades.html"><a href="detección-de-comunidades.html#modularidad"><i class="fa fa-check"></i><b>8.1</b> Modularidad</a></li>
+<li class="chapter" data-level="8.2" data-path="detección-de-comunidades.html"><a href="detección-de-comunidades.html#algoritmo-miope-fast-greedy"><i class="fa fa-check"></i><b>8.2</b> Algoritmo miope (fast greedy)</a></li>
+</ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/felipegonzalez/metodos-analiticos-mcd-2022" target="blank">Repositorio de Github</a></li>
@@ -632,12 +637,12 @@ de spark de otra forma):</p>
 <pre><code>## # Source: spark&lt;?&gt; [?? x 1]
 ##          n
 ##      &lt;dbl&gt;
-## 1 20753428</code></pre>
+## 1 20765390</code></pre>
 <div class="sourceCode" id="cb563"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb563-1"><a href="dimensiones-latentes-para-recomendación.html#cb563-1" aria-hidden="true" tabindex="-1"></a>valida_tbl <span class="sc">|&gt;</span> <span class="fu">tally</span>()</span></code></pre></div>
 <pre><code>## # Source: spark&lt;?&gt; [?? x 1]
 ##        n
 ##    &lt;dbl&gt;
-## 1 234926</code></pre>
+## 1 221671</code></pre>
 <p>Vamos a hacer primero una descomposición en <span class="math inline">\(15\)</span> factores,
 con regularización relativamente alta:</p>
 <div class="sourceCode" id="cb565"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb565-1"><a href="dimensiones-latentes-para-recomendación.html#cb565-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> <span class="fu">ml_als</span>(entrena_tbl, </span>
@@ -652,7 +657,7 @@ con regularización relativamente alta:</p>
 <span id="cb565-10"><a href="dimensiones-latentes-para-recomendación.html#cb565-10" aria-hidden="true" tabindex="-1"></a><span class="co"># nueva gráfica con los resultados de la última iteración.</span></span></code></pre></div>
 <div class="sourceCode" id="cb566"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb566-1"><a href="dimensiones-latentes-para-recomendación.html#cb566-1" aria-hidden="true" tabindex="-1"></a>modelo</span></code></pre></div>
 <pre><code>## ALSModel (Transformer)
-## &lt;als__895cbe30_be9c_465a_b884_a4ad0b1d7469&gt; 
+## &lt;als__947f7aa4_181b_4048_b060_f736f16ca55d&gt; 
 ##  (Parameters -- Column Names)
 ##   cold_start_strategy: nan
 ##   item_col: peli_id
@@ -669,7 +674,7 @@ con regularización relativamente alta:</p>
 <span id="cb568-2"><a href="dimensiones-latentes-para-recomendación.html#cb568-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">prediction =</span> <span class="fu">ifelse</span>(<span class="fu">isnan</span>(prediction), <span class="fl">3.5</span>, prediction))</span>
 <span id="cb568-3"><a href="dimensiones-latentes-para-recomendación.html#cb568-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ml_regression_evaluator</span>(preds, <span class="at">label_col =</span> <span class="st">&quot;calif&quot;</span>, <span class="at">prediction_col =</span> <span class="st">&quot;prediction&quot;</span>,</span>
 <span id="cb568-4"><a href="dimensiones-latentes-para-recomendación.html#cb568-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric_name =</span> <span class="st">&quot;rmse&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] 0.8357468</code></pre>
+<pre><code>## [1] 0.8401007</code></pre>
 <p>Y podemos traer a R los datos de validación (que son chicos) para examinar:</p>
 <div class="sourceCode" id="cb570"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb570-1"><a href="dimensiones-latentes-para-recomendación.html#cb570-1" aria-hidden="true" tabindex="-1"></a>preds_df <span class="ot">&lt;-</span> preds <span class="sc">|&gt;</span> <span class="fu">collect</span>() <span class="co">#traemos a R con collect</span></span>
 <span id="cb570-2"><a href="dimensiones-latentes-para-recomendación.html#cb570-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(preds_df, <span class="fu">aes</span>(<span class="at">x =</span> prediction)) <span class="sc">+</span> <span class="fu">geom_histogram</span>()</span></code></pre></div>
@@ -681,16 +686,16 @@ ahora las dimensiones asociadas con películas:</p>
 <pre><code>## # Source: spark&lt;?&gt; [?? x 3]
 ##       id features   features_1
 ##    &lt;int&gt; &lt;list&gt;          &lt;dbl&gt;
-##  1    10 &lt;dbl [15]&gt;     -0.660
-##  2    20 &lt;dbl [15]&gt;     -0.574
-##  3    30 &lt;dbl [15]&gt;     -0.778
-##  4    40 &lt;dbl [15]&gt;     -0.655
-##  5    50 &lt;dbl [15]&gt;     -0.767
-##  6    60 &lt;dbl [15]&gt;     -0.330
-##  7    70 &lt;dbl [15]&gt;     -0.559
-##  8    80 &lt;dbl [15]&gt;     -0.886
-##  9    90 &lt;dbl [15]&gt;     -0.586
-## 10   100 &lt;dbl [15]&gt;     -0.752
+##  1    10 &lt;dbl [15]&gt;     -0.712
+##  2    20 &lt;dbl [15]&gt;     -0.473
+##  3    30 &lt;dbl [15]&gt;     -0.712
+##  4    40 &lt;dbl [15]&gt;     -0.872
+##  5    50 &lt;dbl [15]&gt;     -0.682
+##  6    60 &lt;dbl [15]&gt;     -0.387
+##  7    70 &lt;dbl [15]&gt;     -0.752
+##  8    80 &lt;dbl [15]&gt;     -1.01 
+##  9    90 &lt;dbl [15]&gt;     -0.508
+## 10   100 &lt;dbl [15]&gt;     -0.760
 ## # … with more rows</code></pre>
 <div class="sourceCode" id="cb574"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb574-1"><a href="dimensiones-latentes-para-recomendación.html#cb574-1" aria-hidden="true" tabindex="-1"></a>V_df <span class="ot">&lt;-</span> modelo<span class="sc">$</span>item_factors <span class="sc">|&gt;</span></span>
 <span id="cb574-2"><a href="dimensiones-latentes-para-recomendación.html#cb574-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, features) <span class="sc">|&gt;</span> <span class="fu">collect</span>() <span class="sc">|&gt;</span> </span>
@@ -737,62 +742,62 @@ películas.</p>
 <span id="cb585-13"><a href="dimensiones-latentes-para-recomendación.html#cb585-13" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb585-14"><a href="dimensiones-latentes-para-recomendación.html#cb585-14" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">top_tail</span>(latentes_pelis, features_3)</span></code></pre></div>
 <pre><code>## # A tibble: 100 × 4
-##    nombre                        features_3 media_peli num_calif_peli
-##    &lt;chr&gt;                              &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
-##  1 The Best of Friends: Vol. 2       -0.906       4.11           3024
-##  2 Friends: The Series Finale        -0.891       4.11           3467
-##  3 Friends: Season 3                 -0.869       4.08           4401
-##  4 The Best of Friends: Vol. 1       -0.865       4.04           4999
-##  5 The Best of Friends: Season 3     -0.853       4.17           4325
-##  6 The Best of Friends: Season 4     -0.846       4.26           3792
-##  7 Friends: Season 4                 -0.844       4.15           4853
-##  8 Friends: Season 1                 -0.836       4.10           5583
-##  9 Friends: Season 5                 -0.836       4.23           4386
-## 10 Friends: Season 2                 -0.832       3.92           6206
+##    nombre                      features_3 media_peli num_calif_peli
+##    &lt;chr&gt;                            &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
+##  1 Pretty Woman                    -0.412       3.91          40217
+##  2 Rudy                            -0.391       3.90           9341
+##  3 Top Gun                         -0.386       3.82          31756
+##  4 Friends: Season 2               -0.386       3.92           6206
+##  5 The Best of Friends: Vol. 1     -0.367       4.04           4999
+##  6 Father of the Bride             -0.364       3.58          20247
+##  7 Friends: Season 3               -0.363       4.08           4844
+##  8 Stepmom                         -0.351       3.52          20952
+##  9 Friends: The Series Finale      -0.348       4.12           3809
+## 10 The Best of Friends: Vol. 2     -0.346       4.11           3024
 ## # … with 90 more rows
 ## # A tibble: 100 × 4
 ##    nombre                    features_3 media_peli num_calif_peli
 ##    &lt;chr&gt;                          &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
-##  1 Brazil                          1.23       3.81           4557
-##  2 Hellraiser                      1.18       3.39           3582
-##  3 Dawn of the Dead                1.16       3.59           3432
-##  4 Night of the Living Dead        1.15       3.55           4722
-##  5 Evil Dead 2: Dead by Dawn       1.15       3.72           4148
-##  6 The Evil Dead                   1.12       3.76           3857
-##  7 Dead Man                        1.08       3.63           2345
-##  8 Repo Man                        1.08       3.47           2662
-##  9 A Clockwork Orange              1.04       3.72          15551
-## 10 Ran                             1.03       3.97           3896
+##  1 Brazil                          1.29       3.81           4557
+##  2 Evil Dead 2: Dead by Dawn       1.14       3.72           3789
+##  3 Hellraiser                      1.13       3.39           3582
+##  4 Night of the Living Dead        1.09       3.55           4722
+##  5 Dawn of the Dead                1.09       3.59           3432
+##  6 Dead Man                        1.09       3.63           2345
+##  7 A Clockwork Orange              1.09       3.72          15551
+##  8 The Evil Dead                   1.08       3.76           4240
+##  9 Repo Man                        1.06       3.47           2662
+## 10 The Seventh Seal                1.01       3.80           2640
 ## # … with 90 more rows</code></pre>
 <p>Otra dimensión latente:</p>
 <div class="sourceCode" id="cb587"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb587-1"><a href="dimensiones-latentes-para-recomendación.html#cb587-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">top_tail</span>(latentes_pelis, features_4)</span></code></pre></div>
 <pre><code>## # A tibble: 100 × 4
 ##    nombre                                 features_4 media_peli num_calif_peli
 ##    &lt;chr&gt;                                       &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
-##  1 But I&#39;m a Cheerleader                      -0.675       3.38           3087
-##  2 The Craft                                  -0.610       3.43           4000
-##  3 Bio-Dome                                   -0.599       2.80           2249
-##  4 Hocus Pocus                                -0.599       3.33           4131
-##  5 Romy and Michele&#39;s High School Reunion     -0.566       3.19           3344
-##  6 Now and Then                               -0.557       3.60           2712
-##  7 Don&#39;t Tell Mom the Babysitter&#39;s Dead       -0.555       3.18           3585
-##  8 Encino Man                                 -0.555       3.11           4148
-##  9 Practical Magic                            -0.533       3.57           6847
-## 10 The Sweetest Thing                         -0.530       3.16           3377
+##  1 But I&#39;m a Cheerleader                      -0.607       3.38           3087
+##  2 Hocus Pocus                                -0.592       3.33           4131
+##  3 Bio-Dome                                   -0.582       2.80           2249
+##  4 The Craft                                  -0.558       3.43           4000
+##  5 The Sweetest Thing                         -0.543       3.16           3377
+##  6 Now and Then                               -0.542       3.60           2712
+##  7 Romy and Michele&#39;s High School Reunion     -0.542       3.18           3696
+##  8 Don&#39;t Tell Mom the Babysitter&#39;s Dead       -0.525       3.18           3585
+##  9 Practical Magic                            -0.510       3.57           6847
+## 10 Encino Man                                 -0.503       3.11           4148
 ## # … with 90 more rows
 ## # A tibble: 100 × 4
 ##    nombre                           features_4 media_peli num_calif_peli
 ##    &lt;chr&gt;                                 &lt;dbl&gt;      &lt;dbl&gt;          &lt;dbl&gt;
-##  1 Patton                                 1.18       3.99           7820
-##  2 Lawrence of Arabia                     1.11       4.13           8092
-##  3 The Bridge on the River Kwai           1.08       4.12           8184
-##  4 The Longest Day                        1.08       4.03           2403
-##  5 The Godfather                          1.05       4.50          20086
-##  6 Ben-Hur: Collector&#39;s Edition           1.05       3.97           5490
-##  7 Citizen Kane                           1.04       4.03          12924
-##  8 The Treasure of the Sierra Madre       1.03       4.01           2903
-##  9 High Noon                              1.03       3.91           4473
-## 10 The Godfather Part II                  1.02       4.40          14953
+##  1 Patton                                 1.19       3.98           7083
+##  2 Lawrence of Arabia                     1.14       4.13           7318
+##  3 The Longest Day                        1.10       4.03           2170
+##  4 The Bridge on the River Kwai           1.10       4.12           8184
+##  5 Seven Samurai                          1.09       4.20           6498
+##  6 Ben-Hur: Collector&#39;s Edition           1.07       3.97           5490
+##  7 The Treasure of the Sierra Madre       1.06       4.01           2903
+##  8 The Godfather                          1.06       4.50          22253
+##  9 High Noon                              1.04       3.91           4473
+## 10 The Godfather Part II                  1.03       4.40          14953
 ## # … with 90 more rows</code></pre>
 <p><strong>Nota</strong>: Podemos usar <strong>ml_recommend</strong> para producir recomendaciones de películas para
 usuarios, o para cada película los usuarios más afines.</p>
@@ -918,7 +923,7 @@ los siguientes ajustados con un solo factor latente:</p>
 <div class="sourceCode" id="cb595"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb595-1"><a href="dimensiones-latentes-para-recomendación.html#cb595-1" aria-hidden="true" tabindex="-1"></a>uv_inicial <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">10</span>)</span>
 <span id="cb595-2"><a href="dimensiones-latentes-para-recomendación.html#cb595-2" aria-hidden="true" tabindex="-1"></a>opt_exp <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> uv_inicial, error_explicito, <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>)</span>
 <span id="cb595-3"><a href="dimensiones-latentes-para-recomendación.html#cb595-3" aria-hidden="true" tabindex="-1"></a>opt_exp<span class="sc">$</span>par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div>
-<pre><code>## [1] 11.73787473 14.54736378  3.68783742  0.09471093</code></pre>
+<pre><code>## [1] 20.2457049 25.0918071  6.3604774  0.1632984</code></pre>
 <div class="sourceCode" id="cb597"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb597-1"><a href="dimensiones-latentes-para-recomendación.html#cb597-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">t</span>(opt_exp<span class="sc">$</span>par[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])) <span class="sc">%*%</span> <span class="fu">t</span>(opt_exp<span class="sc">$</span>par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>]) <span class="sc">|&gt;</span> <span class="fu">round</span>()</span></code></pre></div>
 <pre><code>##      [,1] [,2] [,3] [,4]
 ## [1,]  118  146   37    1
@@ -932,7 +937,7 @@ los patrones de consumo de estas cuatro películas.</p>
 <p>Si usamos preferencias y confianza, obtenemos:</p>
 <div class="sourceCode" id="cb599"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb599-1"><a href="dimensiones-latentes-para-recomendación.html#cb599-1" aria-hidden="true" tabindex="-1"></a>opt_imp <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> uv_inicial, error_implicito, <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>)</span>
 <span id="cb599-2"><a href="dimensiones-latentes-para-recomendación.html#cb599-2" aria-hidden="true" tabindex="-1"></a>opt_imp<span class="sc">$</span>par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div>
-<pre><code>## [1] 1.0671507 1.0688560 1.0643104 0.6629405</code></pre>
+<pre><code>## [1] 1.3631014 1.3652757 1.3594525 0.8467634</code></pre>
 <div class="sourceCode" id="cb601"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb601-1"><a href="dimensiones-latentes-para-recomendación.html#cb601-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t</span>(<span class="fu">t</span>(opt_imp<span class="sc">$</span>par[<span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>])) <span class="sc">%*%</span> <span class="fu">t</span>(opt_imp<span class="sc">$</span>par[<span class="dv">7</span><span class="sc">:</span><span class="dv">10</span>]) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">2</span>)</span></code></pre></div>
 <pre><code>##      [,1] [,2] [,3] [,4]
 ## [1,]    1    1 0.99 0.62

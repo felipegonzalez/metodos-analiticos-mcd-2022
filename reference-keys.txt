@@ -89,3 +89,6 @@ distribución-de-equilibrio-y-probabilidades-a-largo-plazo
 matriz-de-transición-a-k-pasos
 pagerank-teletransportaciónperturbación-de-la-matriz-m
 pagerank-para-buscador
+detección-de-comunidades
+modularidad
+algoritmo-miope-fast-greedy

@@ -1132,8 +1132,8 @@ red_p
 ```
 
 ```
-## IGRAPH 21cf555 D--- 4 8 -- 
-## + edges from 21cf555:
+## IGRAPH 1361a93 D--- 4 8 -- 
+## + edges from 1361a93:
 ## [1] 1->2 1->4 1->3 2->1 2->4 3->1 4->3 2->3
 ```
 
@@ -1739,8 +1739,8 @@ microbenchmark(r_1 <- M_t %*% r, times=10, unit = 'ms')
 
 ```
 ## Unit: milliseconds
-##              expr    min     lq    mean median     uq   max neval
-##  r_1 <- M_t %*% r 0.1466 0.1494 0.38766 0.1501 0.1702 2.477    10
+##              expr  min    lq    mean median     uq    max neval
+##  r_1 <- M_t %*% r 0.16 0.162 0.42558 0.1777 0.1843 2.6766    10
 ```
 
 ```r
@@ -1750,8 +1750,8 @@ microbenchmark(r_1 <- MM %*% r, times=10, unit = 'ms')
 
 ```
 ## Unit: milliseconds
-##             expr     min      lq     mean   median     uq     max neval
-##  r_1 <- MM %*% r 36.6986 36.9917 37.10708 37.04295 37.259 37.6651    10
+##             expr     min      lq     mean  median      uq     max neval
+##  r_1 <- MM %*% r 40.5047 40.7326 41.13431 40.9341 41.2615 42.8185    10
 ```
 
 
