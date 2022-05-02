@@ -1009,10 +1009,10 @@ generar_candidatos <- function(palabra){
   sustituciones <- pares |> map(function(x)
       map(caracteres, function(car){
     paste0(x[1], car, str_sub(x[2], 2 ,-1))
-  })) |> flatten 
+  })) |> flatten() 
   inserciones <- pares |> map(function(x){
     map(caracteres, function(car) paste0(x[1], car, x[2]))
-  }) |> flatten
+  }) |> flatten()
   transposiciones <- pares |> map(function(x){
     paste0(x[1], str_sub(x[2],2,2), str_sub(x[2],1,1), str_sub(x[2],3,-1))
   })
@@ -1029,7 +1029,7 @@ head(candidatos)
 
 ```{r}
 sugerir <- function(frase, mod_bi){
-  tokens <- normalizar(frase) |> str_split(" ") |> first |> tail(2)
+  tokens <- normalizar(frase) |> str_split(" ") |> first() |> tail(2)
   candidatos <- generar_candidatos(tokens[2])
   candidatos_tbl <- mod_bi |> filter(w_n_1 == tokens[1], w_n_0 %in% c(tokens[2], candidatos)) |> 
     mutate(log_posterior = 0 + log_p) # suponemos todos las corrupciones igualmente probabiles
