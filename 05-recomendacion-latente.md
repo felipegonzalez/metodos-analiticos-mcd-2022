@@ -379,7 +379,7 @@ entrena_tbl |> tally()
 ## # Source: spark<?> [?? x 1]
 ##          n
 ##      <dbl>
-## 1 20772700
+## 1 20789260
 ```
 
 ```r
@@ -390,7 +390,7 @@ valida_tbl |> tally()
 ## # Source: spark<?> [?? x 1]
 ##        n
 ##    <dbl>
-## 1 222865
+## 1 194647
 ```
 
 Vamos a hacer primero una descomposición en $15$ factores,
@@ -417,7 +417,7 @@ modelo
 
 ```
 ## ALSModel (Transformer)
-## <als__a1141a81_7a98_4b4c_823a_3dade1d84b90> 
+## <als__c6b418b1_9e46_4f1a_bb9b_35862241d72d> 
 ##  (Parameters -- Column Names)
 ##   cold_start_strategy: nan
 ##   item_col: peli_id
@@ -442,7 +442,7 @@ ml_regression_evaluator(preds, label_col = "calif", prediction_col = "prediction
 ```
 
 ```
-## [1] 0.8369416
+## [1] 0.8319331
 ```
 
 Y podemos traer a R los datos de validación (que son chicos) para examinar:
@@ -473,16 +473,16 @@ modelo$item_factors
 ## # Source: spark<?> [?? x 3]
 ##       id features   features_1
 ##    <int> <list>          <dbl>
-##  1    10 <dbl [15]>     -0.620
-##  2    20 <dbl [15]>     -0.572
-##  3    30 <dbl [15]>     -0.775
-##  4    40 <dbl [15]>     -0.724
-##  5    50 <dbl [15]>     -0.750
-##  6    60 <dbl [15]>     -0.287
-##  7    70 <dbl [15]>     -0.555
-##  8    80 <dbl [15]>     -0.949
-##  9    90 <dbl [15]>     -0.579
-## 10   100 <dbl [15]>     -0.779
+##  1    10 <dbl [15]>     -0.615
+##  2    20 <dbl [15]>     -0.722
+##  3    30 <dbl [15]>     -0.773
+##  4    40 <dbl [15]>     -0.679
+##  5    50 <dbl [15]>     -0.763
+##  6    60 <dbl [15]>     -0.303
+##  7    70 <dbl [15]>     -0.603
+##  8    80 <dbl [15]>     -0.881
+##  9    90 <dbl [15]>     -0.601
+## 10   100 <dbl [15]>     -0.764
 ## # … with more rows
 ```
 
@@ -576,30 +576,30 @@ res <- top_tail(latentes_pelis, features_3)
 ## # A tibble: 100 × 4
 ##    nombre                        features_3 media_peli num_calif_peli
 ##    <chr>                              <dbl>      <dbl>          <dbl>
-##  1 The Best of Friends: Vol. 2       -0.844       4.11           3024
-##  2 Friends: The Series Finale        -0.829       4.12           3809
-##  3 Friends: Season 3                 -0.800       4.08           4844
-##  4 The Best of Friends: Vol. 1       -0.800       4.04           4999
-##  5 The Best of Friends: Season 3     -0.791       4.17           4325
-##  6 Friends: Season 4                 -0.782       4.15           4853
-##  7 Friends: Season 5                 -0.777       4.23           4386
-##  8 The Best of Friends: Season 4     -0.776       4.27           3391
-##  9 Friends: Season 1                 -0.774       4.10           5583
-## 10 Friends: Season 6                 -0.768       4.28           3975
+##  1 The Best of Friends: Vol. 2       -0.866       4.09           2727
+##  2 Friends: The Series Finale        -0.835       4.12           3809
+##  3 Friends: Season 3                 -0.825       4.07           4364
+##  4 The Best of Friends: Vol. 1       -0.812       4.04           4999
+##  5 The Best of Friends: Season 3     -0.803       4.17           4325
+##  6 The Best of Friends: Season 4     -0.799       4.26           3792
+##  7 Friends: Season 4                 -0.791       4.15           4853
+##  8 Friends: Season 5                 -0.785       4.23           3917
+##  9 Friends: Season 6                 -0.785       4.28           3975
+## 10 Friends: Season 1                 -0.781       4.10           5583
 ## # … with 90 more rows
 ## # A tibble: 100 × 4
 ##    nombre                    features_3 media_peli num_calif_peli
 ##    <chr>                          <dbl>      <dbl>          <dbl>
-##  1 Brazil                          1.27       3.81           4557
-##  2 Hellraiser                      1.20       3.39           3582
-##  3 Dawn of the Dead                1.17       3.59           3432
-##  4 Night of the Living Dead        1.17       3.55           4722
-##  5 Evil Dead 2: Dead by Dawn       1.17       3.72           4148
-##  6 The Evil Dead                   1.13       3.76           4240
-##  7 Repo Man                        1.11       3.47           2662
-##  8 Dead Man                        1.10       3.63           2345
-##  9 A Clockwork Orange              1.08       3.72          15551
-## 10 Ran                             1.07       3.97           3896
+##  1 Brazil                          1.25       3.81           4557
+##  2 Hellraiser                      1.17       3.39           3582
+##  3 Night of the Living Dead        1.15       3.55           4722
+##  4 Dawn of the Dead                1.14       3.59           3432
+##  5 Evil Dead 2: Dead by Dawn       1.13       3.72           4148
+##  6 Repo Man                        1.09       3.47           2662
+##  7 The Evil Dead                   1.09       3.76           4240
+##  8 Dead Man                        1.08       3.63           2345
+##  9 A Clockwork Orange              1.06       3.72          15551
+## 10 8 1/2                           1.03       3.80           2075
 ## # … with 90 more rows
 ```
 
@@ -614,30 +614,30 @@ res <- top_tail(latentes_pelis, features_4)
 ## # A tibble: 100 × 4
 ##    nombre                                 features_4 media_peli num_calif_peli
 ##    <chr>                                       <dbl>      <dbl>          <dbl>
-##  1 But I'm a Cheerleader                      -0.670       3.38           3087
-##  2 Bio-Dome                                   -0.611       2.80           2249
-##  3 The Craft                                  -0.606       3.43           4000
-##  4 Hocus Pocus                                -0.602       3.33           4131
-##  5 Don't Tell Mom the Babysitter's Dead       -0.572       3.18           3585
-##  6 Romy and Michele's High School Reunion     -0.569       3.18           3696
-##  7 Now and Then                               -0.565       3.60           2712
-##  8 Encino Man                                 -0.562       3.11           4148
-##  9 Son in Law                                 -0.547       3.25           3346
-## 10 The Sweetest Thing                         -0.537       3.16           3377
+##  1 But I'm a Cheerleader                      -0.653       3.38           3087
+##  2 The Craft                                  -0.595       3.43           4000
+##  3 Bio-Dome                                   -0.569       2.80           2249
+##  4 Hocus Pocus                                -0.562       3.33           4131
+##  5 Romy and Michele's High School Reunion     -0.561       3.18           3696
+##  6 Now and Then                               -0.559       3.60           2457
+##  7 Don't Tell Mom the Babysitter's Dead       -0.553       3.18           3585
+##  8 Encino Man                                 -0.534       3.11           4148
+##  9 The Sweetest Thing                         -0.532       3.16           3377
+## 10 Son in Law                                 -0.515       3.25           3346
 ## # … with 90 more rows
 ## # A tibble: 100 × 4
 ##    nombre                           features_4 media_peli num_calif_peli
 ##    <chr>                                 <dbl>      <dbl>          <dbl>
-##  1 Patton                                 1.17       3.99           7095
-##  2 Lawrence of Arabia                     1.12       4.13           8092
-##  3 The Longest Day                        1.09       4.03           2403
-##  4 The Bridge on the River Kwai           1.08       4.12           8184
-##  5 Ben-Hur: Collector's Edition           1.05       3.97           5490
-##  6 The Godfather                          1.05       4.50          22253
-##  7 Citizen Kane                           1.04       4.03          12924
-##  8 The Godfather Part II                  1.03       4.40          14953
-##  9 The Treasure of the Sierra Madre       1.02       4.01           2903
-## 10 High Noon                              1.02       3.91           4473
+##  1 Patton                                 1.20       3.99           7820
+##  2 Lawrence of Arabia                     1.13       4.13           8092
+##  3 The Longest Day                        1.10       4.03           2403
+##  4 The Bridge on the River Kwai           1.10       4.12           8184
+##  5 Ben-Hur: Collector's Edition           1.06       3.97           5490
+##  6 Citizen Kane                           1.05       4.03          12924
+##  7 High Noon                              1.04       3.91           4473
+##  8 The Godfather                          1.04       4.50          22253
+##  9 The Treasure of the Sierra Madre       1.04       4.01           2903
+## 10 The Godfather Part II                  1.02       4.40          14953
 ## # … with 90 more rows
 ```
 
@@ -809,7 +809,7 @@ opt_exp$par[7:10]
 ```
 
 ```
-## [1]  9.13827696 11.32582962  2.87121315  0.07375614
+## [1] 12.21471630 15.13907468  3.83812940  0.09881942
 ```
 
 ```r
@@ -838,7 +838,7 @@ opt_imp$par[7:10]
 ```
 
 ```
-## [1] 1.312358 1.314455 1.308865 0.815269
+## [1] 1.0285822 1.0302259 1.0258444 0.6389815
 ```
 
 ```r

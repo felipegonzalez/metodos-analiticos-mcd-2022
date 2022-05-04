@@ -882,7 +882,7 @@ mod_tri |> arrange(desc(num)) |> head(100) |> knitr::kable()
 |_s_        |_s_         |también |   738| 100000| -4.9089816|
 |el         |resto       |de      |   736|   1279| -0.5526037|
 
-## Problema de los ceros {-}
+### Problema de los ceros {-}
 
 Podemos ahora evaluar la probabilidad de ocurrencia de 
 textos utilizando las frecuencias que calculamos arriba:

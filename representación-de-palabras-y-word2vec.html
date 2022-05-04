@@ -1,0 +1,1073 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>10 Representación de palabras y word2vec | Métodos analíticos, ITAM 2022</title>
+  <meta name="description" content="Notas para métodos analíticos 2022" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="10 Representación de palabras y word2vec | Métodos analíticos, ITAM 2022" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Notas para métodos analíticos 2022" />
+  <meta name="github-repo" content="felipexgonzalez/metodos-analiticos-mcd-2022" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="10 Representación de palabras y word2vec | Métodos analíticos, ITAM 2022" />
+  
+  <meta name="twitter:description" content="Notas para métodos analíticos 2022" />
+  
+
+<meta name="author" content="Felipe González" />
+
+
+<meta name="date" content="2022-05-04" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="modelos-de-lenguaje-y-n-gramas.html"/>
+<link rel="next" href="referencias.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.20/datatables.js"></script>
+<link href="libs/dt-core-1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.11.3/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.11.3/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+<link href="libs/vis-9.1.0/vis-network.min.css" rel="stylesheet" />
+<script src="libs/vis-9.1.0/vis-network.min.js"></script>
+<script src="libs/visNetwork-binding-2.1.0/visNetwork.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Métodos Analíticos</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>Temario</a>
+<ul>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html#evaluación"><i class="fa fa-check"></i>Evaluación</a></li>
+</ul></li>
+<li class="chapter" data-level="1" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i><b>1</b> Introducción</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#simlitud-en-dimensión-alta"><i class="fa fa-check"></i>Simlitud en dimensión alta</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#medidas-de-distancia-o-similitud"><i class="fa fa-check"></i>Medidas de distancia o similitud</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#tipos-de-soluciones"><i class="fa fa-check"></i>Tipos de soluciones</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#proyección-y-búsqueda-de-marginales-interesantes"><i class="fa fa-check"></i>Proyección y búsqueda de marginales interesantes</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#proyecciones-globales"><i class="fa fa-check"></i>Proyecciones globales</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#descripción-de-estructura-local"><i class="fa fa-check"></i>Descripción de estructura local</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#inmersiones-embeddings"><i class="fa fa-check"></i>Inmersiones (embeddings)</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="frecuentes.html"><a href="frecuentes.html"><i class="fa fa-check"></i><b>2</b> Análisis de conjuntos frecuentes</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="frecuentes.html"><a href="frecuentes.html#datos-de-canastas"><i class="fa fa-check"></i><b>2.1</b> Datos de canastas</a></li>
+<li class="chapter" data-level="2.2" data-path="frecuentes.html"><a href="frecuentes.html#conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.2</b> Conjuntos frecuentes</a></li>
+<li class="chapter" data-level="2.3" data-path="frecuentes.html"><a href="frecuentes.html#monotonicidad-de-conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.3</b> Monotonicidad de conjuntos frecuentes</a></li>
+<li class="chapter" data-level="2.4" data-path="frecuentes.html"><a href="frecuentes.html#algoritmo-a-priori"><i class="fa fa-check"></i><b>2.4</b> Algoritmo a-priori</a></li>
+<li class="chapter" data-level="2.5" data-path="frecuentes.html"><a href="frecuentes.html#modelos-simples-para-análisis-de-canastas"><i class="fa fa-check"></i><b>2.5</b> Modelos simples para análisis de canastas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-3"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#modelo-de-artículos-independientes"><i class="fa fa-check"></i>Modelo de artículos independientes</a></li>
+</ul></li>
+<li class="chapter" data-level="2.6" data-path="frecuentes.html"><a href="frecuentes.html#soporte-teórico-y-conjuntos-frecuentes"><i class="fa fa-check"></i><b>2.6</b> Soporte teórico y conjuntos frecuentes</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-4"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="frecuentes.html"><a href="frecuentes.html#reglas-de-asociación"><i class="fa fa-check"></i><b>2.7</b> Reglas de asociación</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-5"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-6"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.8" data-path="frecuentes.html"><a href="frecuentes.html#dificultades-en-el-análisis-de-canastas"><i class="fa fa-check"></i><b>2.8</b> Dificultades en el análisis de canastas</a></li>
+<li class="chapter" data-level="2.9" data-path="frecuentes.html"><a href="frecuentes.html#otras-medidas-de-calidad-de-reglas"><i class="fa fa-check"></i><b>2.9</b> Otras medidas de calidad de reglas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#hyper-lift-bajo-hipótesis-de-independencia"><i class="fa fa-check"></i>Hyper-lift bajo hipótesis de independencia</a></li>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#hyper-lift-para-datos-de-canastas"><i class="fa fa-check"></i>Hyper-lift para datos de canastas</a></li>
+</ul></li>
+<li class="chapter" data-level="2.10" data-path="frecuentes.html"><a href="frecuentes.html#selección-de-reglas"><i class="fa fa-check"></i><b>2.10</b> Selección de reglas</a>
+<ul>
+<li class="chapter" data-level="" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-canastas-grandes"><i class="fa fa-check"></i>Ejemplo: canastas grandes</a></li>
+</ul></li>
+<li class="chapter" data-level="2.11" data-path="frecuentes.html"><a href="frecuentes.html#búsqueda-de-reglas-especializadas"><i class="fa fa-check"></i><b>2.11</b> Búsqueda de reglas especializadas</a></li>
+<li class="chapter" data-level="2.12" data-path="frecuentes.html"><a href="frecuentes.html#visualización-de-asociaciones"><i class="fa fa-check"></i><b>2.12</b> Visualización de asociaciones</a>
+<ul>
+<li class="chapter" data-level="2.12.1" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo-canastas"><i class="fa fa-check"></i><b>2.12.1</b> Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="2.13" data-path="frecuentes.html"><a href="frecuentes.html#otras-aplicaciones"><i class="fa fa-check"></i><b>2.13</b> Otras aplicaciones</a></li>
+<li class="chapter" data-level="2.14" data-path="frecuentes.html"><a href="frecuentes.html#ejercicios"><i class="fa fa-check"></i><b>2.14</b> Ejercicios</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="similitud.html"><a href="similitud.html"><i class="fa fa-check"></i><b>3</b> Similitud y vecinos cercanos</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="similitud.html"><a href="similitud.html#similitud-de-conjuntos"><i class="fa fa-check"></i><b>3.1</b> Similitud de conjuntos</a></li>
+<li class="chapter" data-level="3.2" data-path="similitud.html"><a href="similitud.html#representación-de-documentos-como-conjuntos"><i class="fa fa-check"></i><b>3.2</b> Representación de documentos como conjuntos</a></li>
+<li class="chapter" data-level="3.3" data-path="similitud.html"><a href="similitud.html#representación-matricial"><i class="fa fa-check"></i><b>3.3</b> Representación matricial</a></li>
+<li class="chapter" data-level="3.4" data-path="similitud.html"><a href="similitud.html#minhash-y-reducción-probabilística-de-dimensionalidad"><i class="fa fa-check"></i><b>3.4</b> Minhash y reducción probabilística de dimensionalidad</a></li>
+<li class="chapter" data-level="3.5" data-path="similitud.html"><a href="similitud.html#agrupando-textos-de-similitud-alta"><i class="fa fa-check"></i><b>3.5</b> Agrupando textos de similitud alta</a></li>
+<li class="chapter" data-level="3.6" data-path="similitud.html"><a href="similitud.html#ejemplo-tweets"><i class="fa fa-check"></i><b>3.6</b> Ejemplo: tweets</a></li>
+<li class="chapter" data-level="3.7" data-path="similitud.html"><a href="similitud.html#verificar-si-un-nuevo-elemento-es-duplicado"><i class="fa fa-check"></i><b>3.7</b> Verificar si un nuevo elemento es duplicado</a></li>
+<li class="chapter" data-level="3.8" data-path="similitud.html"><a href="similitud.html#controlando-la-sensibilidad-y-umbral-de-similitud"><i class="fa fa-check"></i><b>3.8</b> Controlando la sensibilidad y umbral de similitud</a></li>
+<li class="chapter" data-level="3.9" data-path="similitud.html"><a href="similitud.html#distancia-euclideana-y-lsh"><i class="fa fa-check"></i><b>3.9</b> Distancia euclideana y LSH</a></li>
+<li class="chapter" data-level="3.10" data-path="similitud.html"><a href="similitud.html#locality-sensitive-hashing-lsh"><i class="fa fa-check"></i><b>3.10</b> Locality Sensitive Hashing (LSH)</a></li>
+<li class="chapter" data-level="3.11" data-path="similitud.html"><a href="similitud.html#lsh-para-imágenes"><i class="fa fa-check"></i><b>3.11</b> LSH para imágenes</a></li>
+<li class="chapter" data-level="3.12" data-path="similitud.html"><a href="similitud.html#joins-por-similitud"><i class="fa fa-check"></i><b>3.12</b> Joins por similitud</a></li>
+<li class="chapter" data-level="3.13" data-path="similitud.html"><a href="similitud.html#ejemplo-entity-matching"><i class="fa fa-check"></i><b>3.13</b> Ejemplo: entity matching</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html"><i class="fa fa-check"></i><b>4</b> DVS y reducción de dimensionalidad</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#descomposición-aditiva-en-matrices-de-rango-1"><i class="fa fa-check"></i><b>4.1</b> Descomposición aditiva en matrices de rango 1</a>
+<ul>
+<li class="chapter" data-level="4.1.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#matrices-de-rango-1"><i class="fa fa-check"></i><b>4.1.1</b> Matrices de rango 1</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-una-matriz-de-rango-1-de-preferencias"><i class="fa fa-check"></i>Ejemplo: una matriz de rango 1 de preferencias</a></li>
+</ul></li>
+<li class="chapter" data-level="4.2" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#aproximación-con-matrices-de-rango-1."><i class="fa fa-check"></i><b>4.2</b> Aproximación con matrices de rango 1.</a>
+<ul>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-12"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="4.2.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#suma-de-matrices-de-rango-1."><i class="fa fa-check"></i><b>4.2.1</b> Suma de matrices de rango 1.</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-películas"><i class="fa fa-check"></i>Ejemplo: películas</a></li>
+</ul></li>
+<li class="chapter" data-level="4.3" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#aproximación-con-matrices-de-rango-bajo"><i class="fa fa-check"></i><b>4.3</b> Aproximación con matrices de rango bajo</a>
+<ul>
+<li class="chapter" data-level="4.3.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#discusión-aproximación-de-rango-1."><i class="fa fa-check"></i><b>4.3.1</b> Discusión: aproximación de rango 1.</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#interpetación-de-vectores-singulares"><i class="fa fa-check"></i><b>4.4</b> Interpetación de vectores singulares</a>
+<ul>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-14"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="4.4.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#discusión-aproximaciones-de-rango-más-alto"><i class="fa fa-check"></i><b>4.4.1</b> Discusión: aproximaciones de rango más alto</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-15"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="4.5" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#descomposición-en-valores-singulares-svd-o-dvs"><i class="fa fa-check"></i><b>4.5</b> Descomposición en valores singulares (SVD o DVS)</a></li>
+<li class="chapter" data-level="4.6" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#más-de-interpretación-geométrica"><i class="fa fa-check"></i><b>4.6</b> Más de interpretación geométrica</a></li>
+<li class="chapter" data-level="4.7" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#svd-para-películas-de-netflix"><i class="fa fa-check"></i><b>4.7</b> SVD para películas de netflix</a>
+<ul>
+<li class="chapter" data-level="4.7.1" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#calidad-de-representación-de-svd."><i class="fa fa-check"></i><b>4.7.1</b> Calidad de representación de SVD.</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-16"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="4.8" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#componentes-principales"><i class="fa fa-check"></i><b>4.8</b> Componentes principales</a>
+<ul>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#varianza-en-componentes-principales"><i class="fa fa-check"></i>Varianza en componentes principales</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#centrar-o-no-centrar-por-columna"><i class="fa fa-check"></i>¿Centrar o no centrar por columna?</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-resultados-similares"><i class="fa fa-check"></i>Ejemplo: resultados similares</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplos-donde-es-buena-idea-centrar"><i class="fa fa-check"></i>Ejemplos: donde es buena idea centrar</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#ejemplo-donde-no-centrar-funciona-bien"><i class="fa fa-check"></i>Ejemplo: donde no centrar funciona bien</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#otros-tipos-de-centrado"><i class="fa fa-check"></i>Otros tipos de centrado</a></li>
+<li class="chapter" data-level="" data-path="dvs-y-reducción-de-dimensionalidad.html"><a href="dvs-y-reducción-de-dimensionalidad.html#reescalando-variables"><i class="fa fa-check"></i>Reescalando variables</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html"><i class="fa fa-check"></i><b>5</b> Sistemas de recomendación y filtrado colaborativo</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#enfoques-de-recomendación"><i class="fa fa-check"></i><b>5.1</b> Enfoques de recomendación</a></li>
+<li class="chapter" data-level="5.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#datos"><i class="fa fa-check"></i><b>5.2</b> Datos</a>
+<ul>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-18"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#modelos-de-referencia-y-evaluación"><i class="fa fa-check"></i><b>5.3</b> Modelos de referencia y evaluación</a>
+<ul>
+<li class="chapter" data-level="5.3.1" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#evaluación-de-predicciones"><i class="fa fa-check"></i><b>5.3.1</b> Evaluación de predicciones</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-datos-de-netflix"><i class="fa fa-check"></i>Ejemplo: datos de Netflix</a></li>
+<li class="chapter" data-level="5.3.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#opcional-efectos-en-análisis-de-heterogeneidad-en-uso-de-escala"><i class="fa fa-check"></i><b>5.3.2</b> (Opcional) Efectos en análisis de heterogeneidad en uso de escala</a></li>
+<li class="chapter" data-level="5.3.3" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo"><i class="fa fa-check"></i><b>5.3.3</b> Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="5.4" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#modelo-de-referencia"><i class="fa fa-check"></i><b>5.4</b> Modelo de referencia</a>
+<ul>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejercicio-modelo-de-referencia-para-netflix"><i class="fa fa-check"></i>Ejercicio: modelo de referencia para Netflix</a></li>
+</ul></li>
+<li class="chapter" data-level="5.5" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#filtrado-colaborativo-similitud"><i class="fa fa-check"></i><b>5.5</b> Filtrado colaborativo: similitud</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#simitems"><i class="fa fa-check"></i><b>5.5.1</b> Cálculo de similitud entre usuarios/películas</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-19"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejemplo-cómo-se-ven-las-calificaciones-de-películas-similaresno-similares"><i class="fa fa-check"></i>Ejemplo: ¿cómo se ven las calificaciones de películas similares/no similares?</a></li>
+<li class="chapter" data-level="" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#ejercicio-4"><i class="fa fa-check"></i>Ejercicio</a></li>
+<li class="chapter" data-level="5.5.2" data-path="sistemas-de-recomendación-y-filtrado-colaborativo.html"><a href="sistemas-de-recomendación-y-filtrado-colaborativo.html#implementación"><i class="fa fa-check"></i><b>5.5.2</b> Implementación</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html"><i class="fa fa-check"></i><b>6</b> Dimensiones latentes para recomendación</a>
+<ul>
+<li class="chapter" data-level="6.0.1" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo"><i class="fa fa-check"></i><b>6.0.1</b> Ejemplo: una dimensión latente</a></li>
+<li class="chapter" data-level="6.0.2" data-path="frecuentes.html"><a href="frecuentes.html#ejemplo"><i class="fa fa-check"></i><b>6.0.2</b> Ejemplo: dos dimensiones latentes</a></li>
+<li class="chapter" data-level="6.0.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#combinación-con-modelo-base"><i class="fa fa-check"></i><b>6.0.3</b> Combinación con modelo base</a></li>
+<li class="chapter" data-level="6.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#factorización-de-matrices"><i class="fa fa-check"></i><b>6.1</b> Factorización de matrices</a></li>
+<li class="chapter" data-level="6.2" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#mínimos-cuadrados-alternados"><i class="fa fa-check"></i><b>6.2</b> Mínimos cuadrados alternados</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#mínimos-cuadrados-alternados-con-regularización"><i class="fa fa-check"></i><b>6.2.1</b> Mínimos cuadrados alternados con regularización</a></li>
+<li class="chapter" data-level="" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejercicio-5"><i class="fa fa-check"></i>Ejercicio</a></li>
+</ul></li>
+<li class="chapter" data-level="6.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#retroalimentación-implícita"><i class="fa fa-check"></i><b>6.3</b> Retroalimentación implícita</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejemplo-20"><i class="fa fa-check"></i><b>6.3.1</b> Ejemplo</a></li>
+<li class="chapter" data-level="6.3.2" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#ejemplo-21"><i class="fa fa-check"></i><b>6.3.2</b> Ejemplo</a></li>
+<li class="chapter" data-level="6.3.3" data-path="dimensiones-latentes-para-recomendación.html"><a href="dimensiones-latentes-para-recomendación.html#evaluación-para-modelos-implícitos"><i class="fa fa-check"></i><b>6.3.3</b> Evaluación para modelos implícitos</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html"><i class="fa fa-check"></i><b>7</b> Pagerank y análisis de redes</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#introducción"><i class="fa fa-check"></i><b>7.1</b> Introducción</a>
+<ul>
+<li class="chapter" data-level="7.1.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#centralidad-en-redes"><i class="fa fa-check"></i><b>7.1.1</b> Centralidad en redes</a></li>
+<li class="chapter" data-level="" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#ejemplo-de-moviegalaxies.com-pulp-fiction"><i class="fa fa-check"></i>Ejemplo de Moviegalaxies.com: Pulp Fiction</a></li>
+</ul></li>
+<li class="chapter" data-level="7.2" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#tipos-de-redes-y-su-representación"><i class="fa fa-check"></i><b>7.2</b> Tipos de redes y su representación</a></li>
+<li class="chapter" data-level="7.3" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#visualización-de-redes"><i class="fa fa-check"></i><b>7.3</b> Visualización de redes</a>
+<ul>
+<li class="chapter" data-level="7.3.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#ejercicio-6"><i class="fa fa-check"></i><b>7.3.1</b> Ejercicio</a></li>
+</ul></li>
+<li class="chapter" data-level="7.4" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#medidas-de-centralidad-para-redes"><i class="fa fa-check"></i><b>7.4</b> Medidas de centralidad para redes</a>
+<ul>
+<li class="chapter" data-level="7.4.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#grado"><i class="fa fa-check"></i><b>7.4.1</b> Grado</a></li>
+<li class="chapter" data-level="7.4.2" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#medida-de-centralidad-betweeness-o-intermediación"><i class="fa fa-check"></i><b>7.4.2</b> Medida de centralidad: <em>Betweeness</em> o <em>Intermediación</em></a></li>
+<li class="chapter" data-level="7.4.3" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#medida-de-centralidad-cercanía"><i class="fa fa-check"></i><b>7.4.3</b> Medida de centralidad: Cercanía</a></li>
+<li class="chapter" data-level="7.4.4" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#centralidad-de-eigenvector"><i class="fa fa-check"></i><b>7.4.4</b> Centralidad de eigenvector</a></li>
+<li class="chapter" data-level="" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#matrices-irreducibles-y-gráficas-fuertemente-conexas"><i class="fa fa-check"></i>Matrices irreducibles y gráficas fuertemente conexas</a></li>
+</ul></li>
+<li class="chapter" data-level="7.5" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#gráficas-dirigidas"><i class="fa fa-check"></i><b>7.5</b> Gráficas dirigidas</a>
+<ul>
+<li><a href="pagerank-y-análisis-de-redes.html#ejemplos-qué-pasa-si-a-es-no-reducible">Ejemplos: ¿qué pasa si <span class="math inline">\(A\)</span> es no reducible?</a></li>
+</ul></li>
+<li class="chapter" data-level="7.6" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank"><i class="fa fa-check"></i><b>7.6</b> Pagerank</a>
+<ul>
+<li class="chapter" data-level="" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#ejemplo-24"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="7.6.1" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#la-matriz-m-es-estocástica"><i class="fa fa-check"></i><b>7.6.1</b> La matriz <span class="math inline">\(M\)</span> es estocástica</a></li>
+<li class="chapter" data-level="7.6.2" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#primeras-dificultades"><i class="fa fa-check"></i><b>7.6.2</b> Primeras dificultades</a></li>
+<li class="chapter" data-level="7.6.3" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#el-proceso-estocástico-cadena-de-markov-asociado-al-pagerank-versión-simple"><i class="fa fa-check"></i><b>7.6.3</b> El proceso estocástico (cadena de Markov) asociado al Pagerank, versión simple</a></li>
+<li class="chapter" data-level="7.6.4" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#matriz-de-transición"><i class="fa fa-check"></i><b>7.6.4</b> Matriz de transición</a></li>
+<li class="chapter" data-level="7.6.5" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#distribución-de-equilibrio-versión-simple"><i class="fa fa-check"></i><b>7.6.5</b> Distribución de equilibrio (versión simple)</a></li>
+<li class="chapter" data-level="7.6.6" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#distribución-de-equilibrio-y-probabilidades-a-largo-plazo"><i class="fa fa-check"></i><b>7.6.6</b> Distribución de equilibrio y probabilidades a largo plazo</a></li>
+<li class="chapter" data-level="7.6.7" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#matriz-de-transición-a-k-pasos"><i class="fa fa-check"></i><b>7.6.7</b> Matriz de transición a <span class="math inline">\(k\)</span> pasos</a></li>
+<li class="chapter" data-level="7.6.8" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank-teletransportaciónperturbación-de-la-matriz-m"><i class="fa fa-check"></i><b>7.6.8</b> Pagerank: teletransportación/perturbación de la matriz <span class="math inline">\(M\)</span></a></li>
+<li class="chapter" data-level="7.6.9" data-path="pagerank-y-análisis-de-redes.html"><a href="pagerank-y-análisis-de-redes.html#pagerank-para-buscador"><i class="fa fa-check"></i><b>7.6.9</b> Pagerank para buscador</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="detección-de-comunidades.html"><a href="detección-de-comunidades.html"><i class="fa fa-check"></i><b>8</b> Detección de comunidades</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="detección-de-comunidades.html"><a href="detección-de-comunidades.html#modularidad"><i class="fa fa-check"></i><b>8.1</b> Modularidad</a></li>
+<li class="chapter" data-level="8.2" data-path="detección-de-comunidades.html"><a href="detección-de-comunidades.html#algoritmo-miope-fast-greedy"><i class="fa fa-check"></i><b>8.2</b> Algoritmo miope (fast greedy)</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html"><i class="fa fa-check"></i><b>9</b> Modelos de lenguaje y n-gramas</a>
+<ul>
+<li class="chapter" data-level="9.1" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#ejemplo-modelo-de-canal-ruidoso"><i class="fa fa-check"></i><b>9.1</b> Ejemplo: Modelo de canal ruidoso</a></li>
+<li class="chapter" data-level="9.2" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#corpus-y-vocabulario"><i class="fa fa-check"></i><b>9.2</b> Corpus y vocabulario</a></li>
+<li class="chapter" data-level="9.3" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#modelos-de-lenguaje-n-gramas"><i class="fa fa-check"></i><b>9.3</b> Modelos de lenguaje: n-gramas</a>
+<ul>
+<li class="chapter" data-level="9.3.1" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#modelo-generativo-de-n-gramas"><i class="fa fa-check"></i><b>9.3.1</b> Modelo generativo de n-gramas</a></li>
+</ul></li>
+<li class="chapter" data-level="9.4" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#modelo-de-n-gramas-usando-conteos"><i class="fa fa-check"></i><b>9.4</b> Modelo de n-gramas usando conteos</a></li>
+<li class="chapter" data-level="9.5" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#notas-de-periódico-modelo-de-n-gramas-simples."><i class="fa fa-check"></i><b>9.5</b> Notas de periódico: modelo de n-gramas simples.</a>
+<ul>
+<li class="chapter" data-level="" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#problema-de-los-ceros"><i class="fa fa-check"></i>Problema de los ceros</a></li>
+</ul></li>
+<li class="chapter" data-level="9.6" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#evaluación-de-modelos"><i class="fa fa-check"></i><b>9.6</b> Evaluación de modelos</a>
+<ul>
+<li class="chapter" data-level="9.6.1" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#generación-de-texto"><i class="fa fa-check"></i><b>9.6.1</b> Generación de texto</a></li>
+<li class="chapter" data-level="9.6.2" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#evaluación-de-modelos-perplejidad"><i class="fa fa-check"></i><b>9.6.2</b> Evaluación de modelos: perplejidad</a></li>
+</ul></li>
+<li class="chapter" data-level="9.7" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#suavizamiento-de-conteos-otros-métodos"><i class="fa fa-check"></i><b>9.7</b> Suavizamiento de conteos: otros métodos</a>
+<ul>
+<li class="chapter" data-level="" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#desempeño"><i class="fa fa-check"></i>Desempeño</a></li>
+</ul></li>
+<li class="chapter" data-level="9.8" data-path="modelos-de-lenguaje-y-n-gramas.html"><a href="modelos-de-lenguaje-y-n-gramas.html#ejemplo-corrector-de-ortografía"><i class="fa fa-check"></i><b>9.8</b> Ejemplo: Corrector de ortografía</a></li>
+</ul></li>
+<li class="chapter" data-level="10" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html"><i class="fa fa-check"></i><b>10</b> Representación de palabras y word2vec</a>
+<ul>
+<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#ejemplo-31"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="10.1" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#modelo-de-red-neuronal"><i class="fa fa-check"></i><b>10.1</b> Modelo de red neuronal</a>
+<ul>
+<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#ejemplo-32"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="10.2" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#representación-de-palabras"><i class="fa fa-check"></i><b>10.2</b> Representación de palabras</a></li>
+<li class="chapter" data-level="10.3" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#modelos-de-word2vec"><i class="fa fa-check"></i><b>10.3</b> Modelos de word2vec</a>
+<ul>
+<li class="chapter" data-level="10.3.1" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#arquitectura-continuous-bag-of-words"><i class="fa fa-check"></i><b>10.3.1</b> Arquitectura continuous bag-of-words</a></li>
+<li class="chapter" data-level="10.3.2" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#arquitectura-skip-grams"><i class="fa fa-check"></i><b>10.3.2</b> Arquitectura skip-grams</a></li>
+<li class="chapter" data-level="10.3.3" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#muestreo-negativo"><i class="fa fa-check"></i><b>10.3.3</b> Muestreo negativo</a></li>
+<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#ejemplo-33"><i class="fa fa-check"></i>Ejemplo</a></li>
+</ul></li>
+<li class="chapter" data-level="10.4" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#esprep"><i class="fa fa-check"></i><b>10.4</b> Espacio de representación de palabras</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
+<li class="divider"></li>
+<li><a href="https://github.com/felipegonzalez/metodos-analiticos-mcd-2022" target="blank">Repositorio de Github</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Métodos analíticos, ITAM 2022</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="representación-de-palabras-y-word2vec" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> Representación de palabras y word2vec</h1>
+<p>En esta parte empezamos a ver los enfoques más modernos (redes neuronales) para construir
+modelos de lenguajes y resolver tareas de NLP. Se trata de modelos de lenguaje que incluyen más
+estructura, son más fáciles de regularizar y de ampliar si es necesario para incluir
+dependencias de mayor distancia. El método de conteo/suavizamiento de ngramas es simple y funciona
+bien para algunas tareas, pero podemos construir mejores modelos con enfoques más estructurados, y con
+más capacidad para aprender aspectos más complejos del lenguaje natural.</p>
+<p>Si <span class="math inline">\(w=w_1w_2\cdots w_N\)</span> es una frase, y las <span class="math inline">\(w\)</span> representan palabras, recordemos que un modelo de lenguaje con dependencia de <span class="math inline">\(n\)</span>-gramas consiste de las probabilidades</p>
+<p><span class="math display">\[P(w_t | w_{t-1} w_{t-2} \cdots w_{t-n+1}),\]</span></p>
+<p>(n=2, bigramas, n=3 trigramas, etc.)</p>
+<p>Y vimos que tenemos problemas cuando observamos sucesiones que no vimos en el corpus de entrenamiento. Este problema se puede “parchar” utilizando técnicas de suavizamiento. Aún para colecciones de entrenamiento muy grandes tenemos que lidiar con este problema.</p>
+<p>Podemos tomar un enfoque más estructurado pensando en representaciones “distribucionales” de palabras:</p>
+<ol style="list-style-type: decimal">
+<li>Asociamos a cada palabra en el vocabulario un vector numérico con <span class="math inline">\(d\)</span> dimensiones, que es su <em>representación distribuida</em>.</li>
+<li>Expresamos la función de probabilidad como combinaciones de
+las representaciones vectoriales del primer paso.</li>
+<li>Aprendemos (máxima verosimiltud posiblemente regularización) simultáneamente los vectores y la manera de combinar
+estos vectores para producir probabilidades.</li>
+</ol>
+<p>La idea de este modelo es entonces subsanar la relativa escasez de datos (comparado con todos los trigramas que pueden existir) con estructura. Sabemos que esta es una buena estrategia si la estrucutura impuesta es apropiada.</p>
+
+<div class="resumen">
+Una de las ideas fundamentales de este enfoque es representar
+a cada palabra como un vector numérico de dimensión <span class="math inline">\(d\)</span>. Esto
+se llama una <em>representación vectorial distribuida</em>, o también
+un <em>embedding de palabras</em>.
+</div>
+<p>El objeto es entonces abstraer características de palabras (mediante estas representaciones)
+intentando no perder mucho de su sentido
+original, lo que nos permite conocer palabras por su contexto, aún cuando no las hayamos observado antes.</p>
+<div id="ejemplo-31" class="section level3 unnumbered">
+<h3>Ejemplo</h3>
+<p>¿Cómo puede funcionar este enfoque? Por ejemplo, si vemos la frase “El gato corre en el jardín,” sabemos que una frase probable debe ser también “El perro corre en el jardín,” pero quizá nunca vimos en el corpus la sucesión “El perro corre.” La idea es que como “perro” y “gato” son funcionalmente similares (aparecen en contextos similares en otros tipos de oraciones como el perro come, el gato come, el perro duerme, este es mi gato, etc.), un modelo como el de arriba daría vectores similares a “perro” y “gato,” pues aparecen en contextos similares. Entonces el modelo daría una probabilidad alta a “El perro corre en el jardín.”</p>
+</div>
+<div id="modelo-de-red-neuronal" class="section level2" number="10.1">
+<h2><span class="header-section-number">10.1</span> Modelo de red neuronal</h2>
+<p>Podemos entonces construir una red neuronal con 2 capas ocultas como sigue (segimos <span class="citation">(<a href="#ref-bengio" role="doc-biblioref">Bengio et al. 2003</a>)</span>, una de
+las primeras referencias en usar este enfoque). Usemos el ejemplo de trigramas:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Capa de incrustación o embedding</strong>. En la primera capa oculta, tenemos un mapeo de las entradas <span class="math inline">\(w_1,\ldots, w_{n-1}\)</span> a <span class="math inline">\(x=C(w_1),\ldots, C(w_{n-1})\)</span>, donde <span class="math inline">\(C\)</span> es una función que mapea palabras a vectores de dimensión <span class="math inline">\(d\)</span>. <span class="math inline">\(C\)</span> también se puede pensar como una matriz de dimensión <span class="math inline">\(|V|\)</span> por <span class="math inline">\(d\)</span>. En la capa de entrada,</li>
+</ol>
+<p><span class="math display">\[w_{n-2},w_{n-1} \to x = (C(w_{n-2}), C(w_{n-1})).\]</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li><strong>Capa totalmente conexa</strong>. En la siguiente capa oculta tenemos una matriz de pesos <span class="math inline">\(H\)</span> y la función logística (o tangente hiperbólica) <span class="math inline">\(\sigma (z) = \frac{e^z}{1+e^z}\)</span>, como en una red neuronal usual.</li>
+</ol>
+<p>En esta capa calculamos
+<span class="math display">\[z = \sigma (a + Hx),\]</span>
+que resulta en un vector de tamaño <span class="math inline">\(h\)</span>.</p>
+<ol start="3" style="list-style-type: decimal">
+<li>La <strong>capa de salida</strong> debe ser un vector de probabilidades
+sobre todo el vocabulario <span class="math inline">\(|V|\)</span>. En esta capa tenemos pesos <span class="math inline">\(U\)</span> y hacemos
+<span class="math display">\[y = b + U\sigma (z),\]</span>
+y finalmente usamos softmax para tener probabilidades que suman uno:
+<span class="math display">\[p_i = \frac{\exp (y_i) }{\sum_j exp(y_j)}.\]</span></li>
+</ol>
+<p>En el ajuste maximizamos la verosimilitud:</p>
+<p><span class="math display">\[\sum_t \log \hat{P}(w_{t,n}|w_{t,n-2}w_{t-n-1}) \]</span></p>
+<p>La representación en la referencia <span class="citation">(<a href="#ref-bengio" role="doc-biblioref">Bengio et al. 2003</a>)</span> es:</p>
+<div class="figure">
+<img src="images/1_neural_model.png" alt="" />
+<p class="caption">Imagen</p>
+</div>
+<p>Esta idea original ha sido explotada con éxito, aunque sigue siendo
+intensivo en cómputo ajustar un modelo como este. Nótese que
+el número de parámetros es del orden de <span class="math inline">\(|V|(nm+h)\)</span>, donde <span class="math inline">\(|V|\)</span> es el tamaño del vocabulario (decenas o cientos de miles), <span class="math inline">\(n\)</span> es 3 o 4 (trigramas, 4-gramas), <span class="math inline">\(m\)</span> es el tamaño de la representacion (cientos) y <span class="math inline">\(h\)</span> es el número de nodos en la segunda capa (también cientos o miles). Esto resulta en el mejor de los casos en modelos con miles de millones de parámetros. Adicionalmente, hay algunos cálculos costosos, como el softmax (donde hay que hacer una suma sobre el vocabulario completo). En el paper original se propone <strong>descenso estocástico</strong>.</p>
+<div id="ejemplo-32" class="section level3 unnumbered">
+<h3>Ejemplo</h3>
+<p>Veamos un ejemplo chico de cómo se vería el paso
+feed-forward de esta red. Supondremos en este
+ejemplo que los sesgos <span class="math inline">\(a,b\)</span> son
+iguales a cero para simplificar los cálculos.</p>
+<p>Consideremos que el texto de entrenamiento es
+“El perro corre. El gato corre. El león corre. El león ruge.”</p>
+<p>En este caso, nuestro vocabulario consiste de los 8 tokens
+<span class="math inline">\(&lt;s&gt;\)</span>, el, perro, gato, león, corre, caza <span class="math inline">\(&lt;/s&gt;\)</span>. Consideremos un
+modelo con <span class="math inline">\(d=2\)</span> (representaciones de palabras en 2 dimensiones),
+y consideramos un modelo de trigramas.</p>
+<p>Nuestra primera capa es una matriz <span class="math inline">\(C\)</span> de tamaño <span class="math inline">\(2\times 8\)</span>,
+es decir, un vector de tamaño 2 para cada palabra. Por ejemplo,
+podríamos tener</p>
+<div class="sourceCode" id="cb846"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb846-1"><a href="representación-de-palabras-y-word2vec.html#cb846-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb846-2"><a href="representación-de-palabras-y-word2vec.html#cb846-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">63</span>)</span>
+<span id="cb846-3"><a href="representación-de-palabras-y-word2vec.html#cb846-3" aria-hidden="true" tabindex="-1"></a>C <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">16</span>, <span class="dv">0</span>, <span class="fl">0.1</span>), <span class="dv">2</span>, <span class="dv">8</span>), <span class="dv">2</span>)</span>
+<span id="cb846-4"><a href="representación-de-palabras-y-word2vec.html#cb846-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(C) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;_s_&quot;</span>, <span class="st">&quot;el&quot;</span>, <span class="st">&quot;perro&quot;</span>, <span class="st">&quot;gato&quot;</span>, <span class="st">&quot;león&quot;</span>, <span class="st">&quot;corre&quot;</span>, <span class="st">&quot;caza&quot;</span>, <span class="st">&quot;_ss_&quot;</span>)</span>
+<span id="cb846-5"><a href="representación-de-palabras-y-word2vec.html#cb846-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(C) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;d_1&quot;</span>, <span class="st">&quot;d_2&quot;</span>)</span>
+<span id="cb846-6"><a href="representación-de-palabras-y-word2vec.html#cb846-6" aria-hidden="true" tabindex="-1"></a>C</span></code></pre></div>
+<pre><code>##       _s_    el perro gato  león corre caza  _ss_
+## d_1  0.13  0.05  0.05 0.04 -0.17  0.04 0.03 -0.02
+## d_2 -0.19 -0.19 -0.11 0.01  0.04 -0.01 0.02  0.02</code></pre>
+<p>En la siguiente capa consideremos que usaremos, arbitrariamente, <span class="math inline">\(h=3\)</span> unidades. Como estamos considerando bigramas, necesitamos una entrada de tamaño 4 (representación de un bigrama, que son dos vectores de la matriz <span class="math inline">\(C\)</span>, para predecir la siguiente palabra).</p>
+<div class="sourceCode" id="cb848"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb848-1"><a href="representación-de-palabras-y-word2vec.html#cb848-1" aria-hidden="true" tabindex="-1"></a>H <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">12</span>, <span class="dv">0</span>, <span class="fl">0.1</span>), <span class="dv">3</span>, <span class="dv">4</span>), <span class="dv">2</span>)</span>
+<span id="cb848-2"><a href="representación-de-palabras-y-word2vec.html#cb848-2" aria-hidden="true" tabindex="-1"></a>H</span></code></pre></div>
+<pre><code>##       [,1]  [,2]  [,3]  [,4]
+## [1,] -0.04  0.12 -0.09  0.18
+## [2,]  0.09  0.10  0.06  0.08
+## [3,]  0.10 -0.08 -0.07 -0.13</code></pre>
+<p>Y la última capa es la del vocabulario. Son entonces 8 unidades,
+con 3 entradas cada una. La matriz de pesos es:</p>
+<div class="sourceCode" id="cb850"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb850-1"><a href="representación-de-palabras-y-word2vec.html#cb850-1" aria-hidden="true" tabindex="-1"></a>U <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">24</span>, <span class="dv">0</span>, <span class="fl">0.1</span>), <span class="dv">8</span>, <span class="dv">3</span>), <span class="dv">2</span>)</span>
+<span id="cb850-2"><a href="representación-de-palabras-y-word2vec.html#cb850-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(U) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;_s_&quot;</span>, <span class="st">&quot;el&quot;</span>, <span class="st">&quot;perro&quot;</span>, <span class="st">&quot;gato&quot;</span>, <span class="st">&quot;león&quot;</span>, <span class="st">&quot;corre&quot;</span>, <span class="st">&quot;caza&quot;</span>, <span class="st">&quot;_ss_&quot;</span>)</span>
+<span id="cb850-3"><a href="representación-de-palabras-y-word2vec.html#cb850-3" aria-hidden="true" tabindex="-1"></a>U</span></code></pre></div>
+<pre><code>##        [,1]  [,2]  [,3]
+## _s_    0.05 -0.15 -0.30
+## el     0.01  0.16  0.15
+## perro -0.14  0.10  0.05
+## gato   0.04  0.09  0.12
+## león   0.06 -0.03  0.02
+## corre -0.01  0.00 -0.02
+## caza   0.10  0.00  0.06
+## _ss_   0.07 -0.10  0.01</code></pre>
+<p>Ahora consideremos cómo se calcula el objetivo con los
+datos de entrenamiento. El primer trigrama es (_s_, el). La primera
+capa entonces devuelve los dos vectores correspondientes a cada
+palabra (concatenado):</p>
+<div class="sourceCode" id="cb852"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb852-1"><a href="representación-de-palabras-y-word2vec.html#cb852-1" aria-hidden="true" tabindex="-1"></a>capa_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(C[, <span class="st">&quot;_s_&quot;</span>], C[, <span class="st">&quot;el&quot;</span>])</span>
+<span id="cb852-2"><a href="representación-de-palabras-y-word2vec.html#cb852-2" aria-hidden="true" tabindex="-1"></a>capa_1</span></code></pre></div>
+<pre><code>##   d_1   d_2   d_1   d_2 
+##  0.13 -0.19  0.05 -0.19</code></pre>
+<p>La siguiente capa es:</p>
+<div class="sourceCode" id="cb854"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb854-1"><a href="representación-de-palabras-y-word2vec.html#cb854-1" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="cf">function</span>(z){ <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">exp</span>(<span class="sc">-</span>z))}</span>
+<span id="cb854-2"><a href="representación-de-palabras-y-word2vec.html#cb854-2" aria-hidden="true" tabindex="-1"></a>capa_2 <span class="ot">&lt;-</span> <span class="fu">sigma</span>(H <span class="sc">%*%</span> capa_1)</span>
+<span id="cb854-3"><a href="representación-de-palabras-y-word2vec.html#cb854-3" aria-hidden="true" tabindex="-1"></a>capa_2</span></code></pre></div>
+<pre><code>##           [,1]
+## [1,] 0.4833312
+## [2,] 0.4951252
+## [3,] 0.5123475</code></pre>
+<p>Y la capa final da</p>
+<div class="sourceCode" id="cb856"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb856-1"><a href="representación-de-palabras-y-word2vec.html#cb856-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> U <span class="sc">%*%</span> capa_2</span>
+<span id="cb856-2"><a href="representación-de-palabras-y-word2vec.html#cb856-2" aria-hidden="true" tabindex="-1"></a>y</span></code></pre></div>
+<pre><code>##               [,1]
+## _s_   -0.203806461
+## el     0.160905460
+## perro  0.007463525
+## gato   0.125376210
+## león   0.024393066
+## corre -0.015080262
+## caza   0.079073967
+## _ss_  -0.010555858</code></pre>
+<p>Y aplicamos softmax para encontrar las probabilidades</p>
+<div class="sourceCode" id="cb858"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb858-1"><a href="representación-de-palabras-y-word2vec.html#cb858-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">exp</span>(y)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(y)) <span class="sc">|&gt;</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb858-2"><a href="representación-de-palabras-y-word2vec.html#cb858-2" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div>
+<pre><code>##             [,1]
+## _s_   0.09931122
+## el    0.14301799
+## perro 0.12267376
+## gato  0.13802588
+## león  0.12476825
+## corre 0.11993917
+## caza  0.13178067
+## _ss_  0.12048306</code></pre>
+<p>Y la probabilidad es entonces</p>
+<div class="sourceCode" id="cb860"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb860-1"><a href="representación-de-palabras-y-word2vec.html#cb860-1" aria-hidden="true" tabindex="-1"></a>p_1 <span class="ot">&lt;-</span> p[<span class="st">&quot;perro&quot;</span>, <span class="dv">1</span>]</span>
+<span id="cb860-2"><a href="representación-de-palabras-y-word2vec.html#cb860-2" aria-hidden="true" tabindex="-1"></a>p_1</span></code></pre></div>
+<pre><code>##     perro 
+## 0.1226738</code></pre>
+<p>Cuya log probabilidad es</p>
+<div class="sourceCode" id="cb862"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb862-1"><a href="representación-de-palabras-y-word2vec.html#cb862-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(p_1)</span></code></pre></div>
+<pre><code>##     perro 
+## -2.098227</code></pre>
+<p>Ahora seguimos con el siguiente trigrama, que
+es “(perro, corre).” Necesitamos calcular la probabilidad
+de corre dado el contexto “el perro.” Repetimos nuestro cálculo:</p>
+<div class="sourceCode" id="cb864"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb864-1"><a href="representación-de-palabras-y-word2vec.html#cb864-1" aria-hidden="true" tabindex="-1"></a>capa_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(C[, <span class="st">&quot;perro&quot;</span>], C[, <span class="st">&quot;corre&quot;</span>])</span>
+<span id="cb864-2"><a href="representación-de-palabras-y-word2vec.html#cb864-2" aria-hidden="true" tabindex="-1"></a>capa_1</span></code></pre></div>
+<pre><code>##   d_1   d_2   d_1   d_2 
+##  0.05 -0.11  0.04 -0.01</code></pre>
+<div class="sourceCode" id="cb866"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb866-1"><a href="representación-de-palabras-y-word2vec.html#cb866-1" aria-hidden="true" tabindex="-1"></a>capa_2 <span class="ot">&lt;-</span> <span class="fu">sigma</span>(H <span class="sc">%*%</span> capa_1)</span>
+<span id="cb866-2"><a href="representación-de-palabras-y-word2vec.html#cb866-2" aria-hidden="true" tabindex="-1"></a>capa_2</span></code></pre></div>
+<pre><code>##           [,1]
+## [1,] 0.4948502
+## [2,] 0.4987750
+## [3,] 0.5030750</code></pre>
+<div class="sourceCode" id="cb868"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb868-1"><a href="representación-de-palabras-y-word2vec.html#cb868-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> U <span class="sc">%*%</span> capa_2</span>
+<span id="cb868-2"><a href="representación-de-palabras-y-word2vec.html#cb868-2" aria-hidden="true" tabindex="-1"></a>y</span></code></pre></div>
+<pre><code>##               [,1]
+## _s_   -0.200996230
+## el     0.160213746
+## perro  0.005752223
+## gato   0.125052753
+## león   0.024789260
+## corre -0.015010001
+## caza   0.079669516
+## _ss_  -0.010207238</code></pre>
+<div class="sourceCode" id="cb870"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb870-1"><a href="representación-de-palabras-y-word2vec.html#cb870-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">exp</span>(y)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(y)) <span class="sc">|&gt;</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb870-2"><a href="representación-de-palabras-y-word2vec.html#cb870-2" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div>
+<pre><code>##             [,1]
+## _s_   0.09958028
+## el    0.14290415
+## perro 0.12245121
+## gato  0.13796681
+## león  0.12480464
+## corre 0.11993506
+## caza  0.13184539
+## _ss_  0.12051246</code></pre>
+<p>Y la probabilidad es entonces</p>
+<div class="sourceCode" id="cb872"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb872-1"><a href="representación-de-palabras-y-word2vec.html#cb872-1" aria-hidden="true" tabindex="-1"></a>p_2 <span class="ot">&lt;-</span> p[<span class="st">&quot;corre&quot;</span>, <span class="dv">1</span>]</span>
+<span id="cb872-2"><a href="representación-de-palabras-y-word2vec.html#cb872-2" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(p_2)</span></code></pre></div>
+<pre><code>##     corre 
+## -2.120805</code></pre>
+<p>Sumando, la log probabilidad es:</p>
+<div class="sourceCode" id="cb874"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb874-1"><a href="representación-de-palabras-y-word2vec.html#cb874-1" aria-hidden="true" tabindex="-1"></a><span class="fu">log</span>(p_1) <span class="sc">+</span> <span class="fu">log</span>(p_2)</span></code></pre></div>
+<pre><code>##     perro 
+## -4.219032</code></pre>
+<p>y continuamos con los siguientes trigramas del texto de entrenamiento.
+Creamos una función</p>
+<div class="sourceCode" id="cb876"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb876-1"><a href="representación-de-palabras-y-word2vec.html#cb876-1" aria-hidden="true" tabindex="-1"></a>feed_fow_p <span class="ot">&lt;-</span> <span class="cf">function</span>(trigrama, C, H, U){</span>
+<span id="cb876-2"><a href="representación-de-palabras-y-word2vec.html#cb876-2" aria-hidden="true" tabindex="-1"></a>  trigrama <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(trigrama, <span class="st">&quot; &quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb876-3"><a href="representación-de-palabras-y-word2vec.html#cb876-3" aria-hidden="true" tabindex="-1"></a>  capa_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(C[, trigrama[<span class="dv">1</span>]], C[, trigrama[<span class="dv">2</span>]])</span>
+<span id="cb876-4"><a href="representación-de-palabras-y-word2vec.html#cb876-4" aria-hidden="true" tabindex="-1"></a>  capa_2 <span class="ot">&lt;-</span> <span class="fu">sigma</span>(H <span class="sc">%*%</span> capa_1)</span>
+<span id="cb876-5"><a href="representación-de-palabras-y-word2vec.html#cb876-5" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> U <span class="sc">%*%</span> capa_2</span>
+<span id="cb876-6"><a href="representación-de-palabras-y-word2vec.html#cb876-6" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">exp</span>(y)<span class="sc">/</span><span class="fu">sum</span>(<span class="fu">exp</span>(y)) <span class="sc">|&gt;</span> <span class="fu">as.numeric</span>()</span>
+<span id="cb876-7"><a href="representación-de-palabras-y-word2vec.html#cb876-7" aria-hidden="true" tabindex="-1"></a>  p</span>
+<span id="cb876-8"><a href="representación-de-palabras-y-word2vec.html#cb876-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb876-9"><a href="representación-de-palabras-y-word2vec.html#cb876-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb876-10"><a href="representación-de-palabras-y-word2vec.html#cb876-10" aria-hidden="true" tabindex="-1"></a>feed_fow_dev <span class="ot">&lt;-</span> <span class="cf">function</span>(trigrama, C, H, U) {</span>
+<span id="cb876-11"><a href="representación-de-palabras-y-word2vec.html#cb876-11" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">feed_fow_p</span>(trigrama, C, H, U)</span>
+<span id="cb876-12"><a href="representación-de-palabras-y-word2vec.html#cb876-12" aria-hidden="true" tabindex="-1"></a>  trigrama_s <span class="ot">&lt;-</span> <span class="fu">strsplit</span>(trigrama, <span class="st">&quot; &quot;</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb876-13"><a href="representación-de-palabras-y-word2vec.html#cb876-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">log</span>(p)[trigrama_s[<span class="dv">3</span>], <span class="dv">1</span>]</span>
+<span id="cb876-14"><a href="representación-de-palabras-y-word2vec.html#cb876-14" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Y ahora aplicamos a todos los textos:</p>
+<div class="sourceCode" id="cb877"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb877-1"><a href="representación-de-palabras-y-word2vec.html#cb877-1" aria-hidden="true" tabindex="-1"></a>texto_entrena <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;_s_ el perro corre _ss_&quot;</span>, <span class="st">&quot; _s_ el gato corre _ss_&quot;</span>, <span class="st">&quot; _s_ el león corre _ss_&quot;</span>,</span>
+<span id="cb877-2"><a href="representación-de-palabras-y-word2vec.html#cb877-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;_s_ el león caza _ss_&quot;</span>,  <span class="st">&quot;_s_ el gato caza _ss_&quot;</span>)</span>
+<span id="cb877-3"><a href="representación-de-palabras-y-word2vec.html#cb877-3" aria-hidden="true" tabindex="-1"></a>entrena_trigramas <span class="ot">&lt;-</span> <span class="fu">map</span>(texto_entrena, </span>
+<span id="cb877-4"><a href="representación-de-palabras-y-word2vec.html#cb877-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>tokenizers<span class="sc">::</span><span class="fu">tokenize_ngrams</span>(.x, <span class="at">n =</span> <span class="dv">3</span>)[[<span class="dv">1</span>]]) <span class="sc">|&gt;</span> </span>
+<span id="cb877-5"><a href="representación-de-palabras-y-word2vec.html#cb877-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">flatten</span>() <span class="sc">|&gt;</span> <span class="fu">unlist</span>()</span>
+<span id="cb877-6"><a href="representación-de-palabras-y-word2vec.html#cb877-6" aria-hidden="true" tabindex="-1"></a>entrena_trigramas</span></code></pre></div>
+<pre><code>##  [1] &quot;_s_ el perro&quot;     &quot;el perro corre&quot;   &quot;perro corre _ss_&quot; &quot;_s_ el gato&quot;     
+##  [5] &quot;el gato corre&quot;    &quot;gato corre _ss_&quot;  &quot;_s_ el león&quot;      &quot;el león corre&quot;   
+##  [9] &quot;león corre _ss_&quot;  &quot;_s_ el león&quot;      &quot;el león caza&quot;     &quot;león caza _ss_&quot;  
+## [13] &quot;_s_ el gato&quot;      &quot;el gato caza&quot;     &quot;gato caza _ss_&quot;</code></pre>
+<div class="sourceCode" id="cb879"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb879-1"><a href="representación-de-palabras-y-word2vec.html#cb879-1" aria-hidden="true" tabindex="-1"></a>log_p <span class="ot">&lt;-</span> <span class="fu">sapply</span>(entrena_trigramas, <span class="cf">function</span>(x) <span class="fu">feed_fow_dev</span>(x, C, H, U))</span>
+<span id="cb879-2"><a href="representación-de-palabras-y-word2vec.html#cb879-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(log_p)</span></code></pre></div>
+<pre><code>## [1] -31.21475</code></pre>
+<p>Ahora piensa como harías más grande esta verosimilitud. Observa
+que “perro,” “gato” y “león”” están comunmente seguidos de “corre.”
+Esto implica que nos convendría que hubiera cierta similitud
+entre los vectores de estas tres palabras, por ejemplo:</p>
+<div class="sourceCode" id="cb881"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb881-1"><a href="representación-de-palabras-y-word2vec.html#cb881-1" aria-hidden="true" tabindex="-1"></a>C_1 <span class="ot">&lt;-</span> C</span>
+<span id="cb881-2"><a href="representación-de-palabras-y-word2vec.html#cb881-2" aria-hidden="true" tabindex="-1"></a>indices <span class="ot">&lt;-</span> <span class="fu">colnames</span>(C) <span class="sc">%in%</span>  <span class="fu">c</span>(<span class="st">&quot;perro&quot;</span>, <span class="st">&quot;gato&quot;</span>, <span class="st">&quot;león&quot;</span>)</span>
+<span id="cb881-3"><a href="representación-de-palabras-y-word2vec.html#cb881-3" aria-hidden="true" tabindex="-1"></a>C_1[<span class="dv">1</span>, indices] <span class="ot">&lt;-</span> <span class="fl">3.0</span></span>
+<span id="cb881-4"><a href="representación-de-palabras-y-word2vec.html#cb881-4" aria-hidden="true" tabindex="-1"></a>C_1[<span class="dv">1</span>, <span class="sc">!</span>indices] <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">1.0</span></span>
+<span id="cb881-5"><a href="representación-de-palabras-y-word2vec.html#cb881-5" aria-hidden="true" tabindex="-1"></a>C_1</span></code></pre></div>
+<pre><code>##       _s_    el perro gato león corre  caza  _ss_
+## d_1 -1.00 -1.00  3.00 3.00 3.00 -1.00 -1.00 -1.00
+## d_2 -0.19 -0.19 -0.11 0.01 0.04 -0.01  0.02  0.02</code></pre>
+<p>La siguiente capa queremos que extraiga el concepto “animal” en la palabra anterior, o algo
+similar, así que podríamos poner en la unidad 1:</p>
+<div class="sourceCode" id="cb883"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb883-1"><a href="representación-de-palabras-y-word2vec.html#cb883-1" aria-hidden="true" tabindex="-1"></a>H_1 <span class="ot">&lt;-</span> H</span>
+<span id="cb883-2"><a href="representación-de-palabras-y-word2vec.html#cb883-2" aria-hidden="true" tabindex="-1"></a>H_1[<span class="dv">1</span>, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">0</span>)</span>
+<span id="cb883-3"><a href="representación-de-palabras-y-word2vec.html#cb883-3" aria-hidden="true" tabindex="-1"></a>H_1</span></code></pre></div>
+<pre><code>##      [,1]  [,2]  [,3]  [,4]
+## [1,] 0.00  0.00  5.00  0.00
+## [2,] 0.09  0.10  0.06  0.08
+## [3,] 0.10 -0.08 -0.07 -0.13</code></pre>
+<p>Nótese que la unidad 1 de la segunda capa se activa
+cuando la primera componente de la palabra anterior es alta.
+En la última capa, podríamos entonces poner</p>
+<div class="sourceCode" id="cb885"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb885-1"><a href="representación-de-palabras-y-word2vec.html#cb885-1" aria-hidden="true" tabindex="-1"></a>U_1 <span class="ot">&lt;-</span> U</span>
+<span id="cb885-2"><a href="representación-de-palabras-y-word2vec.html#cb885-2" aria-hidden="true" tabindex="-1"></a>U_1[<span class="st">&quot;corre&quot;</span>, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">4.0</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb885-3"><a href="representación-de-palabras-y-word2vec.html#cb885-3" aria-hidden="true" tabindex="-1"></a>U_1[<span class="st">&quot;caza&quot;</span>, ] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">4.2</span>, <span class="sc">-</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">2</span>)</span>
+<span id="cb885-4"><a href="representación-de-palabras-y-word2vec.html#cb885-4" aria-hidden="true" tabindex="-1"></a>U_1</span></code></pre></div>
+<pre><code>##        [,1]  [,2]  [,3]
+## _s_    0.05 -0.15 -0.30
+## el     0.01  0.16  0.15
+## perro -0.14  0.10  0.05
+## gato   0.04  0.09  0.12
+## león   0.06 -0.03  0.02
+## corre  4.00 -2.00 -2.00
+## caza   4.20 -2.00 -2.00
+## _ss_   0.07 -0.10  0.01</code></pre>
+<p>que captura cuando la primera unidad se activa. Ahora el cálculo
+completo es:</p>
+<div class="sourceCode" id="cb887"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb887-1"><a href="representación-de-palabras-y-word2vec.html#cb887-1" aria-hidden="true" tabindex="-1"></a>log_p <span class="ot">&lt;-</span> <span class="fu">sapply</span>(entrena_trigramas, <span class="cf">function</span>(x) <span class="fu">feed_fow_dev</span>(x, C_1, H_1, U_1))</span>
+<span id="cb887-2"><a href="representación-de-palabras-y-word2vec.html#cb887-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(log_p)</span></code></pre></div>
+<pre><code>## [1] -23.53883</code></pre>
+<p>Y logramos aumentar la verosimilitud considerablemente. Compara las probabilidades:</p>
+<div class="sourceCode" id="cb889"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb889-1"><a href="representación-de-palabras-y-word2vec.html#cb889-1" aria-hidden="true" tabindex="-1"></a><span class="fu">feed_fow_p</span>(<span class="st">&quot;el perro&quot;</span>, C, H, U)</span></code></pre></div>
+<pre><code>##             [,1]
+## _s_   0.09947434
+## el    0.14292280
+## perro 0.12256912
+## gato  0.13797317
+## león  0.12479193
+## corre 0.11994636
+## caza  0.13180383
+## _ss_  0.12051845</code></pre>
+<div class="sourceCode" id="cb891"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb891-1"><a href="representación-de-palabras-y-word2vec.html#cb891-1" aria-hidden="true" tabindex="-1"></a><span class="fu">feed_fow_p</span>(<span class="st">&quot;el perro&quot;</span>, C_1, H_1, U_1)</span></code></pre></div>
+<pre><code>##             [,1]
+## _s_   0.03493901
+## el    0.04780222
+## perro 0.03821035
+## gato  0.04690264
+## león  0.04308502
+## corre 0.33639351
+## caza  0.41087194
+## _ss_  0.04179531</code></pre>
+<div class="sourceCode" id="cb893"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb893-1"><a href="representación-de-palabras-y-word2vec.html#cb893-1" aria-hidden="true" tabindex="-1"></a><span class="fu">feed_fow_p</span>(<span class="st">&quot;el gato&quot;</span>, C, H, U)</span></code></pre></div>
+<pre><code>##             [,1]
+## _s_   0.09957218
+## el    0.14289131
+## perro 0.12246787
+## gato  0.13795972
+## león  0.12480659
+## corre 0.11993921
+## caza  0.13183822
+## _ss_  0.12052489</code></pre>
+<div class="sourceCode" id="cb895"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb895-1"><a href="representación-de-palabras-y-word2vec.html#cb895-1" aria-hidden="true" tabindex="-1"></a><span class="fu">feed_fow_p</span>(<span class="st">&quot;el gato&quot;</span>, C_1, H_1, U_1)</span></code></pre></div>
+<pre><code>##             [,1]
+## _s_   0.03489252
+## el    0.04769205
+## perro 0.03813136
+## gato  0.04679205
+## león  0.04298749
+## corre 0.33663831
+## caza  0.41117094
+## _ss_  0.04169529</code></pre>
+<p><strong>Observación</strong>: a partir de este principio, es posible construir arquitecturas más
+refinadas que tomen en cuenta, por ejemplo, relaciones más lejanas entre
+partes de oraciones (no solo el contexto del n-grama), ver por ejemplo <a href="https://www.deeplearningbook.org/contents/rnn.html">el capítulo 10 del libro
+de Deep Learning de Goodfellow, Bengio y Courville</a>.</p>
+<p>Abajo exploramos una parte fundamental de estos modelos: representaciones de palabras, y modelos
+relativamente simples para obtener estas representaciones.</p>
+</div>
+</div>
+<div id="representación-de-palabras" class="section level2" number="10.2">
+<h2><span class="header-section-number">10.2</span> Representación de palabras</h2>
+<p>Un aspecto interesante de el modelo de arriba es que
+nos da una representación vectorial de las palabras, en la forma
+de los parámetros ajustados de la matriz <span class="math inline">\(C\)</span>. Esta se puede entender
+como una descripción numérica de cómo funciona una palabra en el contexto de su n-grama.</p>
+<p>Por ejemplo, deberíamos encontrar que palabras como “perro” y “gato” tienen representaciones similares. La razón es que cuando aparecen,
+las probabilidades sobre las palabras siguientes deberían ser similares, pues estas son dos palabras que se pueden usar en muchos contextos
+compartidos.</p>
+<p>También podríamos encontrar que palabras como perro, gato, águila, león, etc. tienen partes o entradas similares en sus vectores de representación, que es la parte que hace que funcionen como “animal mamífero” dentro de frases.</p>
+<p>Veremos que hay más razones por las que es interesante esta representación.</p>
+</div>
+<div id="modelos-de-word2vec" class="section level2" number="10.3">
+<h2><span class="header-section-number">10.3</span> Modelos de word2vec</h2>
+<p>Si lo que principalmente nos interesa es obtener la representación
+vectorial de palabras, más recientemente se descubrió que es posible
+simplificar considerablemente el modelo de arriba para poder entrenarlo mucho más rápido, y obtener una representación que en muchas tareas se desempeña bien (<span class="citation">(<a href="#ref-word2vec" role="doc-biblioref">Mikolov et al. 2013</a>)</span>).</p>
+<p>Hay dos ideas básicas que se pueden usar para reducir la complejidad del entrenamiento (ver más
+en <span class="citation">(<a href="#ref-goodfellow" role="doc-biblioref">Goodfellow, Bengio, and Courville 2016</a>)</span> y <span class="citation">(<a href="#ref-word2vec" role="doc-biblioref">Mikolov et al. 2013</a>)</span>:</p>
+<ul>
+<li>Eliminar la segunda capa oculta: modelo de <em>bag-of-words</em> continuo y modelo de <em>skip-gram</em>.</li>
+<li>Cambiar la función objetivo (minimizar devianza/maximizar verosimilitud) por una más simple, mediante un truco que se llama <em>negative sampling</em>.</li>
+</ul>
+<p>Como ya no es de interés central predecir la siguiente palabra a partir
+de las anteriores, en estos modelos <strong>intentamos predecir la palabra
+central a partir de las que están alrededor</strong>.</p>
+<div id="arquitectura-continuous-bag-of-words" class="section level3" number="10.3.1">
+<h3><span class="header-section-number">10.3.1</span> Arquitectura continuous bag-of-words</h3>
+<p>La entrada es igual que en el modelo completo. En primer lugar,
+simplificamos la segunda capa oculta pondiendo en <span class="math inline">\(z\)</span> el promedio de
+los vectores <span class="math inline">\(C(w_{n-2}), C(w_{n-1})\)</span>. La última capa la dejamos igual por el momento:</p>
+<div class="figure">
+<img src="images/cbow_fig.png" alt="" />
+<p class="caption">Imagen</p>
+</div>
+<p>El modelo se llama bag-of-words porque todas las entradas de la primera capa oculta contribuyen de la misma manera en la salida, independientemente del orden. Aunque esto no suena como buena idea para construir un modelo de lenguaje, veremos que resulta en una representación adecuada para algunos problemas.</p>
+<ol style="list-style-type: decimal">
+<li>En la primera capa oculta, tenemos un mapeo de las entradas <span class="math inline">\(w_1,\ldots, w_{n-1}\)</span> a <span class="math inline">\(x=C(w_1),\ldots, C(w_{n-1})\)</span>, donde <span class="math inline">\(C\)</span> es una función que mapea palabras a vectores de dimensión <span class="math inline">\(d\)</span>. <span class="math inline">\(C\)</span> también se puede pensar como una matriz de dimensión <span class="math inline">\(|V|\)</span> por <span class="math inline">\(d\)</span>. En la capa de entrada,</li>
+</ol>
+<p><span class="math display">\[w_{n-2},w_{n-1} \to x = (C(w_{n-2}), C(w_{n-1})).\]</span></p>
+<ol start="2" style="list-style-type: decimal">
+<li><p>En la siguiente “capa” oculta simplemente sumamos las entradas de <span class="math inline">\(x\)</span>. Aquí nótese que realmente no hay parámetros.</p></li>
+<li><p>Finalmente, la capa de salida debe ser un vector de probabilidades
+sobre todo el vocabulario <span class="math inline">\(|V|\)</span>. En esta capa tenemos pesos <span class="math inline">\(U\)</span> y hacemos
+<span class="math display">\[y = b + U\sigma (z),\]</span>
+y finalmente usamos softmax para tener probabilidades que suman uno:
+<span class="math display">\[p_i = \frac{\exp (y_i) }{\sum_j exp(y_j)}.\]</span></p></li>
+</ol>
+<p>En el ajuste maximizamos la verosimilitud sobre el corpus. Por ejemplo, para una frase, su log verosimilitud es:</p>
+<p><span class="math display">\[\sum_t \log \hat{P}(w_{t,n}|w_{t,n+1} \cdots w_{t-n-1}) \]</span></p>
+</div>
+<div id="arquitectura-skip-grams" class="section level3" number="10.3.2">
+<h3><span class="header-section-number">10.3.2</span> Arquitectura skip-grams</h3>
+<p>Otro modelo simplificado, con más complejidad computacional pero
+mejores resultados (ver <span class="citation">(<a href="#ref-word2vec" role="doc-biblioref">Mikolov et al. 2013</a>)</span>) que
+el bag-of-words, es el modelo de skip-grams. En este caso, dada
+cada palabra que encontramos, intentamos predecir un número
+fijo de las palabras anteriores y palabras posteriores
+(el contexto es una vecindad de la palabra).</p>
+<div class="figure">
+<img src="images/skipgram.png" alt="" />
+<p class="caption">Imagen</p>
+</div>
+<p>La función objetivo se defina ahora (simplificando) como suma sobre <span class="math inline">\(t\)</span>:</p>
+<p><span class="math display">\[-\sum_t \sum_{ -2\leq j \leq 2, j\neq 0} \log P(w_{t-j} | w_t)\]</span>
+(no tomamos en cuenta dónde aparece exactamente <span class="math inline">\(w_{t-j}\)</span> en relación a <span class="math inline">\(w_t\)</span>, simplemente consideramos que está en su contexto),
+donde</p>
+<p><span class="math display">\[\log P(w_{t-j}|w_t) =  u_{t-j}^tC(w_n) - \log\sum_k \exp{u_{k}^tC(w_n)}\]</span></p>
+<p>Todavía se propone una simplificación adicional que resulta ser efectiva:</p>
+</div>
+<div id="muestreo-negativo" class="section level3" number="10.3.3">
+<h3><span class="header-section-number">10.3.3</span> Muestreo negativo</h3>
+<p>La siguiente simplificación consiste en cambiar la función objetivo. En word2vec puede usarse “muestreo negativo.”</p>
+<p>Para empezar, la función objetivo original (para contexto de una sola palabra) es</p>
+<p><span class="math display">\[E = -\log \hat{P}(w_{a}|w_{n}) = -y_{w_a} + \log\sum_j \exp(y_j),\]</span></p>
+<p>donde las <span class="math inline">\(y_i\)</span> son las salidas de la penúltima capa. La dificultad está en el segundo término, que es sobre todo el vocabulario en incluye todos los parámetros del modelo (hay que calcular las parciales de <span class="math inline">\(y_j\)</span>’s
+sobre cada una de las palabras del vocabulario).</p>
+<p>La idea del muestreo negativo es que si <span class="math inline">\(w_a\)</span>
+está en el contexto de <span class="math inline">\(w_{n}\)</span>, tomamos una muestra de <span class="math inline">\(k\)</span> palabras
+<span class="math inline">\(v_1,\ldots v_k\)</span> al azar
+(2-50, dependiendo del tamaño de la colección), y creamos <span class="math inline">\(k\)</span>
+“contextos falsos” <span class="math inline">\(v_j w_{n}\)</span>, <span class="math inline">\(j=1\ldots,k\)</span>. Minimizamos
+en lugar de la observación de arriba</p>
+<p><span class="math display">\[E = -\log\sigma(y_{w_a}) + \sum_{j=1}^k \log\sigma(y_j),\]</span>
+en donde queremos maximizar la probabilidad de que ocurra
+<span class="math inline">\(w_a\)</span> vs. la probabilidad de que ocurra alguna de las <span class="math inline">\(v_j\)</span>.
+Es decir, solo buscamos optimizar parámetros para separar lo mejor
+que podamos la observación de <span class="math inline">\(k\)</span> observaciones falsas, lo cual implica que tenemos que mover un número relativamente chico de
+parámetros (en lugar de todos los parámetros de todas las palabras del vocabulario).</p>
+<p>Las palabras “falsas” se escogen según una probabilidad ajustada
+de unigramas (se observó empíricamente mejor desempeño cuando escogemos cada palabra con probabilidad proporcional a <span class="math inline">\(P(w)^{3/4}\)</span>, en lugar de <span class="math inline">\(P(w)\)</span>, ver <span class="citation">(<a href="#ref-word2vec" role="doc-biblioref">Mikolov et al. 2013</a>)</span>).</p>
+</div>
+<div id="ejemplo-33" class="section level3 unnumbered">
+<h3>Ejemplo</h3>
+<div class="sourceCode" id="cb897"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb897-1"><a href="representación-de-palabras-y-word2vec.html#cb897-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;word2vec&quot;</span>)</span>
+<span id="cb897-2"><a href="representación-de-palabras-y-word2vec.html#cb897-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(word2vec)</span></code></pre></div>
+<div class="sourceCode" id="cb898"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb898-1"><a href="representación-de-palabras-y-word2vec.html#cb898-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb898-2"><a href="representación-de-palabras-y-word2vec.html#cb898-2" aria-hidden="true" tabindex="-1"></a>ruta <span class="ot">&lt;-</span> <span class="st">&quot;../datos/noticias/ES_Newspapers.txt&quot;</span></span>
+<span id="cb898-3"><a href="representación-de-palabras-y-word2vec.html#cb898-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(ruta)){</span>
+<span id="cb898-4"><a href="representación-de-palabras-y-word2vec.html#cb898-4" aria-hidden="true" tabindex="-1"></a>    periodico <span class="ot">&lt;-</span> </span>
+<span id="cb898-5"><a href="representación-de-palabras-y-word2vec.html#cb898-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">read_lines</span>(<span class="at">file=</span> <span class="st">&quot;https://es-noticias.s3.amazonaws.com/Es_Newspapers.txt&quot;</span>,</span>
+<span id="cb898-6"><a href="representación-de-palabras-y-word2vec.html#cb898-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">progress =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb898-7"><a href="representación-de-palabras-y-word2vec.html#cb898-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">write_lines</span>(periodico, ruta)</span>
+<span id="cb898-8"><a href="representación-de-palabras-y-word2vec.html#cb898-8" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb898-9"><a href="representación-de-palabras-y-word2vec.html#cb898-9" aria-hidden="true" tabindex="-1"></a>    periodico <span class="ot">&lt;-</span> <span class="fu">read_lines</span>(<span class="at">file=</span> ruta,</span>
+<span id="cb898-10"><a href="representación-de-palabras-y-word2vec.html#cb898-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">progress =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb898-11"><a href="representación-de-palabras-y-word2vec.html#cb898-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb898-12"><a href="representación-de-palabras-y-word2vec.html#cb898-12" aria-hidden="true" tabindex="-1"></a>normalizar <span class="ot">&lt;-</span> <span class="cf">function</span>(texto, <span class="at">vocab =</span> <span class="cn">NULL</span>){</span>
+<span id="cb898-13"><a href="representación-de-palabras-y-word2vec.html#cb898-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># minúsculas</span></span>
+<span id="cb898-14"><a href="representación-de-palabras-y-word2vec.html#cb898-14" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">tolower</span>(texto)</span>
+<span id="cb898-15"><a href="representación-de-palabras-y-word2vec.html#cb898-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># varios ajustes</span></span>
+<span id="cb898-16"><a href="representación-de-palabras-y-word2vec.html#cb898-16" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">s+&quot;</span>, <span class="st">&quot; &quot;</span>, texto)</span>
+<span id="cb898-17"><a href="representación-de-palabras-y-word2vec.html#cb898-17" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.[^0-9]&quot;</span>, <span class="st">&quot; _punto_ &quot;</span>, texto)</span>
+<span id="cb898-18"><a href="representación-de-palabras-y-word2vec.html#cb898-18" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot; _s_ $&quot;</span>, <span class="st">&quot;&quot;</span>, texto)</span>
+<span id="cb898-19"><a href="representación-de-palabras-y-word2vec.html#cb898-19" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">.&quot;</span>, <span class="st">&quot; _punto_ &quot;</span>, texto)</span>
+<span id="cb898-20"><a href="representación-de-palabras-y-word2vec.html#cb898-20" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;[«»¡!¿?-]&quot;</span>, <span class="st">&quot;&quot;</span>, texto) </span>
+<span id="cb898-21"><a href="representación-de-palabras-y-word2vec.html#cb898-21" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;;&quot;</span>, <span class="st">&quot; _punto_coma_ &quot;</span>, texto) </span>
+<span id="cb898-22"><a href="representación-de-palabras-y-word2vec.html#cb898-22" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">:&quot;</span>, <span class="st">&quot; _dos_puntos_ &quot;</span>, texto) </span>
+<span id="cb898-23"><a href="representación-de-palabras-y-word2vec.html#cb898-23" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">,[^0-9]&quot;</span>, <span class="st">&quot; _coma_ &quot;</span>, texto)</span>
+<span id="cb898-24"><a href="representación-de-palabras-y-word2vec.html#cb898-24" aria-hidden="true" tabindex="-1"></a>  texto <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">s+&quot;</span>, <span class="st">&quot; &quot;</span>, texto)</span>
+<span id="cb898-25"><a href="representación-de-palabras-y-word2vec.html#cb898-25" aria-hidden="true" tabindex="-1"></a>  texto</span>
+<span id="cb898-26"><a href="representación-de-palabras-y-word2vec.html#cb898-26" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb898-27"><a href="representación-de-palabras-y-word2vec.html#cb898-27" aria-hidden="true" tabindex="-1"></a>periodico_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">txt =</span> periodico) <span class="sc">|&gt;</span></span>
+<span id="cb898-28"><a href="representación-de-palabras-y-word2vec.html#cb898-28" aria-hidden="true" tabindex="-1"></a>                <span class="fu">mutate</span>(<span class="at">id =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb898-29"><a href="representación-de-palabras-y-word2vec.html#cb898-29" aria-hidden="true" tabindex="-1"></a>                <span class="fu">mutate</span>(<span class="at">txt =</span> <span class="fu">normalizar</span>(txt))</span></code></pre></div>
+<p>Construimos un modelo con vectores de palabras de tamaño 50,
+skip-grams de tamaño 6, y ajustamos con muestreo negativo
+de tamaño 5:</p>
+<div class="sourceCode" id="cb899"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb899-1"><a href="representación-de-palabras-y-word2vec.html#cb899-1" aria-hidden="true" tabindex="-1"></a>modelo <span class="ot">&lt;-</span> <span class="fu">word2vec</span>(<span class="at">x =</span> periodico_df<span class="sc">$</span>txt, <span class="at">type =</span> <span class="st">&quot;skip-gram&quot;</span>, </span>
+<span id="cb899-2"><a href="representación-de-palabras-y-word2vec.html#cb899-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dim =</span> <span class="dv">100</span>, <span class="at">window =</span> 6L, <span class="at">negative =</span> 20L, <span class="at">threads =</span> 4L)</span></code></pre></div>
+<p>El resultado son los vectores aprendidos de las palabras, por ejemplo</p>
+<div class="sourceCode" id="cb900"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb900-1"><a href="representación-de-palabras-y-word2vec.html#cb900-1" aria-hidden="true" tabindex="-1"></a>incrustacion <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(modelo)</span>
+<span id="cb900-2"><a href="representación-de-palabras-y-word2vec.html#cb900-2" aria-hidden="true" tabindex="-1"></a>incrustacion[<span class="st">&quot;gol&quot;</span>, ] </span></code></pre></div>
+<pre><code>##   [1]  0.32225347  0.29010415  0.56430739 -1.26586449 -0.01668300 -1.08759964
+##   [7] -0.35996071 -0.88176644  1.20925879 -1.27710402  1.96568203 -0.08576190
+##  [13] -0.77409923 -0.77821970  0.07314577  0.40722370  0.61932373 -0.99852824
+##  [19] -0.26369676 -0.87080562  0.92050624  0.13246848 -1.65784192 -0.75884891
+##  [25] -1.17742312 -1.18703151 -0.30562764 -0.26037884 -1.14858460 -0.41433176
+##  [31] -0.59770387  1.00164127  1.03174484  1.38414884  0.10544349  0.39592695
+##  [37]  0.43748003 -0.95137733 -0.20493250 -0.71881706 -0.38461855  0.18196182
+##  [43] -0.78369427 -0.03154339 -0.72078013  0.63540888  0.50101852 -0.01853132
+##  [49]  1.02588809 -0.35365176  1.29695368 -0.07013670  0.60798782 -1.84792352
+##  [55] -0.33396369  0.68478417  0.86970586 -1.70703113 -1.74008381  0.74598628
+##  [61] -0.33810931 -0.31248233 -0.57892632  0.13759825  1.22563362 -0.09651208
+##  [67]  0.38890716  0.04135910 -1.87075281  0.56047046  1.27442420  0.66101581
+##  [73] -2.00741887  1.51594436 -0.20256953  0.48299745  0.39481014 -0.01258742
+##  [79] -1.57995033 -0.19682033  1.00979435 -1.11899686  0.21027224  0.48242337
+##  [85] -1.47033298  0.05368399 -0.81877607 -0.63951886 -1.12013686  0.68263984
+##  [91]  4.36106873 -0.83029497  1.86541545 -0.92819768  0.63164508  1.03381801
+##  [97] -0.04038213  0.02635830  1.88781822 -0.01920896</code></pre>
+</div>
+</div>
+<div id="esprep" class="section level2" number="10.4">
+<h2><span class="header-section-number">10.4</span> Espacio de representación de palabras</h2>
+<p>Como discutimos arriba, palabras que se usan en contextos
+similares por su significado o por su función (por ejemplo, “perro” y “gato”“) deben tener representaciones similares, pues su contexto tiende a ser similar. <strong>La similitud que usamos el similitud coseno</strong>.</p>
+<p>Podemos verificar con nuestro ejemplo:</p>
+<div class="sourceCode" id="cb902"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb902-1"><a href="representación-de-palabras-y-word2vec.html#cb902-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(modelo, <span class="at">newdata =</span> <span class="fu">c</span>(<span class="st">&quot;gol&quot;</span>), <span class="at">type =</span> <span class="st">&quot;nearest&quot;</span>, <span class="at">top_n =</span> <span class="dv">5</span>)</span></code></pre></div>
+<pre><code>## $gol
+##   term1   term2 similarity rank
+## 1   gol  empate  0.9173362    1
+## 2   gol  golazo  0.9166898    2
+## 3   gol penalti  0.9106060    3
+## 4   gol   goles  0.9006565    4
+## 5   gol empatar  0.8898841    5</code></pre>
+<p>También podemos buscar varias palabras:</p>
+<div class="sourceCode" id="cb904"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb904-1"><a href="representación-de-palabras-y-word2vec.html#cb904-1" aria-hidden="true" tabindex="-1"></a>palabras <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;soleado&quot;</span>,<span class="st">&quot;lluvioso&quot;</span>)</span>
+<span id="cb904-2"><a href="representación-de-palabras-y-word2vec.html#cb904-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(modelo, <span class="at">newdata =</span> palabras, <span class="at">type =</span> <span class="st">&quot;nearest&quot;</span>, <span class="at">top_n =</span> <span class="dv">5</span>)</span></code></pre></div>
+<pre><code>## $soleado
+##     term1     term2 similarity rank
+## 1 soleado fresquito  0.8455517    1
+## 2 soleado    gélido  0.8353294    2
+## 3 soleado      frío  0.8274860    3
+## 4 soleado   nublado  0.8169536    4
+## 5 soleado  amanecía  0.8166083    5
+## 
+## $lluvioso
+##      term1    term2 similarity rank
+## 1 lluvioso   húmedo  0.9044551    1
+## 2 lluvioso lluviosa  0.8369184    2
+## 3 lluvioso     nevó  0.8222449    3
+## 4 lluvioso     frío  0.8218763    4
+## 5 lluvioso caluroso  0.8118451    5</code></pre>
+<p>Ahora consideremos cómo se distribuyen las palabras en este
+espacio, y si existe estructura geométrica en este espacio.</p>
+<p>Consideremos primero el caso de plurales de sustantivos.</p>
+<ul>
+<li>Como el contexto de los plurales es distinto de los singulares,
+nuestro modelo puede capturar en los vectores su diferencia.</li>
+<li>Examinamos entonces cómo son geométricamente
+diferentes las representaciones de plurales vs singulares</li>
+<li>Si encontramos un patrón reconocible, podemos utilizar este patrón, por ejemplo,
+para encontrar la versión plural de una palabra singular, <em>sin usar ninguna
+regla del lenguaje</em>.</li>
+</ul>
+<p>Una de las relaciones geométricas más simples es la adición de vectores. Por ejemplo,
+extraemos la diferencia entre gol y goles:</p>
+<div class="sourceCode" id="cb906"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb906-1"><a href="representación-de-palabras-y-word2vec.html#cb906-1" aria-hidden="true" tabindex="-1"></a>plural_1 <span class="ot">&lt;-</span> incrustacion[<span class="st">&quot;goles&quot;</span>, ] <span class="sc">-</span> incrustacion[<span class="st">&quot;gol&quot;</span>,]</span>
+<span id="cb906-2"><a href="representación-de-palabras-y-word2vec.html#cb906-2" aria-hidden="true" tabindex="-1"></a>plural_1</span></code></pre></div>
+<pre><code>##   [1] -0.41010650 -0.09367068  0.10013825 -0.01043606 -0.69925217  0.63240004
+##   [7] -1.25355980 -0.25786495 -0.30724758 -0.62970757 -0.86795354 -0.33097465
+##  [13]  0.63819146  0.89995096  0.80200664 -0.96015745 -0.88044503  0.73197424
+##  [19]  0.37708700  0.35302806  0.76635766  0.73995791  0.63460803 -0.66580033
+##  [25]  0.62375081 -0.97293353 -0.04242826 -0.45898974  0.39994091  0.30355571
+##  [31] -0.28930634 -0.59067285  0.81816709  0.47144985  0.54982828  0.05406371
+##  [37]  0.15333903  0.83845954 -0.49170966  0.29262483  1.57328549  0.82192166
+##  [43] -0.39690197  0.70654460  0.14798385 -0.43928348 -0.27604572  0.20851085
+##  [49] -0.11255991 -0.68816626 -0.66432583  0.05098183 -0.32413444 -0.51244164
+##  [55]  0.34192570  0.01833647  0.24682266  0.66435456 -0.65305912  0.22694319
+##  [61]  0.25811008 -0.07838404 -0.29997021 -0.73384967  0.10233676  0.84096706
+##  [67]  0.07619473 -0.18465022  0.53090453 -0.61795783  0.45793355 -0.46914509
+##  [73]  1.18731731 -0.84401566 -0.63708998  0.47073039  0.38214815 -0.71852392
+##  [79]  1.11701551  1.14750899  0.06465220 -0.48419011  0.32698645  0.18334156
+##  [85]  0.95642942 -1.16262745 -0.10756570  1.09330720 -0.22378445  0.21736056
+##  [91] -1.35571718  0.10313135 -0.38550878 -0.85293561  0.22138959 -0.19883955
+##  [97] -0.42324607  0.41782234 -0.77964056  0.28357970</code></pre>
+<p>que es un vector en el espacio de representación de palabras. Ahora sumamos este vector
+a un sustantivo en singular, y vemos qué palabras están cercas de esta “palabra sintética”:</p>
+<div class="sourceCode" id="cb908"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb908-1"><a href="representación-de-palabras-y-word2vec.html#cb908-1" aria-hidden="true" tabindex="-1"></a>vector <span class="ot">&lt;-</span> incrustacion[<span class="st">&quot;partido&quot;</span>,] <span class="sc">+</span> plural_1</span>
+<span id="cb908-2"><a href="representación-de-palabras-y-word2vec.html#cb908-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict</span>(modelo, <span class="at">newdata =</span> vector, <span class="at">type =</span> <span class="st">&quot;nearest&quot;</span>, <span class="at">top_n =</span> <span class="dv">5</span>)</span></code></pre></div>
+<pre><code>##         term similarity rank
+## 1    partido  0.9500611    1
+## 2   partidos  0.8834544    2
+## 3     kassab  0.8493576    3
+## 4      goles  0.8284315    4
+## 5 encuentros  0.8136083    5</code></pre>
+<p>Nótese que entre las más cercanas está justamente el plural correcto, o otros plurales con relación
+al que buscábamos.</p>
+<p>Otro ejemplo:</p>
+
+</div>
+</div>
+<h3>Referencias</h3>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-bengio" class="csl-entry">
+Bengio, Yoshua, Réjean Ducharme, Pascal Vincent, and Christian Janvin. 2003. <span>“A Neural Probabilistic Language Model.”</span> <em>J. Mach. Learn. Res.</em> 3 (March): 1137–55. <a href="http://dl.acm.org/citation.cfm?id=944919.944966">http://dl.acm.org/citation.cfm?id=944919.944966</a>.
+</div>
+<div id="ref-goodfellow" class="csl-entry">
+Goodfellow, Ian, Yoshua Bengio, and Aaron Courville. 2016. <em>Deep Learning</em>. MIT Press.
+</div>
+<div id="ref-word2vec" class="csl-entry">
+Mikolov, Tomas, Kai Chen, Greg Corrado, and Jeffrey Dean. 2013. <span>“Efficient Estimation of Word Representations in Vector Space.”</span> <em>CoRR</em> abs/1301.3781. <a href="http://arxiv.org/abs/1301.3781">http://arxiv.org/abs/1301.3781</a>.
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="modelos-de-lenguaje-y-n-gramas.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": false,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/felipegonzalez/metodos-analiticos-mcd-2022/edit/master/notas/09-rep-distribuida-1.Rmd",
+"text": "Editar"
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>
