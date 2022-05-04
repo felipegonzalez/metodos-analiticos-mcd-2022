@@ -519,7 +519,7 @@ la palabra *la* o la palabra *el*?
 mod_tri |> arrange(desc(num)) |> head(100) |> knitr::kable()
 ```
 
-## Problema de los ceros {-}
+### Problema de los ceros {-}
 
 Podemos ahora evaluar la probabilidad de ocurrencia de 
 textos utilizando las frecuencias que calculamos arriba:
