@@ -104,7 +104,7 @@ rownames(C) <- c("d_1", "d_2")
 C
 ```
 
-En la siguiente capa consideremos que usaremos, arbitrariamente, $h=3$ unidades. Como estamos considerando bigramas, necesitamos una entrada de tamaño 4 (representación de un bigrama, que son dos vectores de la matriz $C$)
+En la siguiente capa consideremos que usaremos, arbitrariamente, $h=3$ unidades. Como estamos considerando bigramas, necesitamos una entrada de tamaño 4 (representación de un bigrama, que son dos vectores de la matriz $C$, para predecir la siguiente palabra).
 
 ```{r}
 H <- round(matrix(rnorm(12, 0, 0.1), 3, 4), 2)
@@ -206,7 +206,7 @@ feed_fow_p <- function(trigrama, C, H, U){
   p
 }
 
-feed_fow_trigrama <- function(trigrama, C, H, U) {
+feed_fow_dev <- function(trigrama, C, H, U) {
   p <- feed_fow_p(trigrama, C, H, U)
   trigrama_s <- strsplit(trigrama, " ", fixed = TRUE)[[1]]
   log(p)[trigrama_s[3], 1]
@@ -218,14 +218,14 @@ Y ahora aplicamos a todos los textos:
 ```{r}
 texto_entrena <- c("_s_ el perro corre _ss_", " _s_ el gato corre _ss_", " _s_ el león corre _ss_",
   "_s_ el león caza _ss_",  "_s_ el gato caza _ss_")
-entrena_bigramas <- map(texto_entrena, 
-  ~tokenizers::tokenize_ngrams(.x, n = 2)[[1]]) |> 
+entrena_trigramas <- map(texto_entrena, 
+  ~tokenizers::tokenize_ngrams(.x, n = 3)[[1]]) |> 
   flatten() |> unlist()
 entrena_trigramas
 ```
 
 ```{r}
-log_p <- sapply(entrena_bigramas, function(x) feed_fow_bigrama(x, C, H, U))
+log_p <- sapply(entrena_trigramas, function(x) feed_fow_dev(x, C, H, U))
 sum(log_p)
 ```
 
@@ -266,7 +266,7 @@ que captura cuando la primera unidad se activa. Ahora el cálculo
 completo es:
 
 ```{r}
-log_p <- sapply(entrena_trigramas, function(x) feed_fow_trigrama(x, C_1, H_1, U_1))
+log_p <- sapply(entrena_trigramas, function(x) feed_fow_dev(x, C_1, H_1, U_1))
 sum(log_p)
 ```
 
