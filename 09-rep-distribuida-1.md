@@ -689,38 +689,37 @@ de tamaño 5:
 
 
 ```r
-modelo <- word2vec(x = periodico_df$txt, type = "skip-gram", 
-                   dim = 100, window = 6L, negative = 20L, threads = 4L)
+modelo <- word2vec(x = periodico_df$txt, type = "skip-gram", iter = 10, 
+                   dim = 50, window = 6L, negative = 10L, 
+                   threads = 8L, sample = 0.005, min_count = 20)
+write.word2vec(modelo, file = "./salidas/noticias_vectors.bin")
 ```
 
+
+```r
+modelo <- read.word2vec("./salidas/noticias_vectors.bin")
+```
 
 
 El resultado son los vectores aprendidos de las palabras, por ejemplo
 
 
 ```r
-incrustacion <- as.matrix(modelo)
-incrustacion["gol", ] 
+vector_gol <- predict(modelo, "gol", type = "embedding")
+vector_gol |> as.numeric()
 ```
 
 ```
-##   [1]  0.32225347  0.29010415  0.56430739 -1.26586449 -0.01668300 -1.08759964
-##   [7] -0.35996071 -0.88176644  1.20925879 -1.27710402  1.96568203 -0.08576190
-##  [13] -0.77409923 -0.77821970  0.07314577  0.40722370  0.61932373 -0.99852824
-##  [19] -0.26369676 -0.87080562  0.92050624  0.13246848 -1.65784192 -0.75884891
-##  [25] -1.17742312 -1.18703151 -0.30562764 -0.26037884 -1.14858460 -0.41433176
-##  [31] -0.59770387  1.00164127  1.03174484  1.38414884  0.10544349  0.39592695
-##  [37]  0.43748003 -0.95137733 -0.20493250 -0.71881706 -0.38461855  0.18196182
-##  [43] -0.78369427 -0.03154339 -0.72078013  0.63540888  0.50101852 -0.01853132
-##  [49]  1.02588809 -0.35365176  1.29695368 -0.07013670  0.60798782 -1.84792352
-##  [55] -0.33396369  0.68478417  0.86970586 -1.70703113 -1.74008381  0.74598628
-##  [61] -0.33810931 -0.31248233 -0.57892632  0.13759825  1.22563362 -0.09651208
-##  [67]  0.38890716  0.04135910 -1.87075281  0.56047046  1.27442420  0.66101581
-##  [73] -2.00741887  1.51594436 -0.20256953  0.48299745  0.39481014 -0.01258742
-##  [79] -1.57995033 -0.19682033  1.00979435 -1.11899686  0.21027224  0.48242337
-##  [85] -1.47033298  0.05368399 -0.81877607 -0.63951886 -1.12013686  0.68263984
-##  [91]  4.36106873 -0.83029497  1.86541545 -0.92819768  0.63164508  1.03381801
-##  [97] -0.04038213  0.02635830  1.88781822 -0.01920896
+##  [1]  0.092273168  1.024451613 -0.282050163  0.859585762 -1.542793036
+##  [6]  0.858215690 -0.898579419  0.037183136  2.892853737 -0.374552220
+## [11] -0.975951195 -1.131990314 -0.362287104 -1.669579029  0.108412631
+## [16] -0.538423538 -0.795996606 -1.084180832 -0.788449764 -2.239182949
+## [21] -0.260846645  0.218292192 -0.316080689  1.115552664 -0.689553678
+## [26] -0.654445112 -0.556519449 -0.078940324  0.984561563  0.405610383
+## [31]  0.187591910  1.436592817  1.995020747  0.827492654  0.170227647
+## [36]  0.991732061  0.141226083  0.049184673  0.003126387 -1.380208850
+## [41]  1.269512534 -0.639893711 -1.288470984 -0.381622076 -0.059291609
+## [46] -0.259091765  0.184948400  0.471573681  0.682058871  2.157181025
 ```
 
 ## Espacio de representación de palabras {#esprep}
@@ -739,46 +738,54 @@ predict(modelo, newdata = c("gol"), type = "nearest", top_n = 5)
 ```
 ## $gol
 ##   term1   term2 similarity rank
-## 1   gol  empate  0.9173362    1
-## 2   gol  golazo  0.9166898    2
-## 3   gol penalti  0.9106060    3
-## 4   gol   goles  0.9006565    4
-## 5   gol empatar  0.8898841    5
+## 1   gol  empate  0.9516754    1
+## 2   gol  golazo  0.9484443    2
+## 3   gol penalti  0.9408622    3
+## 4   gol  remate  0.9222239    4
+## 5   gol   saque  0.9205684    5
 ```
 
-También podemos buscar varias palabras:
+Otros ejemplos:
 
 
 ```r
-palabras <- c("soleado","lluvioso")
-predict(modelo, newdata = palabras, type = "nearest", top_n = 5)
+palabras <- c("lluvioso", "parís", "cinco")
+predict(modelo, newdata = palabras, type = "nearest", top_n = 4) |> 
+  bind_rows() |> knitr::kable()
 ```
 
-```
-## $soleado
-##     term1     term2 similarity rank
-## 1 soleado fresquito  0.8455517    1
-## 2 soleado    gélido  0.8353294    2
-## 3 soleado      frío  0.8274860    3
-## 4 soleado   nublado  0.8169536    4
-## 5 soleado  amanecía  0.8166083    5
-## 
-## $lluvioso
-##      term1    term2 similarity rank
-## 1 lluvioso   húmedo  0.9044551    1
-## 2 lluvioso lluviosa  0.8369184    2
-## 3 lluvioso     nevó  0.8222449    3
-## 4 lluvioso     frío  0.8218763    4
-## 5 lluvioso caluroso  0.8118451    5
-```
+
+
+|term1    |term2    | similarity| rank|
+|:--------|:--------|----------:|----:|
+|lluvioso |húmedo   |  0.8911762|    1|
+|lluvioso |frío     |  0.8517610|    2|
+|lluvioso |invierno |  0.8413799|    3|
+|lluvioso |caluroso |  0.8314730|    4|
+|parís    |londres  |  0.9698847|    1|
+|parís    |roma     |  0.9339487|    2|
+|parís    |berlín   |  0.9334224|    3|
+|parís    |viena    |  0.9314210|    4|
+|cinco    |seis     |  0.9918947|    1|
+|cinco    |cuatro   |  0.9897406|    2|
+|cinco    |siete    |  0.9881529|    3|
+|cinco    |tres     |  0.9850138|    4|
+
+Donde vemos, por ejemplo, que el modelo puede capturar conceptos relacionados
+con el estado del clima, capitales de países y números - aún cuando no hemos
+anotado estas funciones en el corpus original. Estos vectores son similares
+porque tienden a ocurrir en contextos similares.
+
+### Geometría en el espacio de representaciones {-}
 
 Ahora consideremos cómo se distribuyen las palabras en este
-espacio, y si existe estructura geométrica en este espacio.
+espacio, y si existe estructura geométrica en este espacio que tenga
+información acerca del lenguaje.
 
 Consideremos primero el caso de plurales de sustantivos.
 
 - Como el contexto de los plurales es distinto de los singulares,
-nuestro modelo puede capturar en los vectores su diferencia.
+nuestro modelo debería poder capturar en los vectores su diferencia.
 - Examinamos entonces cómo son geométricamente
 diferentes las representaciones de plurales vs singulares
 - Si encontramos un patrón reconocible, podemos utilizar este patrón, por ejemplo,
@@ -790,50 +797,120 @@ extraemos la diferencia entre gol y goles:
 
 
 ```r
-plural_1 <- incrustacion["goles", ] - incrustacion["gol",]
-plural_1
+emb <- as.matrix(modelo)
+# del concepto de días, quitarle día: "queda" el plural
+plural_1 <- emb["días", ] - emb["día", ]
+plural_2 <- emb["goles", ] - emb["gol", ]
+plural_3 <- emb["tíos", ] - emb["tío", ]
+plural <- (plural_1 + plural_2 + plural_3) / 3
+plural
 ```
 
 ```
-##   [1] -0.41010650 -0.09367068  0.10013825 -0.01043606 -0.69925217  0.63240004
-##   [7] -1.25355980 -0.25786495 -0.30724758 -0.62970757 -0.86795354 -0.33097465
-##  [13]  0.63819146  0.89995096  0.80200664 -0.96015745 -0.88044503  0.73197424
-##  [19]  0.37708700  0.35302806  0.76635766  0.73995791  0.63460803 -0.66580033
-##  [25]  0.62375081 -0.97293353 -0.04242826 -0.45898974  0.39994091  0.30355571
-##  [31] -0.28930634 -0.59067285  0.81816709  0.47144985  0.54982828  0.05406371
-##  [37]  0.15333903  0.83845954 -0.49170966  0.29262483  1.57328549  0.82192166
-##  [43] -0.39690197  0.70654460  0.14798385 -0.43928348 -0.27604572  0.20851085
-##  [49] -0.11255991 -0.68816626 -0.66432583  0.05098183 -0.32413444 -0.51244164
-##  [55]  0.34192570  0.01833647  0.24682266  0.66435456 -0.65305912  0.22694319
-##  [61]  0.25811008 -0.07838404 -0.29997021 -0.73384967  0.10233676  0.84096706
-##  [67]  0.07619473 -0.18465022  0.53090453 -0.61795783  0.45793355 -0.46914509
-##  [73]  1.18731731 -0.84401566 -0.63708998  0.47073039  0.38214815 -0.71852392
-##  [79]  1.11701551  1.14750899  0.06465220 -0.48419011  0.32698645  0.18334156
-##  [85]  0.95642942 -1.16262745 -0.10756570  1.09330720 -0.22378445  0.21736056
-##  [91] -1.35571718  0.10313135 -0.38550878 -0.85293561  0.22138959 -0.19883955
-##  [97] -0.42324607  0.41782234 -0.77964056  0.28357970
+##  [1]  0.0152804628  0.1377313354 -0.3195977906  0.0177193433 -0.1054255466
+##  [6]  0.0759639492 -0.0539081891  0.4265168334 -1.0973842889  0.7582209806
+## [11]  0.1083961229  0.7251005520  0.4841281871  0.6509703398  0.0717903599
+## [16]  1.2221822987 -0.6148995658  0.4453237057 -0.1102930208  0.6098377009
+## [21] -0.5223372926  0.6567373524 -0.1752699489  1.6437549790 -0.9586302688
+## [26] -0.3756186937  1.4757740299 -0.2220435285 -0.1646723300 -0.4038018634
+## [31] -0.7867156826 -0.3250945499 -0.9661249717  1.3409692347  0.0724218885
+## [36]  1.3712943097 -0.2274952332  0.3894831166 -0.3254537137 -0.0052393774
+## [41] -0.0003958195 -0.6526739920  0.4897470673  0.4023401837  0.8496992812
+## [46]  0.2727282254 -0.9253207197  0.0072911481  0.0636507695 -0.6696523329
 ```
 
 que es un vector en el espacio de representación de palabras. Ahora sumamos este vector
-a un sustantivo en singular, y vemos qué palabras están cercas de esta "palabra sintética":
+a un sustantivo en singular, y vemos qué palabras están cercas de esta "palabra sintética". 
 
 
 ```r
-vector <- incrustacion["partido",] + plural_1
+vector <- emb["partido",]  + plural
 predict(modelo, newdata = vector, type = "nearest", top_n = 5)
 ```
 
 ```
 ##         term similarity rank
-## 1    partido  0.9500611    1
-## 2   partidos  0.8834544    2
-## 3     kassab  0.8493576    3
-## 4      goles  0.8284315    4
-## 5 encuentros  0.8136083    5
+## 1   partidos  0.9544303    1
+## 2    partido  0.8980539    2
+## 3     derbis  0.8895127    3
+## 4   ligueros  0.8698068    4
+## 5 encuentros  0.8686123    5
 ```
-
 Nótese que entre las más cercanas está justamente el plural correcto, o otros plurales con relación
 al que buscábamos.
 
 Otro ejemplo:
+
+
+```r
+predict(modelo, newdata = emb["mes", ] + plural, 
+        type = "nearest", top_n = 5)
+```
+
+```
+##         term similarity rank
+## 1        mes  0.9219741    1
+## 2      meses  0.9001195    2
+## 3      junio  0.8886548    3
+## 4 septiembre  0.8859831    4
+## 5       2009  0.8830921    5
+```
+Ahora veamos por ejemplo el género:
+
+
+```r
+fem_2 <- emb["mujer", ] - emb["hombre", ]
+predict(modelo, newdata = emb["presidente", ] + fem_2, 
+        type = "nearest", top_n = 5)
+```
+
+```
+##             term similarity rank
+## 1     presidenta  0.9603671    1
+## 2     presidente  0.9528462    2
+## 3 vicepresidenta  0.9294355    3
+## 4    presidencia  0.9128675    4
+## 5     secretaria  0.9072133    5
+```
+
+```r
+predict(modelo, newdata = emb["rey", ] + fem_2, 
+        type = "nearest", top_n = 5)
+```
+
+```
+##       term similarity rank
+## 1      rey  0.9483816    1
+## 2    reina  0.9384007    2
+## 3 majestad  0.9177670    3
+## 4 princesa  0.9173969    4
+## 5  infanta  0.9131138    5
+```
+
+También podemos probar intentar contestar preguntas de analogía, por ejemplo
+
+- Francia es a París como Inglaterra es a ...
+
+
+
+```r
+rusia_moscu <- emb["rusia", ] - emb["moscú", ]
+paris_francia <- emb["francia", ] - emb["parís", ]
+pais <- (rusia_moscu + paris_francia) / 2
+#despejamos: madrid_es_a_españa <- emb["madrid", ] - emb["españa", ] y obtenemos:
+inglaterra_es_a_x <- emb["inglaterra", ] - pais
+predict(modelo, inglaterra_es_a_x, type = "nearest", top_n = 5)
+```
+
+```
+##         term similarity rank
+## 1    londres  0.9953559    1
+## 2 inglaterra  0.9830307    2
+## 3      parís  0.9820109    3
+## 4      miami  0.9706251    4
+## 5   shanghai  0.9584799    5
+```
+
+
+
 
