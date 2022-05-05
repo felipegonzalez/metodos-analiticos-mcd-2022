@@ -444,18 +444,23 @@ Construimos un modelo con vectores de palabras de tamaño 50,
 skip-grams de tamaño 6, y ajustamos con muestreo negativo
 de tamaño 5:
 
-```{r modelow2v, message = FALSE, warning = FALSE}
-modelo <- word2vec(x = periodico_df$txt, type = "skip-gram", 
-                   dim = 100, window = 6L, negative = 20L, threads = 4L)
+```{r modelow2v, message = FALSE, warning = FALSE, eval = FALSE}
+modelo <- word2vec(x = periodico_df$txt, type = "skip-gram", iter = 10, 
+                   dim = 50, window = 6L, negative = 10L, 
+                   threads = 8L, sample = 0.005, min_count = 20)
+write.word2vec(modelo, file = "./salidas/noticias_vectors.bin")
 ```
 
+```{r}
+modelo <- read.word2vec("./salidas/noticias_vectors.bin")
+```
 
 
 El resultado son los vectores aprendidos de las palabras, por ejemplo
 
 ```{r}
-incrustacion <- as.matrix(modelo)
-incrustacion["gol", ] 
+vector_gol <- predict(modelo, "gol", type = "embedding")
+vector_gol |> as.numeric()
 ```
 
 ## Espacio de representación de palabras {#esprep}
@@ -470,20 +475,29 @@ Podemos verificar con nuestro ejemplo:
 predict(modelo, newdata = c("gol"), type = "nearest", top_n = 5)
 ```
 
-También podemos buscar varias palabras:
+Otros ejemplos:
 
 ```{r}
-palabras <- c("soleado","lluvioso")
-predict(modelo, newdata = palabras, type = "nearest", top_n = 5)
+palabras <- c("lluvioso", "parís", "cinco")
+predict(modelo, newdata = palabras, type = "nearest", top_n = 4) |> 
+  bind_rows() |> knitr::kable()
 ```
 
+Donde vemos, por ejemplo, que el modelo puede capturar conceptos relacionados
+con el estado del clima, capitales de países y números - aún cuando no hemos
+anotado estas funciones en el corpus original. Estos vectores son similares
+porque tienden a ocurrir en contextos similares.
+
+### Geometría en el espacio de representaciones {-}
+
 Ahora consideremos cómo se distribuyen las palabras en este
-espacio, y si existe estructura geométrica en este espacio.
+espacio, y si existe estructura geométrica en este espacio que tenga
+información acerca del lenguaje.
 
 Consideremos primero el caso de plurales de sustantivos.
 
 - Como el contexto de los plurales es distinto de los singulares,
-nuestro modelo puede capturar en los vectores su diferencia.
+nuestro modelo debería poder capturar en los vectores su diferencia.
 - Examinamos entonces cómo son geométricamente
 diferentes las representaciones de plurales vs singulares
 - Si encontramos un patrón reconocible, podemos utilizar este patrón, por ejemplo,
@@ -494,20 +508,55 @@ Una de las relaciones geométricas más simples es la adición de vectores. Por 
 extraemos la diferencia entre gol y goles:
 
 ```{r}
-plural_1 <- incrustacion["goles", ] - incrustacion["gol",]
-plural_1
+emb <- as.matrix(modelo)
+# del concepto de días, quitarle día: "queda" el plural
+plural_1 <- emb["días", ] - emb["día", ]
+plural_2 <- emb["goles", ] - emb["gol", ]
+plural_3 <- emb["tíos", ] - emb["tío", ]
+plural <- (plural_1 + plural_2 + plural_3) / 3
+plural
 ```
 
 que es un vector en el espacio de representación de palabras. Ahora sumamos este vector
-a un sustantivo en singular, y vemos qué palabras están cercas de esta "palabra sintética":
+a un sustantivo en singular, y vemos qué palabras están cercas de esta "palabra sintética". 
 
 ```{r}
-vector <- incrustacion["partido",] + plural_1
+vector <- emb["partido",]  + plural
 predict(modelo, newdata = vector, type = "nearest", top_n = 5)
 ```
-
 Nótese que entre las más cercanas está justamente el plural correcto, o otros plurales con relación
 al que buscábamos.
 
 Otro ejemplo:
+
+```{r}
+predict(modelo, newdata = emb["mes", ] + plural, 
+        type = "nearest", top_n = 5)
+```
+Ahora veamos por ejemplo el género:
+
+```{r}
+fem_2 <- emb["mujer", ] - emb["hombre", ]
+predict(modelo, newdata = emb["presidente", ] + fem_2, 
+        type = "nearest", top_n = 5)
+predict(modelo, newdata = emb["rey", ] + fem_2, 
+        type = "nearest", top_n = 5)
+```
+
+También podemos probar intentar contestar preguntas de analogía, por ejemplo
+
+- Francia es a París como Inglaterra es a ...
+
+
+```{r}
+rusia_moscu <- emb["rusia", ] - emb["moscú", ]
+paris_francia <- emb["francia", ] - emb["parís", ]
+pais <- (rusia_moscu + paris_francia) / 2
+#despejamos: madrid_es_a_españa <- emb["madrid", ] - emb["españa", ] y obtenemos:
+inglaterra_es_a_x <- emb["inglaterra", ] - pais
+predict(modelo, inglaterra_es_a_x, type = "nearest", top_n = 5)
+```
+
+
+
 
