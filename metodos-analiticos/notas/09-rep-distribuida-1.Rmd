@@ -37,7 +37,7 @@ intentando no perder mucho de su sentido
 original, lo que nos permite conocer palabras por su contexto, aún cuando no las hayamos observado antes.
 
 
-### Ejemplo {-}
+#### Ejemplo {-}
 
 ¿Cómo puede funcionar este enfoque? Por ejemplo, si vemos la frase "El gato corre en el jardín", sabemos que una frase probable debe ser también "El perro corre en el jardín", pero quizá nunca vimos en el corpus la sucesión "El perro corre". La idea es que como "perro" y "gato" son funcionalmente similares (aparecen en contextos similares en otros tipos de oraciones como el perro come, el gato come, el perro duerme, este es mi gato, etc.), un modelo como el de arriba daría vectores similares a "perro" y "gato", pues aparecen en contextos similares. Entonces el modelo daría una probabilidad alta a "El perro corre en el jardín".
 
@@ -320,7 +320,7 @@ Como ya no es de interés central predecir la siguiente palabra a partir
 de las anteriores, en estos modelos **intentamos predecir la palabra
 central a partir de las que están alrededor**. 
 
-### Arquitectura continuous bag-of-words
+### Arquitectura continuous bag-of-words {-}
 
 La entrada es igual que en el modelo completo. En primer lugar,
 simplificamos la segunda capa oculta pondiendo en $z$ el promedio de
@@ -347,7 +347,7 @@ En el ajuste maximizamos la verosimilitud sobre el corpus. Por ejemplo, para una
 
 $$\sum_t \log \hat{P}(w_{t,n}|w_{t,n+1} \cdots w_{t-n-1}) $$
 
-### Arquitectura skip-grams
+### Arquitectura skip-grams {-}
 
 Otro modelo simplificado, con más complejidad computacional pero
 mejores resultados (ver [@word2vec]) que
@@ -365,11 +365,11 @@ $$-\sum_t \sum_{ -2\leq j \leq 2, j\neq 0} \log P(w_{t-j} | w_t)$$
 (no tomamos en cuenta dónde aparece exactamente $w_{t-j}$ en relación a $w_t$, simplemente consideramos que está en su contexto),
 donde
 
-$$\log P(w_{t-j}|w_t) =  u_{t-j}^tC(w_n) - \log\sum_k \exp{u_{k}^tC(w_n)}$$
+$$\log P(w_{t-j}|w_t) =  u_{t-j}^tC(w_t) - \log\sum_k \exp{u_{k}^tC(w_t)}$$
 
 Todavía se propone una simplificación adicional que resulta ser efectiva:
 
-### Muestreo negativo
+### Muestreo negativo {-}
 
 La siguiente simplificación consiste en cambiar la función objetivo. En word2vec puede usarse "muestreo negativo".
 
@@ -609,7 +609,7 @@ vector <-  modelo[["tío"]] + fem_1
 modelo |>  closest_to(vector, n = 5) %>% filter(word != "tío")
 ```
 
-### Evaluación de calidad de modelos
+### Evaluación de calidad de modelos {-}
 
 La evaluación de estas aplicaciones puede hacerse por ejemplo, con tareas de analogía,
 con listas de singular/plurales, de adjetivos/adverbios, masculino/femenino, etc (ver [@word2vec]),
