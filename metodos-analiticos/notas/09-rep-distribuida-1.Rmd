@@ -461,8 +461,8 @@ if(!file.exists('./salidas/noticias_w2v.txt')){
 if (!file.exists("./salidas/noticias_vectors.bin")) {
   modelo <- train_word2vec("./salidas/noticias_w2v.txt", 
           "./salidas/noticias_vectors.bin",
-          vectors = 100, threads = 4, window = 4, cbow = 0,  
-          iter = 5, negative_samples = 20, min_count = 5) 
+          vectors = 100, threads = 8, window = 4, cbow = 0,  
+          iter = 20, negative_samples = 20, min_count = 10) 
 } else {
   modelo <- read.vectors("./salidas/noticias_vectors.bin")
 }
@@ -524,23 +524,23 @@ Una de las relaciones geométricas más simples es la adición de vectores. Por 
 extraemos la diferencia entre gol y goles:
 
 
-```{r sim2}
+```{r sim3}
 ejemplos <- modelo |>  closest_to("dos", n = 15)
 ejemplos
 ```
 
 
-```{r sim2}
+```{r sim4}
 ejemplos <- modelo |>  closest_to(c("lluvioso"), n = 5)
 ejemplos
 ```
 
-```{r sim2}
+```{r}
 ejemplos <- modelo |>  closest_to("presidente", n = 5)
 ejemplos
 ```
 
-```{r sim2}
+```{r}
 ejemplos <- modelo |>  closest_to("parís", n = 5)
 ejemplos
 ```
