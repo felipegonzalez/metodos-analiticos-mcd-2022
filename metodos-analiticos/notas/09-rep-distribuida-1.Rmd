@@ -170,7 +170,7 @@ es "(perro, corre)". Necesitamos calcular la probabilidad
 de corre dado el contexto "el perro". Repetimos nuestro cálculo:
 
 ```{r}
-capa_1 <- c(C[, "perro"], C[, "corre"])
+capa_1 <- c(C[, "el"], C[, "perro"])
 capa_1
 capa_2 <- sigma(H %*% capa_1)
 capa_2
@@ -403,9 +403,12 @@ de unigramas (se observó empíricamente mejor desempeño cuando escogemos cada 
 ### Ejemplo {-}
 
 ```{r, message=FALSE, warning = FALSE}
-install.packages("word2vec")
-library(word2vec)
+if(!require(wordVectors)){
+  devtools::install_github("bmschmidt/wordVectors")
+}
+library(wordVectors)
 ```
+
 
 ```{r}
 library(tidyverse)
@@ -440,27 +443,36 @@ periodico_df <- tibble(txt = periodico) |>
 ```
 
 
-Construimos un modelo con vectores de palabras de tamaño 50,
-skip-grams de tamaño 6, y ajustamos con muestreo negativo
-de tamaño 5:
+Construimos un modelo con vectores de palabras de tamaño 100,
+skip-grams de tamaño 4, y ajustamos con muestreo negativo
+de tamaño 20:
 
-```{r modelow2v, message = FALSE, warning = FALSE, eval = FALSE}
-modelo <- word2vec(x = periodico_df$txt, type = "skip-gram", iter = 10, 
-                   dim = 50, window = 6L, negative = 10L, 
-                   threads = 8L, sample = 0.005, min_count = 20)
-write.word2vec(modelo, file = "./salidas/noticias_vectors.bin")
+```{r prepw2v}
+if(!file.exists('./salidas/noticias_w2v.txt')){
+  tmp <- tempfile()
+  # tokenización
+  write_lines(periodico_df$txt,  tmp)
+  prep <- prep_word2vec(tmp, 
+          destination = './salidas/noticias_w2v.txt', bundle_ngrams = 2)
+  } 
 ```
 
-```{r}
-modelo <- read.word2vec("./salidas/noticias_vectors.bin")
+```{r modelow2v, message = FALSE, warning = FALSE, results=FALSE}
+if (!file.exists("./salidas/noticias_vectors.bin")) {
+  modelo <- train_word2vec("./salidas/noticias_w2v.txt", 
+          "./salidas/noticias_vectors.bin",
+          vectors = 100, threads = 4, window = 4, cbow = 0,  
+          iter = 5, negative_samples = 20, min_count = 5) 
+} else {
+  modelo <- read.vectors("./salidas/noticias_vectors.bin")
+}
 ```
-
 
 El resultado son los vectores aprendidos de las palabras, por ejemplo
 
 ```{r}
-vector_gol <- predict(modelo, "gol", type = "embedding")
-vector_gol |> as.numeric()
+vector_gol <- modelo[["gol"]] |> as.numeric()
+vector_gol
 ```
 
 ## Espacio de representación de palabras {#esprep}
@@ -472,18 +484,68 @@ Podemos verificar con nuestro ejemplo:
 
 
 ```{r sim2}
-predict(modelo, newdata = c("gol"), type = "nearest", top_n = 5)
+ejemplos <- modelo |>  closest_to("gol", n = 5)
+ejemplos
 ```
+También podríamos calcular manualmente:
 
-Otros ejemplos:
+Que también podemos calcular como:
 
 ```{r}
-palabras <- c("lluvioso", "parís", "cinco")
-predict(modelo, newdata = palabras, type = "nearest", top_n = 4) |> 
-  bind_rows() |> knitr::kable()
+vector_penalti <- modelo[["penalti"]] |> as.numeric()
+cosineSimilarity(modelo[["gol"]], modelo[["penalti"]])
 ```
 
-Donde vemos, por ejemplo, que el modelo puede capturar conceptos relacionados
+O directamente:
+
+```{r}
+norma <- function(x) sqrt(sum(x^2))
+sum(vector_gol * vector_penalti) / (norma(vector_gol) * norma(vector_penalti))
+```
+
+
+### Geometría en el espacio de representaciones {-}
+
+Ahora consideremos cómo se distribuyen las palabras en este
+espacio, y si existe estructura geométrica en este espacio que tenga
+información acerca del lenguaje.
+
+Consideremos primero el caso de plurales de sustantivos.
+
+- Como el contexto de los plurales es distinto de los singulares,
+nuestro modelo debería poder capturar en los vectores su diferencia.
+- Examinamos entonces cómo son geométricamente
+diferentes las representaciones de plurales vs singulares
+- Si encontramos un patrón reconocible, podemos utilizar este patrón, por ejemplo,
+para encontrar la versión plural de una palabra singular, *sin usar ninguna
+regla del lenguaje*.
+
+Una de las relaciones geométricas más simples es la adición de vectores. Por ejemplo,
+extraemos la diferencia entre gol y goles:
+
+
+```{r sim2}
+ejemplos <- modelo |>  closest_to("dos", n = 15)
+ejemplos
+```
+
+
+```{r sim2}
+ejemplos <- modelo |>  closest_to(c("lluvioso"), n = 5)
+ejemplos
+```
+
+```{r sim2}
+ejemplos <- modelo |>  closest_to("presidente", n = 5)
+ejemplos
+```
+
+```{r sim2}
+ejemplos <- modelo |>  closest_to("parís", n = 5)
+ejemplos
+```
+
+Y vemos, por ejemplo, que el modelo puede capturar conceptos relacionados
 con el estado del clima, capitales de países y números - aún cuando no hemos
 anotado estas funciones en el corpus original. Estos vectores son similares
 porque tienden a ocurrir en contextos similares.
@@ -508,55 +570,99 @@ Una de las relaciones geométricas más simples es la adición de vectores. Por 
 extraemos la diferencia entre gol y goles:
 
 ```{r}
-emb <- as.matrix(modelo)
-# del concepto de días, quitarle día: "queda" el plural
-plural_1 <- emb["días", ] - emb["día", ]
-plural_2 <- emb["goles", ] - emb["gol", ]
-plural_3 <- emb["tíos", ] - emb["tío", ]
-plural <- (plural_1 + plural_2 + plural_3) / 3
-plural
+plural_1 <- modelo[["goles"]] - modelo[["gol"]]
+plural_1
 ```
 
 que es un vector en el espacio de representación de palabras. Ahora sumamos este vector
-a un sustantivo en singular, y vemos qué palabras están cercas de esta "palabra sintética". 
+a un sustantivo en singular, y vemos qué palabras están cercas de esta "palabra sintética":
 
 ```{r}
-vector <- emb["partido",]  + plural
-predict(modelo, newdata = vector, type = "nearest", top_n = 5)
+vector <-  modelo[["partido"]] + plural_1
+modelo |> closest_to(vector, n = 5)
 ```
-Nótese que entre las más cercanas está justamente el plural correcto, o otros plurales con relación
-al que buscábamos.
+
+Nótese que la más cercana es justamente el plural correcto, o otros plurales con relación
+al que buscábamos (como *encuentros*)
 
 Otro ejemplo:
 
 ```{r}
-predict(modelo, newdata = emb["mes", ] + plural, 
-        type = "nearest", top_n = 5)
+plural_1 <- modelo[["días"]] - modelo[["día"]]
+vector <-  modelo[["mes"]] + plural_1
+modelo |>  closest_to(vector, n = 20) 
 ```
-Ahora veamos por ejemplo el género:
+
+
+
+
+
+Veremos ahora cómo funciona para el género de sustantivos:
 
 ```{r}
-fem_2 <- emb["mujer", ] - emb["hombre", ]
-predict(modelo, newdata = emb["presidente", ] + fem_2, 
-        type = "nearest", top_n = 5)
-predict(modelo, newdata = emb["rey", ] + fem_2, 
-        type = "nearest", top_n = 5)
+fem_1 <- modelo[["presidenta"]] - modelo[["presidente"]]
+vector <-  modelo[["rey"]] + fem_1
+modelo |>  closest_to(vector, n = 5) %>% filter(word != "rey")
+```
+```{r}
+vector <-  modelo[["tío"]] + fem_1
+modelo |>  closest_to(vector, n = 5) %>% filter(word != "tío")
 ```
 
-También podemos probar intentar contestar preguntas de analogía, por ejemplo
+### Evaluación de calidad de modelos
 
-- Francia es a París como Inglaterra es a ...
+La evaluación de estas aplicaciones puede hacerse por ejemplo, con tareas de analogía,
+con listas de singular/plurales, de adjetivos/adverbios, masculino/femenino, etc (ver [@word2vec]),
+(ver por ejemplo https://github.com/tmikolov/word2vec/blob/master/questions-words.txt). Adicionalmente,
+si se utilizan en alguna tarea *downstream*, pueden evaluarse en el desempeño de esa
+tarea particular.
 
+
+
+**Ejercicio**: ¿cómo usarías esta geometría para encontrar el país en el que está una capital dada?
+
+**Observación**: falta afinar los parámetros en este modelo.
+Puedes probar cambiando negative sampling (por ejemplo, incrementa a 40), el número de vectores (50-200, por ejemplo), e incrementando *window* y el número de iteraciones.
+
+Considera también un modelo preentrenado mucho más grande como [este](https://github.com/uchile-nlp/spanish-word-embeddings). Puedes bajar los vectores de palabras
+y repetir las tareas mostradas (el formato bin es estándar para la implementación que usamos de word2vec).
+
+---
+
+Podemos visualizar el espacio de representaciones reduciendo dimensionalidad. En este caso, utilizamos *tsne*:
+
+```{r, out.width = "800px"}
+library(tsne)
+library(ggplot2)
+library(ggrepel)
+mat_vs <- modelo@.Data
+# solo calculamos para las 500 palabras más comunes
+num_palabras <- 500 
+set.seed(1203)
+vs_2 <- tsne(mat_vs[1:num_palabras, ], 
+             max_iter = 1000, perplexity = 50)
+```
 
 ```{r}
-rusia_moscu <- emb["rusia", ] - emb["moscú", ]
-paris_francia <- emb["francia", ] - emb["parís", ]
-pais <- (rusia_moscu + paris_francia) / 2
-#despejamos: madrid_es_a_españa <- emb["madrid", ] - emb["españa", ] y obtenemos:
-inglaterra_es_a_x <- emb["inglaterra", ] - pais
-predict(modelo, inglaterra_es_a_x, type = "nearest", top_n = 5)
+set.seed(823)
+colnames(vs_2) <- c("V1", "V2")
+df_vs <- as_tibble(vs_2, .name_repair = "check_unique") %>%
+  mutate(palabra = rownames(mat_vs[1:num_palabras, ]))
+ggplot(df_vs %>% sample_n(250), 
+  aes(x = V1, y = V2, label = palabra)) +
+  geom_point(colour = 'red', alpha = 0.3) +
+  geom_text_repel(size = 2, force = 0.3, segment.alpha = 0.5) 
 ```
 
+## Usos de representaciones distribuidas
 
+La idea general de construir representaciones densas de las palabras
+(en lugar de representaciones ralas, como codificación dummy o one-hot encoding) es una fundamental en varias tareas de procesamiento de lenguaje natural. Se utiliza en clasificación de textos (*fast-text* es similar
+al modelo bag-of-words),
+respuesta de preguntas, traducción automática, recuperación
+de información, reconocimiento de entidades, etc. Word2vec también puede ser
+usado para sistemas de recomendación (las palabras son artículos, las canastas son los textos).
 
+- Puedes ver la implementación original junto con aplicaciones [aquí](https://code.google.com/archive/p/word2vec/), y [aquí](https://github.com/tmikolov/word2vec).
+- Un método similar es [Glove](https://nlp.stanford.edu/projects/glove/).
 
