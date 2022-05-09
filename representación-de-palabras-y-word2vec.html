@@ -399,7 +399,6 @@ div.csl-indent {
 </ul></li>
 <li class="chapter" data-level="10" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html"><i class="fa fa-check"></i><b>10</b> Representación de palabras y word2vec</a>
 <ul>
-<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#ejemplo-31"><i class="fa fa-check"></i>Ejemplo</a></li>
 <li class="chapter" data-level="10.1" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#modelo-de-red-neuronal"><i class="fa fa-check"></i><b>10.1</b> Modelo de red neuronal</a>
 <ul>
 <li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#ejemplo-32"><i class="fa fa-check"></i>Ejemplo</a></li>
@@ -407,16 +406,16 @@ div.csl-indent {
 <li class="chapter" data-level="10.2" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#representación-de-palabras"><i class="fa fa-check"></i><b>10.2</b> Representación de palabras</a></li>
 <li class="chapter" data-level="10.3" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#modelos-de-word2vec"><i class="fa fa-check"></i><b>10.3</b> Modelos de word2vec</a>
 <ul>
-<li class="chapter" data-level="10.3.1" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#arquitectura-continuous-bag-of-words"><i class="fa fa-check"></i><b>10.3.1</b> Arquitectura continuous bag-of-words</a></li>
-<li class="chapter" data-level="10.3.2" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#arquitectura-skip-grams"><i class="fa fa-check"></i><b>10.3.2</b> Arquitectura skip-grams</a></li>
-<li class="chapter" data-level="10.3.3" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#muestreo-negativo"><i class="fa fa-check"></i><b>10.3.3</b> Muestreo negativo</a></li>
+<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#arquitectura-continuous-bag-of-words"><i class="fa fa-check"></i>Arquitectura continuous bag-of-words</a></li>
+<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#arquitectura-skip-grams"><i class="fa fa-check"></i>Arquitectura skip-grams</a></li>
+<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#muestreo-negativo"><i class="fa fa-check"></i>Muestreo negativo</a></li>
 <li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#ejemplo-33"><i class="fa fa-check"></i>Ejemplo</a></li>
 </ul></li>
 <li class="chapter" data-level="10.4" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#esprep"><i class="fa fa-check"></i><b>10.4</b> Espacio de representación de palabras</a>
 <ul>
 <li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#geometría-en-el-espacio-de-representaciones"><i class="fa fa-check"></i>Geometría en el espacio de representaciones</a></li>
 <li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#geometría-en-el-espacio-de-representaciones-1"><i class="fa fa-check"></i>Geometría en el espacio de representaciones</a></li>
-<li class="chapter" data-level="10.4.1" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#evaluación-de-calidad-de-modelos"><i class="fa fa-check"></i><b>10.4.1</b> Evaluación de calidad de modelos</a></li>
+<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#evaluación-de-calidad-de-modelos"><i class="fa fa-check"></i>Evaluación de calidad de modelos</a></li>
 </ul></li>
 <li class="chapter" data-level="10.5" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#usos-de-representaciones-distribuidas"><i class="fa fa-check"></i><b>10.5</b> Usos de representaciones distribuidas</a></li>
 </ul></li>
@@ -472,8 +471,8 @@ un <em>embedding de palabras</em>.
 <p>El objeto es entonces abstraer características de palabras (mediante estas representaciones)
 intentando no perder mucho de su sentido
 original, lo que nos permite conocer palabras por su contexto, aún cuando no las hayamos observado antes.</p>
-<div id="ejemplo-31" class="section level3 unnumbered">
-<h3>Ejemplo</h3>
+<div id="ejemplo-31" class="section level4 unnumbered">
+<h4>Ejemplo</h4>
 <p>¿Cómo puede funcionar este enfoque? Por ejemplo, si vemos la frase “El gato corre en el jardín,” sabemos que una frase probable debe ser también “El perro corre en el jardín,” pero quizá nunca vimos en el corpus la sucesión “El perro corre.” La idea es que como “perro” y “gato” son funcionalmente similares (aparecen en contextos similares en otros tipos de oraciones como el perro come, el gato come, el perro duerme, este es mi gato, etc.), un modelo como el de arriba daría vectores similares a “perro” y “gato,” pues aparecen en contextos similares. Entonces el modelo daría una probabilidad alta a “El perro corre en el jardín.”</p>
 </div>
 <div id="modelo-de-red-neuronal" class="section level2" number="10.1">
@@ -792,8 +791,8 @@ en <span class="citation">(<a href="#ref-goodfellow" role="doc-biblioref">Goodfe
 <p>Como ya no es de interés central predecir la siguiente palabra a partir
 de las anteriores, en estos modelos <strong>intentamos predecir la palabra
 central a partir de las que están alrededor</strong>.</p>
-<div id="arquitectura-continuous-bag-of-words" class="section level3" number="10.3.1">
-<h3><span class="header-section-number">10.3.1</span> Arquitectura continuous bag-of-words</h3>
+<div id="arquitectura-continuous-bag-of-words" class="section level3 unnumbered">
+<h3>Arquitectura continuous bag-of-words</h3>
 <p>La entrada es igual que en el modelo completo. En primer lugar,
 simplificamos la segunda capa oculta pondiendo en <span class="math inline">\(z\)</span> el promedio de
 los vectores <span class="math inline">\(C(w_{n-2}), C(w_{n-1})\)</span>. La última capa la dejamos igual por el momento:</p>
@@ -817,8 +816,8 @@ y finalmente usamos softmax para tener probabilidades que suman uno:
 <p>En el ajuste maximizamos la verosimilitud sobre el corpus. Por ejemplo, para una frase, su log verosimilitud es:</p>
 <p><span class="math display">\[\sum_t \log \hat{P}(w_{t,n}|w_{t,n+1} \cdots w_{t-n-1}) \]</span></p>
 </div>
-<div id="arquitectura-skip-grams" class="section level3" number="10.3.2">
-<h3><span class="header-section-number">10.3.2</span> Arquitectura skip-grams</h3>
+<div id="arquitectura-skip-grams" class="section level3 unnumbered">
+<h3>Arquitectura skip-grams</h3>
 <p>Otro modelo simplificado, con más complejidad computacional pero
 mejores resultados (ver <span class="citation">(<a href="#ref-word2vec" role="doc-biblioref">Mikolov et al. 2013</a>)</span>) que
 el bag-of-words, es el modelo de skip-grams. En este caso, dada
@@ -833,11 +832,11 @@ fijo de las palabras anteriores y palabras posteriores
 <p><span class="math display">\[-\sum_t \sum_{ -2\leq j \leq 2, j\neq 0} \log P(w_{t-j} | w_t)\]</span>
 (no tomamos en cuenta dónde aparece exactamente <span class="math inline">\(w_{t-j}\)</span> en relación a <span class="math inline">\(w_t\)</span>, simplemente consideramos que está en su contexto),
 donde</p>
-<p><span class="math display">\[\log P(w_{t-j}|w_t) =  u_{t-j}^tC(w_n) - \log\sum_k \exp{u_{k}^tC(w_n)}\]</span></p>
+<p><span class="math display">\[\log P(w_{t-j}|w_t) =  u_{t-j}^tC(w_t) - \log\sum_k \exp{u_{k}^tC(w_t)}\]</span></p>
 <p>Todavía se propone una simplificación adicional que resulta ser efectiva:</p>
 </div>
-<div id="muestreo-negativo" class="section level3" number="10.3.3">
-<h3><span class="header-section-number">10.3.3</span> Muestreo negativo</h3>
+<div id="muestreo-negativo" class="section level3 unnumbered">
+<h3>Muestreo negativo</h3>
 <p>La siguiente simplificación consiste en cambiar la función objetivo. En word2vec puede usarse “muestreo negativo.”</p>
 <p>Para empezar, la función objetivo original (para contexto de una sola palabra) es</p>
 <p><span class="math display">\[E = -\log \hat{P}(w_{a}|w_{n}) = -y_{w_a} + \log\sum_j \exp(y_j),\]</span></p>
@@ -877,7 +876,7 @@ de unigramas (se observó empíricamente mejor desempeño cuando escogemos cada 
 ## crayon     (1.4.2  -&gt; 1.5.1) [CRAN]
 ## clipr      (0.7.1  -&gt; 0.8.0) [CRAN]
 ## readr      (2.1.1  -&gt; 2.1.2) [CRAN]
-## * checking for file ‘/tmp/Rtmp70So7D/remotes483e7e08e684/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
+## * checking for file ‘/tmp/Rtmpc97Nr5/remotes480273f80530/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
 ## * preparing ‘wordVectors’:
 ## * checking DESCRIPTION meta-information ... OK
 ## * cleaning src
@@ -925,7 +924,7 @@ de tamaño 20:</p>
 <span id="cb901-6"><a href="representación-de-palabras-y-word2vec.html#cb901-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">destination =</span> <span class="st">&#39;./salidas/noticias_w2v.txt&#39;</span>, <span class="at">bundle_ngrams =</span> <span class="dv">2</span>)</span>
 <span id="cb901-7"><a href="representación-de-palabras-y-word2vec.html#cb901-7" aria-hidden="true" tabindex="-1"></a>  } </span></code></pre></div>
 <pre><code>## Beginning tokenization to text file at ./salidas/noticias_w2v.txt</code></pre>
-<pre><code>## Prepping /tmp/Rtmp70So7D/file483e6918dbe</code></pre>
+<pre><code>## Prepping /tmp/Rtmpc97Nr5/file4802536dd52e</code></pre>
 <pre><code>## Starting training using file ./salidas/noticias_w2v.txt
 ## Words processed: 100K     Vocab size: 73K  
 Words processed: 200K     Vocab size: 124K  
@@ -1492,7 +1491,7 @@ extraemos la diferencia entre gol y goles:</p>
 ##            [,1]       [,2]        [,3]       [,4]        [,5]       [,6]
 ## [1,] -0.2301596 -0.2543171 -0.04071745 -0.2292878 0.004059255 -0.2283908
 ## attr(,&quot;.cache&quot;)
-## &lt;environment: 0x560e6743d8e0&gt;</code></pre>
+## &lt;environment: 0x5641a88ab5a0&gt;</code></pre>
 <p>que es un vector en el espacio de representación de palabras. Ahora sumamos este vector
 a un sustantivo en singular, y vemos qué palabras están cercas de esta “palabra sintética”:</p>
 <div class="sourceCode" id="cb924"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb924-1"><a href="representación-de-palabras-y-word2vec.html#cb924-1" aria-hidden="true" tabindex="-1"></a>vector <span class="ot">&lt;-</span>  modelo[[<span class="st">&quot;partido&quot;</span>]] <span class="sc">+</span> plural_1</span>
@@ -1563,8 +1562,8 @@ al que buscábamos (como <em>encuentros</em>)</p>
 ## 3  abuela            0.6871846
 ## 4     tía            0.6850960</code></pre>
 </div>
-<div id="evaluación-de-calidad-de-modelos" class="section level3" number="10.4.1">
-<h3><span class="header-section-number">10.4.1</span> Evaluación de calidad de modelos</h3>
+<div id="evaluación-de-calidad-de-modelos" class="section level3 unnumbered">
+<h3>Evaluación de calidad de modelos</h3>
 <p>La evaluación de estas aplicaciones puede hacerse por ejemplo, con tareas de analogía,
 con listas de singular/plurales, de adjetivos/adverbios, masculino/femenino, etc (ver <span class="citation">(<a href="#ref-word2vec" role="doc-biblioref">Mikolov et al. 2013</a>)</span>),
 (ver por ejemplo <a href="https://github.com/tmikolov/word2vec/blob/master/questions-words.txt" class="uri">https://github.com/tmikolov/word2vec/blob/master/questions-words.txt</a>). Adicionalmente,

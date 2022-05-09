@@ -110,9 +110,5 @@ representación-de-palabras-y-word2vec
 modelo-de-red-neuronal
 representación-de-palabras
 modelos-de-word2vec
-arquitectura-continuous-bag-of-words
-arquitectura-skip-grams
-muestreo-negativo
 esprep
-evaluación-de-calidad-de-modelos
 usos-de-representaciones-distribuidas
