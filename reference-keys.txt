@@ -114,3 +114,5 @@ arquitectura-continuous-bag-of-words
 arquitectura-skip-grams
 muestreo-negativo
 esprep
+evaluación-de-calidad-de-modelos
+usos-de-representaciones-distribuidas
