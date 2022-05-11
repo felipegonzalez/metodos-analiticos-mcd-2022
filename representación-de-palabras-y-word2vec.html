@@ -24,7 +24,7 @@
 <meta name="author" content="Felipe González" />
 
 
-<meta name="date" content="2022-05-09" />
+<meta name="date" content="2022-05-11" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -876,7 +876,7 @@ de unigramas (se observó empíricamente mejor desempeño cuando escogemos cada 
 ## crayon     (1.4.2  -&gt; 1.5.1) [CRAN]
 ## clipr      (0.7.1  -&gt; 0.8.0) [CRAN]
 ## readr      (2.1.1  -&gt; 2.1.2) [CRAN]
-## * checking for file ‘/tmp/Rtmpc97Nr5/remotes480273f80530/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
+## * checking for file ‘/tmp/RtmpmvQu3K/remotes4818379c208d/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
 ## * preparing ‘wordVectors’:
 ## * checking DESCRIPTION meta-information ... OK
 ## * cleaning src
@@ -924,7 +924,7 @@ de tamaño 20:</p>
 <span id="cb901-6"><a href="representación-de-palabras-y-word2vec.html#cb901-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">destination =</span> <span class="st">&#39;./salidas/noticias_w2v.txt&#39;</span>, <span class="at">bundle_ngrams =</span> <span class="dv">2</span>)</span>
 <span id="cb901-7"><a href="representación-de-palabras-y-word2vec.html#cb901-7" aria-hidden="true" tabindex="-1"></a>  } </span></code></pre></div>
 <pre><code>## Beginning tokenization to text file at ./salidas/noticias_w2v.txt</code></pre>
-<pre><code>## Prepping /tmp/Rtmpc97Nr5/file4802536dd52e</code></pre>
+<pre><code>## Prepping /tmp/RtmpmvQu3K/file481820617d81</code></pre>
 <pre><code>## Starting training using file ./salidas/noticias_w2v.txt
 ## Words processed: 100K     Vocab size: 73K  
 Words processed: 200K     Vocab size: 124K  
@@ -1491,7 +1491,7 @@ extraemos la diferencia entre gol y goles:</p>
 ##            [,1]       [,2]        [,3]       [,4]        [,5]       [,6]
 ## [1,] -0.2301596 -0.2543171 -0.04071745 -0.2292878 0.004059255 -0.2283908
 ## attr(,&quot;.cache&quot;)
-## &lt;environment: 0x5641a88ab5a0&gt;</code></pre>
+## &lt;environment: 0x55debe3cc7f0&gt;</code></pre>
 <p>que es un vector en el espacio de representación de palabras. Ahora sumamos este vector
 a un sustantivo en singular, y vemos qué palabras están cercas de esta “palabra sintética”:</p>
 <div class="sourceCode" id="cb924"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb924-1"><a href="representación-de-palabras-y-word2vec.html#cb924-1" aria-hidden="true" tabindex="-1"></a>vector <span class="ot">&lt;-</span>  modelo[[<span class="st">&quot;partido&quot;</span>]] <span class="sc">+</span> plural_1</span>
@@ -1588,16 +1588,16 @@ y repetir las tareas mostradas (el formato bin es estándar para la implementaci
 <pre><code>## Warning in if (class(X) == &quot;dist&quot;) {: the condition has length &gt; 1 and only the
 ## first element will be used</code></pre>
 <pre><code>## sigma summary: Min. : 0.50676082427291 |1st Qu. : 0.659095357760454 |Median : 0.736635035661307 |Mean : 0.75791167716744 |3rd Qu. : 0.841790649429495 |Max. : 1.11657529954154 |</code></pre>
-<pre><code>## Epoch: Iteration #100 error is: 19.2455766810395</code></pre>
-<pre><code>## Epoch: Iteration #200 error is: 0.84088184930299</code></pre>
-<pre><code>## Epoch: Iteration #300 error is: 0.808986014121995</code></pre>
-<pre><code>## Epoch: Iteration #400 error is: 0.798502126441899</code></pre>
-<pre><code>## Epoch: Iteration #500 error is: 0.79708951735216</code></pre>
-<pre><code>## Epoch: Iteration #600 error is: 0.796517693130686</code></pre>
-<pre><code>## Epoch: Iteration #700 error is: 0.796283474583645</code></pre>
-<pre><code>## Epoch: Iteration #800 error is: 0.796006303282691</code></pre>
-<pre><code>## Epoch: Iteration #900 error is: 0.795958873280288</code></pre>
-<pre><code>## Epoch: Iteration #1000 error is: 0.795805321392407</code></pre>
+<pre><code>## Epoch: Iteration #100 error is: 18.3296164639155</code></pre>
+<pre><code>## Epoch: Iteration #200 error is: 0.815852829422518</code></pre>
+<pre><code>## Epoch: Iteration #300 error is: 0.788899948731646</code></pre>
+<pre><code>## Epoch: Iteration #400 error is: 0.781819762520755</code></pre>
+<pre><code>## Epoch: Iteration #500 error is: 0.779088502452419</code></pre>
+<pre><code>## Epoch: Iteration #600 error is: 0.776989753986781</code></pre>
+<pre><code>## Epoch: Iteration #700 error is: 0.775788422759061</code></pre>
+<pre><code>## Epoch: Iteration #800 error is: 0.775446260297282</code></pre>
+<pre><code>## Epoch: Iteration #900 error is: 0.775057799712371</code></pre>
+<pre><code>## Epoch: Iteration #1000 error is: 0.774937184457759</code></pre>
 <div class="sourceCode" id="cb953"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb953-1"><a href="representación-de-palabras-y-word2vec.html#cb953-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">823</span>)</span>
 <span id="cb953-2"><a href="representación-de-palabras-y-word2vec.html#cb953-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(vs_2) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>)</span>
 <span id="cb953-3"><a href="representación-de-palabras-y-word2vec.html#cb953-3" aria-hidden="true" tabindex="-1"></a>df_vs <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(vs_2, <span class="at">.name_repair =</span> <span class="st">&quot;check_unique&quot;</span>) <span class="sc">%&gt;%</span></span>
@@ -1606,7 +1606,7 @@ y repetir las tareas mostradas (el formato bin es estándar para la implementaci
 <span id="cb953-6"><a href="representación-de-palabras-y-word2vec.html#cb953-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> V1, <span class="at">y =</span> V2, <span class="at">label =</span> palabra)) <span class="sc">+</span></span>
 <span id="cb953-7"><a href="representación-de-palabras-y-word2vec.html#cb953-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">colour =</span> <span class="st">&#39;red&#39;</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
 <span id="cb953-8"><a href="representación-de-palabras-y-word2vec.html#cb953-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(<span class="at">size =</span> <span class="dv">2</span>, <span class="at">force =</span> <span class="fl">0.3</span>, <span class="at">segment.alpha =</span> <span class="fl">0.5</span>) </span></code></pre></div>
-<pre><code>## Warning: ggrepel: 15 unlabeled data points (too many overlaps). Consider
+<pre><code>## Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider
 ## increasing max.overlaps</code></pre>
 <p><img src="09-rep-distribuida-1_files/figure-html/unnamed-chunk-35-1.png" width="672" /></p>
 </div>
