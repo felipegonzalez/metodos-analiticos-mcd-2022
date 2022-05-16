@@ -2,6 +2,7 @@ eq:valor-propio-derecho
 eq:valor-propio-izquierdo
 eq:simprom
 eq:implicita
+eq:similitud
 intro
 frecuentes
 datos-de-canastas
@@ -112,3 +113,6 @@ representación-de-palabras
 modelos-de-word2vec
 esprep
 usos-de-representaciones-distribuidas
+t-sne-y-reducción-de-dimensionalidad
+sne
+minimización-para-sne

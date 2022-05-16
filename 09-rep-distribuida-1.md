@@ -665,7 +665,7 @@ if(!require(wordVectors)){
 ## crayon     (1.4.2  -> 1.5.1) [CRAN]
 ## clipr      (0.7.1  -> 0.8.0) [CRAN]
 ## readr      (2.1.1  -> 2.1.2) [CRAN]
-## * checking for file ‘/tmp/RtmpmvQu3K/remotes4818379c208d/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
+## * checking for file ‘/tmp/RtmpY6lmRo/remotes47ec4164594a/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
 ## * preparing ‘wordVectors’:
 ## * checking DESCRIPTION meta-information ... OK
 ## * cleaning src
@@ -733,7 +733,7 @@ if(!file.exists('./salidas/noticias_w2v.txt')){
 ```
 
 ```
-## Prepping /tmp/RtmpmvQu3K/file481820617d81
+## Prepping /tmp/RtmpY6lmRo/file47ec2d1b5456
 ```
 
 ```
@@ -963,7 +963,7 @@ plural_1
 ##            [,1]       [,2]        [,3]       [,4]        [,5]       [,6]
 ## [1,] -0.2301596 -0.2543171 -0.04071745 -0.2292878 0.004059255 -0.2283908
 ## attr(,".cache")
-## <environment: 0x55debe3cc7f0>
+## <environment: 0x55d2460c4608>
 ```
 
 que es un vector en el espacio de representación de palabras. Ahora sumamos este vector
@@ -1139,43 +1139,43 @@ vs_2 <- tsne(mat_vs[1:num_palabras, ],
 ```
 
 ```
-## Epoch: Iteration #100 error is: 18.3296164639155
+## Epoch: Iteration #100 error is: 19.2455766810395
 ```
 
 ```
-## Epoch: Iteration #200 error is: 0.815852829422518
+## Epoch: Iteration #200 error is: 0.84088184930299
 ```
 
 ```
-## Epoch: Iteration #300 error is: 0.788899948731646
+## Epoch: Iteration #300 error is: 0.808986014121995
 ```
 
 ```
-## Epoch: Iteration #400 error is: 0.781819762520755
+## Epoch: Iteration #400 error is: 0.798502126441899
 ```
 
 ```
-## Epoch: Iteration #500 error is: 0.779088502452419
+## Epoch: Iteration #500 error is: 0.79708951735216
 ```
 
 ```
-## Epoch: Iteration #600 error is: 0.776989753986781
+## Epoch: Iteration #600 error is: 0.796517693130686
 ```
 
 ```
-## Epoch: Iteration #700 error is: 0.775788422759061
+## Epoch: Iteration #700 error is: 0.796283474583645
 ```
 
 ```
-## Epoch: Iteration #800 error is: 0.775446260297282
+## Epoch: Iteration #800 error is: 0.796006303282691
 ```
 
 ```
-## Epoch: Iteration #900 error is: 0.775057799712371
+## Epoch: Iteration #900 error is: 0.795958873280288
 ```
 
 ```
-## Epoch: Iteration #1000 error is: 0.774937184457759
+## Epoch: Iteration #1000 error is: 0.795805321392407
 ```
 
 
@@ -1191,7 +1191,7 @@ ggplot(df_vs %>% sample_n(250),
 ```
 
 ```
-## Warning: ggrepel: 14 unlabeled data points (too many overlaps). Consider
+## Warning: ggrepel: 15 unlabeled data points (too many overlaps). Consider
 ## increasing max.overlaps
 ```
 
