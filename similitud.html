@@ -418,12 +418,13 @@ div.csl-indent {
 <li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#evaluación-de-calidad-de-modelos"><i class="fa fa-check"></i>Evaluación de calidad de modelos</a></li>
 </ul></li>
 <li class="chapter" data-level="10.5" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#usos-de-representaciones-distribuidas"><i class="fa fa-check"></i><b>10.5</b> Usos de representaciones distribuidas</a></li>
-<li class="chapter" data-level="10.6" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#t-sne-y-reducción-de-dimensionalidad"><i class="fa fa-check"></i><b>10.6</b> t-SNE y reducción de dimensionalidad</a>
-<ul>
-<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#ejemplo-34"><i class="fa fa-check"></i>Ejemplo</a></li>
-<li class="chapter" data-level="10.6.1" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#sne"><i class="fa fa-check"></i><b>10.6.1</b> SNE</a></li>
-<li class="chapter" data-level="10.6.2" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#minimización-para-sne"><i class="fa fa-check"></i><b>10.6.2</b> Minimización para SNE</a></li>
 </ul></li>
+<li class="chapter" data-level="11" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html"><i class="fa fa-check"></i><b>11</b> t-SNE y reducción de dimensionalidad</a>
+<ul>
+<li class="chapter" data-level="" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html#ejemplo-34"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="11.0.1" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html#sne"><i class="fa fa-check"></i><b>11.0.1</b> SNE</a></li>
+<li class="chapter" data-level="11.0.2" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html#minimización-para-sne"><i class="fa fa-check"></i><b>11.0.2</b> Minimización para SNE</a></li>
+<li class="chapter" data-level="" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html#ejemplo-35"><i class="fa fa-check"></i>Ejemplo</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
@@ -1024,7 +1025,7 @@ kaggle</a>.</p>
 <span id="cb165-2"><a href="similitud.html#cb165-2" aria-hidden="true" tabindex="-1"></a>num_tweets <span class="ot">&lt;-</span> <span class="dv">100000</span></span>
 <span id="cb165-3"><a href="similitud.html#cb165-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[<span class="dv">1</span><span class="sc">:</span>num_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   2.744   0.033   2.778</code></pre>
+##   3.022   0.065   3.088</code></pre>
 <div class="sourceCode" id="cb167"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb167-1"><a href="similitud.html#cb167-1" aria-hidden="true" tabindex="-1"></a>tejas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> <span class="dv">1</span><span class="sc">:</span>num_tweets, <span class="at">tejas =</span> tejas_doc)</span>
 <span id="cb167-2"><a href="similitud.html#cb167-2" aria-hidden="true" tabindex="-1"></a>hash_f <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="sc">~</span> <span class="fu">generar_hash</span>())</span>
 <span id="cb167-3"><a href="similitud.html#cb167-3" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
@@ -1032,7 +1033,7 @@ kaggle</a>.</p>
 <span id="cb167-5"><a href="similitud.html#cb167-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">firma =</span> <span class="fu">map</span>(tejas, \(lista) <span class="fu">map_int</span>(hash_f, \(h) <span class="fu">min</span>(<span class="fu">h</span>(lista))))) <span class="sc">|&gt;</span> </span>
 <span id="cb167-6"><a href="similitud.html#cb167-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(doc_id, firma)) </span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##  27.038   0.016  27.056</code></pre>
+##  27.881   0.011  27.897</code></pre>
 <div class="sourceCode" id="cb169"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb169-1"><a href="similitud.html#cb169-1" aria-hidden="true" tabindex="-1"></a>docs_firmas</span></code></pre></div>
 <pre><code>## # A tibble: 100,000 × 2
 ##    doc_id firma     
@@ -1107,7 +1108,7 @@ el proceso exactamente como procesamos los datos originales. Por ejemplo:</p>
 ## [6] &quot;Got few daubes all right had to put him in when was painting low Thankfully painting finished another bit later after the&quot;</code></pre>
 <div class="sourceCode" id="cb184"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb184-1"><a href="similitud.html#cb184-1" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(tejas_nuevas_doc <span class="ot">&lt;-</span> <span class="fu">calcular_tejas</span>(tw[nuevos_tweets], <span class="at">k =</span> <span class="dv">5</span>))</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.001   0.000   0.001</code></pre>
+##       0       0       0</code></pre>
 <div class="sourceCode" id="cb186"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb186-1"><a href="similitud.html#cb186-1" aria-hidden="true" tabindex="-1"></a>tejas_nuevas_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">doc_id =</span> nuevos_tweets, <span class="at">tejas =</span> tejas_nuevas_doc)</span>
 <span id="cb186-2"><a href="similitud.html#cb186-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(</span>
 <span id="cb186-3"><a href="similitud.html#cb186-3" aria-hidden="true" tabindex="-1"></a>  docs_nuevas_firmas <span class="ot">&lt;-</span> tejas_nuevas_tbl <span class="sc">|&gt;</span> </span>
@@ -1328,7 +1329,7 @@ normales con desviación estándar relativamente grande</p>
 <span id="cb222-14"><a href="similitud.html#cb222-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">dist =</span> <span class="fu">map2_dbl</span>(vec_1, vec_2, dist_e))</span>
 <span id="cb222-15"><a href="similitud.html#cb222-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>##    user  system elapsed 
-##   0.025   0.000   0.025</code></pre>
+##   0.027   0.000   0.027</code></pre>
 <div class="sourceCode" id="cb224"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb224-1"><a href="similitud.html#cb224-1" aria-hidden="true" tabindex="-1"></a>pares_tbl <span class="sc">|&gt;</span> <span class="fu">head</span>()</span></code></pre></div>
 <pre><code>## # A tibble: 6 × 5
 ##    id_1 vec_1      id_2 vec_2      dist

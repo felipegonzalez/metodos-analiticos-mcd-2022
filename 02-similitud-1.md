@@ -819,7 +819,7 @@ system.time(tejas_doc <- calcular_tejas(tw[1:num_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   2.744   0.033   2.778
+##   3.022   0.065   3.088
 ```
 
 ```r
@@ -833,7 +833,7 @@ system.time(
 
 ```
 ##    user  system elapsed 
-##  27.038   0.016  27.056
+##  27.881   0.011  27.897
 ```
 
 ```r
@@ -967,7 +967,7 @@ system.time(tejas_nuevas_doc <- calcular_tejas(tw[nuevos_tweets], k = 5))
 
 ```
 ##    user  system elapsed 
-##   0.001   0.000   0.001
+##       0       0       0
 ```
 
 ```r
@@ -1325,7 +1325,7 @@ pares_tbl <- datos_tbl |>
 
 ```
 ##    user  system elapsed 
-##   0.025   0.000   0.025
+##   0.027   0.000   0.027
 ```
 
 ```r

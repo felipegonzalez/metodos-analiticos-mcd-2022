@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="modelos-de-lenguaje-y-n-gramas.html"/>
-<link rel="next" href="referencias.html"/>
+<link rel="next" href="t-sne-y-reducción-de-dimensionalidad.html"/>
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -418,12 +418,13 @@ div.csl-indent {
 <li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#evaluación-de-calidad-de-modelos"><i class="fa fa-check"></i>Evaluación de calidad de modelos</a></li>
 </ul></li>
 <li class="chapter" data-level="10.5" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#usos-de-representaciones-distribuidas"><i class="fa fa-check"></i><b>10.5</b> Usos de representaciones distribuidas</a></li>
-<li class="chapter" data-level="10.6" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#t-sne-y-reducción-de-dimensionalidad"><i class="fa fa-check"></i><b>10.6</b> t-SNE y reducción de dimensionalidad</a>
-<ul>
-<li class="chapter" data-level="" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#ejemplo-34"><i class="fa fa-check"></i>Ejemplo</a></li>
-<li class="chapter" data-level="10.6.1" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#sne"><i class="fa fa-check"></i><b>10.6.1</b> SNE</a></li>
-<li class="chapter" data-level="10.6.2" data-path="representación-de-palabras-y-word2vec.html"><a href="representación-de-palabras-y-word2vec.html#minimización-para-sne"><i class="fa fa-check"></i><b>10.6.2</b> Minimización para SNE</a></li>
 </ul></li>
+<li class="chapter" data-level="11" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html"><i class="fa fa-check"></i><b>11</b> t-SNE y reducción de dimensionalidad</a>
+<ul>
+<li class="chapter" data-level="" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html#ejemplo-34"><i class="fa fa-check"></i>Ejemplo</a></li>
+<li class="chapter" data-level="11.0.1" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html#sne"><i class="fa fa-check"></i><b>11.0.1</b> SNE</a></li>
+<li class="chapter" data-level="11.0.2" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html#minimización-para-sne"><i class="fa fa-check"></i><b>11.0.2</b> Minimización para SNE</a></li>
+<li class="chapter" data-level="" data-path="t-sne-y-reducción-de-dimensionalidad.html"><a href="t-sne-y-reducción-de-dimensionalidad.html#ejemplo-35"><i class="fa fa-check"></i>Ejemplo</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="referencias.html"><a href="referencias.html"><i class="fa fa-check"></i>Referencias</a></li>
 <li class="divider"></li>
@@ -882,7 +883,7 @@ de unigramas (se observó empíricamente mejor desempeño cuando escogemos cada 
 ## crayon     (1.4.2  -&gt; 1.5.1) [CRAN]
 ## clipr      (0.7.1  -&gt; 0.8.0) [CRAN]
 ## readr      (2.1.1  -&gt; 2.1.2) [CRAN]
-## * checking for file ‘/tmp/RtmpY6lmRo/remotes47ec4164594a/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
+## * checking for file ‘/tmp/RtmpzKpIeh/remotes494f1125c9ce/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
 ## * preparing ‘wordVectors’:
 ## * checking DESCRIPTION meta-information ... OK
 ## * cleaning src
@@ -930,7 +931,7 @@ de tamaño 20:</p>
 <span id="cb901-6"><a href="representación-de-palabras-y-word2vec.html#cb901-6" aria-hidden="true" tabindex="-1"></a>          <span class="at">destination =</span> <span class="st">&#39;./salidas/noticias_w2v.txt&#39;</span>, <span class="at">bundle_ngrams =</span> <span class="dv">2</span>)</span>
 <span id="cb901-7"><a href="representación-de-palabras-y-word2vec.html#cb901-7" aria-hidden="true" tabindex="-1"></a>  } </span></code></pre></div>
 <pre><code>## Beginning tokenization to text file at ./salidas/noticias_w2v.txt</code></pre>
-<pre><code>## Prepping /tmp/RtmpY6lmRo/file47ec2d1b5456</code></pre>
+<pre><code>## Prepping /tmp/RtmpzKpIeh/file494f3548c1e0</code></pre>
 <pre><code>## Starting training using file ./salidas/noticias_w2v.txt
 ## Words processed: 100K     Vocab size: 73K  
 Words processed: 200K     Vocab size: 124K  
@@ -1497,7 +1498,7 @@ extraemos la diferencia entre gol y goles:</p>
 ##            [,1]       [,2]        [,3]       [,4]        [,5]       [,6]
 ## [1,] -0.2301596 -0.2543171 -0.04071745 -0.2292878 0.004059255 -0.2283908
 ## attr(,&quot;.cache&quot;)
-## &lt;environment: 0x55d2460c4608&gt;</code></pre>
+## &lt;environment: 0x55ceaf54a520&gt;</code></pre>
 <p>que es un vector en el espacio de representación de palabras. Ahora sumamos este vector
 a un sustantivo en singular, y vemos qué palabras están cercas de esta “palabra sintética”:</p>
 <div class="sourceCode" id="cb924"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb924-1"><a href="representación-de-palabras-y-word2vec.html#cb924-1" aria-hidden="true" tabindex="-1"></a>vector <span class="ot">&lt;-</span>  modelo[[<span class="st">&quot;partido&quot;</span>]] <span class="sc">+</span> plural_1</span>
@@ -1631,226 +1632,6 @@ usado para sistemas de recomendación (las palabras son artículos, las canastas
 </ul>
 
 </div>
-<div id="t-sne-y-reducción-de-dimensionalidad" class="section level2" number="10.6">
-<h2><span class="header-section-number">10.6</span> t-SNE y reducción de dimensionalidad</h2>
-<p>Existen otros métodos para reducir dimensionalidad, como MDS (multidimensional
-scaling, que se concentra en preservar distancias entre casos), o
-métodos de <em>embeddings</em> basados en redes neuronales (usar datos en capas
-ocultas con un número relativamente chico de unidades, cuando queremos
-que nuestra representación esté asociada a una variable respuesta).
-Aquí mostramos una de estas técnicas: <a href="http://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf">t-SNE</a>,
-<em>t-Stochastic Neighbor Embedding</em>.</p>
-<p>Como motivación a esta técnica, observemos primero que
-los métodos como componentes principales buscan obtener una representación que mantenga lejos casos que son muy diferentes (pues buscamos aproximar los datos, o encontrar direcciones de máxima varianza). Sin embargo, en algunos
-casos los que más nos puede interesar es una representación que <strong>mantenga
-casos similares cercanos</strong>, aún cuando perdamos información acerca de distancia de casos muy distintos.</p>
-<div id="ejemplo-34" class="section level3 unnumbered">
-<h3>Ejemplo</h3>
-<p>Consideremos los siguientes datos:</p>
-<div class="sourceCode" id="cb955"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb955-1"><a href="representación-de-palabras-y-word2vec.html#cb955-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8823</span>)</span>
-<span id="cb955-2"><a href="representación-de-palabras-y-word2vec.html#cb955-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="sc">-</span><span class="dv">20</span>, <span class="sc">-</span><span class="dv">25</span>, <span class="dv">20</span>, <span class="dv">22</span>)</span>
-<span id="cb955-3"><a href="representación-de-palabras-y-word2vec.html#cb955-3" aria-hidden="true" tabindex="-1"></a>x_2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">50</span>, <span class="dv">1</span>, <span class="fl">0.2</span>), <span class="fu">rnorm</span>(<span class="dv">50</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.1</span>), <span class="dv">5</span>, <span class="sc">-</span><span class="dv">10</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
-<span id="cb955-4"><a href="representación-de-palabras-y-word2vec.html#cb955-4" aria-hidden="true" tabindex="-1"></a>color <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">50</span>), <span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">50</span>), <span class="fu">rep</span>(<span class="dv">3</span>, <span class="dv">4</span>)))</span>
-<span id="cb955-5"><a href="representación-de-palabras-y-word2vec.html#cb955-5" aria-hidden="true" tabindex="-1"></a>dat_ej <span class="ot">&lt;-</span> <span class="fu">data_frame</span>(x_1, x_2, color)</span></code></pre></div>
-<pre><code>## Warning: `data_frame()` was deprecated in tibble 1.1.0.
-## Please use `tibble()` instead.
-## This warning is displayed once every 8 hours.
-## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
-<div class="sourceCode" id="cb957"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb957-1"><a href="representación-de-palabras-y-word2vec.html#cb957-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_ej, <span class="fu">aes</span>(<span class="at">x =</span> x_1, <span class="at">y =</span> x_2, <span class="at">colour =</span> color)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-1-1.png" width="480" />
-Notamos que la primera dimensión de svd va en dirección del eje 1,
-donde hay más dispersión en los datos alrededor del origen.</p>
-<div class="sourceCode" id="cb958"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb958-1"><a href="representación-de-palabras-y-word2vec.html#cb958-1" aria-hidden="true" tabindex="-1"></a><span class="fu">svd</span>(dat_ej <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>color)) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">&quot;v&quot;</span>)</span></code></pre></div>
-<pre><code>##             [,1]        [,2]
-## [1,] -0.99595816  0.08981844
-## [2,] -0.08981844 -0.99595816</code></pre>
-<p>Los datos proyectados, sin embargo, ocultan la estructura de grupos que hay
-en los puntos cercanos al origen, pues la proyección es</p>
-<div class="sourceCode" id="cb960"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb960-1"><a href="representación-de-palabras-y-word2vec.html#cb960-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(<span class="fu">svd</span>(dat_ej[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])<span class="sc">$</span>u[,<span class="dv">1</span>], <span class="at">fill =</span> dat_ej<span class="sc">$</span>color) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&#39;u&#39;</span>)</span></code></pre></div>
-<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-3-1.png" width="384" /></p>
-<p>Aunque es posible considerar las siguientes aproximaciones de la svd, en un problema
-de dimensión alta esto puede querer decir que nos costará más trabajo encontrar la estructura de casos similares usando estas técnicas lineales.</p>
-<p>En t-SNE construimos una medida de similitud entre puntos que busca concentrarse en puntos similares. Por ejemplo, la estructura de clusters
-de estos datos podemos recuperarla en una dimensión:</p>
-<div class="sourceCode" id="cb962"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb962-1"><a href="representación-de-palabras-y-word2vec.html#cb962-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;Rtsne&quot;</span>)</span>
-<span id="cb962-2"><a href="representación-de-palabras-y-word2vec.html#cb962-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rtsne)</span>
-<span id="cb962-3"><a href="representación-de-palabras-y-word2vec.html#cb962-3" aria-hidden="true" tabindex="-1"></a>sne_ejemplo <span class="ot">&lt;-</span> <span class="fu">Rtsne</span>(<span class="fu">as.matrix</span>(dat_ej[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]), </span>
-<span id="cb962-4"><a href="representación-de-palabras-y-word2vec.html#cb962-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">dims =</span> <span class="dv">1</span>, <span class="at">perplexity=</span><span class="dv">32</span>, </span>
-<span id="cb962-5"><a href="representación-de-palabras-y-word2vec.html#cb962-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">theta =</span> <span class="dv">0</span>, <span class="at">eta =</span> <span class="dv">50</span>)</span>
-<span id="cb962-6"><a href="representación-de-palabras-y-word2vec.html#cb962-6" aria-hidden="true" tabindex="-1"></a>sne_coords <span class="ot">&lt;-</span> sne_ejemplo<span class="sc">$</span>Y</span>
-<span id="cb962-7"><a href="representación-de-palabras-y-word2vec.html#cb962-7" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sne_coords) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;y_1&quot;</span>)</span>
-<span id="cb962-8"><a href="representación-de-palabras-y-word2vec.html#cb962-8" aria-hidden="true" tabindex="-1"></a>sne_coords <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(sne_coords)</span>
-<span id="cb962-9"><a href="representación-de-palabras-y-word2vec.html#cb962-9" aria-hidden="true" tabindex="-1"></a>sne_coords<span class="sc">$</span>color <span class="ot">&lt;-</span> dat_ej<span class="sc">$</span>color</span>
-<span id="cb962-10"><a href="representación-de-palabras-y-word2vec.html#cb962-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sne_coords, <span class="fu">aes</span>(<span class="at">x =</span> y_1, <span class="at">fill =</span> color)) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
-<span id="cb962-11"><a href="representación-de-palabras-y-word2vec.html#cb962-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&#39;u&#39;</span>)</span></code></pre></div>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-4-1.png" width="384" /></p>
-</div>
-<div id="sne" class="section level3" number="10.6.1">
-<h3><span class="header-section-number">10.6.1</span> SNE</h3>
-<p>t-SNE es una adaptación de SNE (Stochastic Neighbor Embedding). Veamos
-primero las ideas básicas de esta técnica:
-Para controlar las distancias que nos interesa preservar, primero
-introducimos una medida de similitud entre dos casos (renglones)
-<span class="math inline">\(x^{(i)}, x^{(j)}\)</span>:
-<span class="math display" id="eq:similitud">\[\begin{equation}
-p_{j|i} = \frac{1}{P_i}\exp\left(- ||x_j - x_i ||^2 / 2\sigma_i^2 \right)
-\tag{10.1}
-\end{equation}\]</span>
-donde <span class="math inline">\(P_i\)</span> es una constante de normalización tal que <span class="math inline">\(\sum_j {p_{j|i}} = 1\)</span>.
-Por el momento pensemos que la <span class="math inline">\(\sigma_i\)</span> está fija en algún valor arbitrario.
-- Notamos que <span class="math inline">\(p_{j|i}\)</span> toma valores cercanos a 1 cuando
-<span class="math inline">\(x_i\)</span> y <span class="math inline">\(x_j\)</span> están cercanos (su distancia es chica), y rápidamente
-decae a 0 cuando <span class="math inline">\(x_i\)</span> y <span class="math inline">\(x_j\)</span> se empiezan a alejar.
-- Cuando la <span class="math inline">\(\sigma\)</span> es chica, si <span class="math inline">\(x_i\)</span> y <span class="math inline">\(x_j\)</span> están aunque sea un poco
-separados, <span class="math inline">\(p_{j|i}\approx 0\)</span>. Si <span class="math inline">\(\sigma\)</span> es grande, entonces esta
-cantidad decae más lentamente cuando los puntos se alejan
-- Podemos pensar que tenemos una campana gaussiana centrada en <span class="math inline">\(x_i\)</span>, y
-la <span class="math inline">\(p_{j|i}\)</span> está dada por la densidad mostrada arriba evaluada en <span class="math inline">\(x_j\)</span>
-Ahora pensemos que buscamos convertir estos dos puntos a un nuevo
-espacio de dimensión menor. Denotamos por <span class="math inline">\(y_j\)</span> y <span class="math inline">\(y_i\)</span> a los puntos
-correpondientes en el nuevo espacio. Definimos análogamente :
-<span class="math display">\[q_{j|i} = \frac{1}{Q_i}\exp\left(- ||y_j - y_i ||^2  \right)\]</span>
-<strong>¿Cómo encontramos los valores <span class="math inline">\(y_j\)</span>?</strong> La idea es intentar aproximar las similitudes derivadas:
-<span class="math display">\[ p_{j|i} \approx q_{j|i},\]</span>
-Pensemos que <span class="math inline">\(i\)</span> está fija (que corresponden a los puntos <span class="math inline">\(x^{(i)}\)</span> y
-<span class="math inline">\(y^{(i)}\)</span>). Lo que queremos hacer es <strong>aproximar la estructura local</strong> alrededor de <span class="math inline">\(x^{(i)}\)</span> mediante los puntos <span class="math inline">\(y\)</span>. Y esto queremos hacerlo
-para cada caso <span class="math inline">\(i\)</span> en los datos.
-Nótese que estas similitudes son sensibles cuando los
-puntos están relativamente cerca, pero se hacen rápidamente cero cuando
-las distancias son más grandes. Esto permite que, al intentar hacer la
-aproximación, realmente nos concentremos en la estructura local alrededor de cada punto <span class="math inline">\(x^{(i)}\)</span>
-- Nótese que usamos <span class="math inline">\(\sigma=1\)</span> en la definición de las <span class="math inline">\(q_{j|i}\)</span>, pues esto depende de la escala de la nueva representación (que vamos a encontrar).
-- Dependiendo de la <span class="math inline">\(\sigma_i\)</span>, podemos afinar el método para definir qué
-tan local es la estructura que queremos aproximar.</p>
-</div>
-<div id="minimización-para-sne" class="section level3" number="10.6.2">
-<h3><span class="header-section-number">10.6.2</span> Minimización para SNE</h3>
-<p>En SNE, el objetivo a minimizar es la divergencia de
-Kullback-Liebler, que es una especie de
-distancia entre distribuciones de probabilidad. Buscamos
-resolver
-<span class="math display">\[\min_{y^{1}, y^{2}, \ldots, y^{(n)}} \sum_{i,j} p_{j|i} \log \frac{p_{j|i}}{q_{j|i}}\]</span>
-Existen muchas maneras de entender esta cantidad. Por lo pronto,
-notemos que
-- Si <span class="math inline">\(p_{j|i} = q_{j|i}\)</span>, entonces esta cantidad es 0
-(pues el logaritmo de 1 es cero).
-- Para cada <span class="math inline">\(i\)</span>, <span class="math inline">\(\sum_{j} p_{j|i} \log \frac{p_{j|i}}{q_{j|i}}\geq 0\)</span>. Demuestra usando cálculo.
-- Y <strong>más importante</strong>: <span class="math inline">\(p_{j|i} \log \frac{p_{j|i}}{q_{j|i}}\)</span> es muy grande
-cuando obtenemos una <span class="math inline">\(q_{j|i}\)</span> chica para una <span class="math inline">\(p_{j|i}\)</span> grande (representar lejos puntos cercanos), pero no aumenta
-tanto si obtenemos una <span class="math inline">\(q_{j|i}\)</span> grande para una <span class="math inline">\(p_{j|i}\)</span> chica. Puedes
-usar cálculo para convencerte de esto también, por ejemplo, derivando
-con respecto a las <span class="math inline">\(x\)</span> la cantidad <span class="math inline">\(\sum_i p_i \log p_i/x_i -\sum_i x_i\)</span>
-(donde <span class="math inline">\(q_i = x_i/\sum_i x_i\)</span>, <span class="math inline">\(\sum_i x_i\)</span> es la constante de normalización).
-Finalmente, la <strong>divergencia se minimiza usando descenso en gradiente</strong>.
-t-SNE se basa en las mismas ideas, con algunas mejoras (ver <a href="http://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf">paper</a>):
-- Utiliza una
-versión simétrica de la distancia de Kullback-Liebler (que simplifica
-el cálculo del gradiente para obtener un algoritmo más rápido), y utiliza
-una distribución t en el espacio de baja dimensión en lugar de una gaussiana. Esto último mejora el desempeño del algoritmo en dimensiones altas.
-### Ejemplo {-}
-Uno de los ejemplos clásicos es con imágenes de dígitos</p>
-<div class="sourceCode" id="cb963"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb963-1"><a href="representación-de-palabras-y-word2vec.html#cb963-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">288022</span>)</span>
-<span id="cb963-2"><a href="representación-de-palabras-y-word2vec.html#cb963-2" aria-hidden="true" tabindex="-1"></a>zip_train <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;../datos/zip-train.csv&quot;</span>)</span>
-<span id="cb963-3"><a href="representación-de-palabras-y-word2vec.html#cb963-3" aria-hidden="true" tabindex="-1"></a>muestra_dig <span class="ot">&lt;-</span> zip_train <span class="sc">|&gt;</span>  <span class="fu">sample_n</span>(<span class="dv">2500</span>)</span>
-<span id="cb963-4"><a href="representación-de-palabras-y-word2vec.html#cb963-4" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> <span class="fu">Rtsne</span>(muestra_dig[,<span class="dv">2</span><span class="sc">:</span><span class="dv">257</span>], <span class="at">max_iter=</span><span class="dv">2000</span>)</span></code></pre></div>
-<div class="sourceCode" id="cb964"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb964-1"><a href="representación-de-palabras-y-word2vec.html#cb964-1" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> tsne_digitos<span class="sc">$</span>Y</span>
-<span id="cb964-2"><a href="representación-de-palabras-y-word2vec.html#cb964-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tsne_digitos) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>)</span>
-<span id="cb964-3"><a href="representación-de-palabras-y-word2vec.html#cb964-3" aria-hidden="true" tabindex="-1"></a>dat_tsne <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(tsne_digitos)</span>
-<span id="cb964-4"><a href="representación-de-palabras-y-word2vec.html#cb964-4" aria-hidden="true" tabindex="-1"></a>dat_tsne<span class="sc">$</span>digito <span class="ot">&lt;-</span> <span class="fu">as.character</span>(muestra_dig<span class="sc">$</span>X1)</span>
-<span id="cb964-5"><a href="representación-de-palabras-y-word2vec.html#cb964-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_tsne, <span class="fu">aes</span>(<span class="at">x=</span>V1, <span class="at">y=</span>V2, <span class="at">label=</span>digito, <span class="at">colour =</span> digito)) <span class="sc">+</span> <span class="fu">geom_text</span>()</span></code></pre></div>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
-<p><strong>Observación</strong>: algunos dígitos parecen estar cerca de un cluster que
-no les corresponde, podemos checar:</p>
-<div class="sourceCode" id="cb965"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb965-1"><a href="representación-de-palabras-y-word2vec.html#cb965-1" aria-hidden="true" tabindex="-1"></a>dat_tsne <span class="ot">&lt;-</span> <span class="fu">mutate</span>(dat_tsne, <span class="at">id =</span> <span class="fu">row_number</span>())</span>
-<span id="cb965-2"><a href="representación-de-palabras-y-word2vec.html#cb965-2" aria-hidden="true" tabindex="-1"></a>seises_tbl <span class="ot">&lt;-</span> <span class="fu">filter</span>(dat_tsne, </span>
-<span id="cb965-3"><a href="representación-de-palabras-y-word2vec.html#cb965-3" aria-hidden="true" tabindex="-1"></a>        digito <span class="sc">==</span> <span class="dv">6</span> <span class="sc">|</span> digito <span class="sc">==</span> <span class="dv">0</span>, V1 <span class="sc">&lt;</span> <span class="dv">6</span>, V1 <span class="sc">&gt;</span> <span class="dv">0</span>, V2 <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">25</span>)</span>
-<span id="cb965-4"><a href="representación-de-palabras-y-word2vec.html#cb965-4" aria-hidden="true" tabindex="-1"></a>seises_tbl <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(digito))</span></code></pre></div>
-<pre><code>## # A tibble: 46 × 4
-##       V1    V2 digito    id
-##    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;
-##  1 5.50  -22.2 6       1247
-##  2 5.47  -22.8 6       1834
-##  3 4.32  -21.9 0         86
-##  4 0.597 -21.0 0        260
-##  5 2.36  -20.7 0        276
-##  6 2.97  -23.3 0        314
-##  7 2.69  -19.8 0        348
-##  8 1.49  -20.7 0        416
-##  9 3.26  -23.1 0        436
-## 10 4.19  -18.9 0        445
-## # … with 36 more rows</code></pre>
-<div class="sourceCode" id="cb967"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb967-1"><a href="representación-de-palabras-y-word2vec.html#cb967-1" aria-hidden="true" tabindex="-1"></a>graficar_digito <span class="ot">&lt;-</span> <span class="cf">function</span>(indice, muestra_dig){</span>
-<span id="cb967-2"><a href="representación-de-palabras-y-word2vec.html#cb967-2" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(muestra_dig[indice,<span class="dv">2</span><span class="sc">:</span><span class="dv">257</span>]) <span class="sc">|&gt;</span> </span>
-<span id="cb967-3"><a href="representación-de-palabras-y-word2vec.html#cb967-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">matrix</span>(<span class="dv">16</span>,<span class="dv">16</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb967-4"><a href="representación-de-palabras-y-word2vec.html#cb967-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>()</span>
-<span id="cb967-5"><a href="representación-de-palabras-y-word2vec.html#cb967-5" aria-hidden="true" tabindex="-1"></a> <span class="fu">image</span>(mat[,<span class="dv">16</span><span class="sc">:</span><span class="dv">1</span>])</span>
-<span id="cb967-6"><a href="representación-de-palabras-y-word2vec.html#cb967-6" aria-hidden="true" tabindex="-1"></a> mat[,<span class="dv">16</span><span class="sc">:</span><span class="dv">1</span>]</span>
-<span id="cb967-7"><a href="representación-de-palabras-y-word2vec.html#cb967-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb967-8"><a href="representación-de-palabras-y-word2vec.html#cb967-8" aria-hidden="true" tabindex="-1"></a>mat <span class="ot">&lt;-</span> <span class="fu">graficar_digito</span>(<span class="dv">1247</span>, muestra_dig)</span></code></pre></div>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<div class="sourceCode" id="cb968"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb968-1"><a href="representación-de-palabras-y-word2vec.html#cb968-1" aria-hidden="true" tabindex="-1"></a>mat <span class="ot">&lt;-</span> <span class="fu">graficar_digito</span>(<span class="dv">1202</span>, muestra_dig)</span></code></pre></div>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
-<p>Comparemos con componentes principales, que no logra separar muy
-bien los distintos dígitos:</p>
-<div class="sourceCode" id="cb969"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb969-1"><a href="representación-de-palabras-y-word2vec.html#cb969-1" aria-hidden="true" tabindex="-1"></a>comps <span class="ot">&lt;-</span> <span class="fu">princomp</span>(muestra_dig[,<span class="sc">-</span><span class="dv">1</span>])</span>
-<span id="cb969-2"><a href="representación-de-palabras-y-word2vec.html#cb969-2" aria-hidden="true" tabindex="-1"></a>dat_comps_tsne <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(comps<span class="sc">$</span>scores[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
-<span id="cb969-3"><a href="representación-de-palabras-y-word2vec.html#cb969-3" aria-hidden="true" tabindex="-1"></a>dat_comps_tsne<span class="sc">$</span>digito <span class="ot">&lt;-</span> <span class="fu">as.character</span>(muestra_dig<span class="sc">$</span>X1)</span>
-<span id="cb969-4"><a href="representación-de-palabras-y-word2vec.html#cb969-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_comps_tsne, <span class="fu">aes</span>(<span class="at">x=</span>Comp<span class="fl">.1</span>, <span class="at">y=</span>Comp<span class="fl">.2</span>, <span class="at">colour=</span>digito, <span class="at">label=</span>digito)) <span class="sc">+</span> <span class="fu">geom_text</span>()</span></code></pre></div>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-9-1.png" width="672" />
-y vemos, por ejemplo, que la primera componente está separando
-principalmente ceros de unos. La primera dirección principal es:</p>
-<div class="sourceCode" id="cb970"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb970-1"><a href="representación-de-palabras-y-word2vec.html#cb970-1" aria-hidden="true" tabindex="-1"></a><span class="fu">image</span>(<span class="fu">matrix</span>(comps<span class="sc">$</span>loadings[,<span class="dv">1</span>], <span class="dv">16</span>,<span class="dv">16</span>))</span></code></pre></div>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-10-1.png" width="384" />
-### Perplexity</p>
-<p>El único parámetro que resta discutir es <span class="math inline">\(\sigma_i\)</span> en
-<a href="representación-de-palabras-y-word2vec.html#eq:similitud">(10.1)</a>. La primera idea es que distintas regiones
-(vecindades de <span class="math inline">\(x^{(i)}\)</span>) pueden requerir distintas <span class="math inline">\(\sigma_i\)</span>. Este
-valor se escoge de forma que todos los puntos tengan aproximadamente un
-número fijo (aproximado) de vecinos, a través de un valor que se llama
-<em>perplexity</em>. De esta forma, <span class="math inline">\(\sigma_i\)</span> en regiones donde hay densidad
-alta de datos es más chica, y <span class="math inline">\(sigma_i\)</span> en regiones donde hay menos densidad
-es más grande (para mantener el número de vecinos aproximadamente similar).
-Antes de ver más detalles, veamos el ejemplo de los dígitos cambiando
-el valor de perplejidad:</p>
-<div class="sourceCode" id="cb971"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb971-1"><a href="representación-de-palabras-y-word2vec.html#cb971-1" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> <span class="fu">Rtsne</span>(muestra_dig[,<span class="dv">2</span><span class="sc">:</span><span class="dv">257</span>], <span class="at">perplexity =</span> <span class="dv">3</span>,</span>
-<span id="cb971-2"><a href="representación-de-palabras-y-word2vec.html#cb971-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">max_iter=</span><span class="dv">2000</span>)</span>
-<span id="cb971-3"><a href="representación-de-palabras-y-word2vec.html#cb971-3" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> tsne_digitos<span class="sc">$</span>Y</span>
-<span id="cb971-4"><a href="representación-de-palabras-y-word2vec.html#cb971-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tsne_digitos) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>)</span>
-<span id="cb971-5"><a href="representación-de-palabras-y-word2vec.html#cb971-5" aria-hidden="true" tabindex="-1"></a>dat_tsne <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(tsne_digitos)</span>
-<span id="cb971-6"><a href="representación-de-palabras-y-word2vec.html#cb971-6" aria-hidden="true" tabindex="-1"></a>dat_tsne<span class="sc">$</span>digito <span class="ot">&lt;-</span> <span class="fu">as.character</span>(muestra_dig<span class="sc">$</span>X1)</span>
-<span id="cb971-7"><a href="representación-de-palabras-y-word2vec.html#cb971-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_tsne, <span class="fu">aes</span>(<span class="at">x=</span>V1, <span class="at">y=</span>V2, <span class="at">colour=</span>digito, <span class="at">label=</span>digito)) <span class="sc">+</span> <span class="fu">geom_text</span>()</span></code></pre></div>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
-<div class="sourceCode" id="cb972"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb972-1"><a href="representación-de-palabras-y-word2vec.html#cb972-1" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> <span class="fu">Rtsne</span>(muestra_dig[,<span class="dv">2</span><span class="sc">:</span><span class="dv">257</span>], <span class="at">perplexity =</span> <span class="dv">100</span>,</span>
-<span id="cb972-2"><a href="representación-de-palabras-y-word2vec.html#cb972-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">max_iter=</span><span class="dv">2000</span>)</span>
-<span id="cb972-3"><a href="representación-de-palabras-y-word2vec.html#cb972-3" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> tsne_digitos<span class="sc">$</span>Y</span>
-<span id="cb972-4"><a href="representación-de-palabras-y-word2vec.html#cb972-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tsne_digitos) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>)</span>
-<span id="cb972-5"><a href="representación-de-palabras-y-word2vec.html#cb972-5" aria-hidden="true" tabindex="-1"></a>dat_tsne <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(tsne_digitos)</span>
-<span id="cb972-6"><a href="representación-de-palabras-y-word2vec.html#cb972-6" aria-hidden="true" tabindex="-1"></a>dat_tsne<span class="sc">$</span>digito <span class="ot">&lt;-</span> <span class="fu">as.character</span>(muestra_dig<span class="sc">$</span>X1)</span>
-<span id="cb972-7"><a href="representación-de-palabras-y-word2vec.html#cb972-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_tsne, <span class="fu">aes</span>(<span class="at">x=</span>V1, <span class="at">y=</span>V2, <span class="at">colour=</span>digito, <span class="at">label=</span>digito)) <span class="sc">+</span> <span class="fu">geom_text</span>()</span></code></pre></div>
-<p><img src="10-tsne_files/figure-html/unnamed-chunk-12-1.png" width="672" />
-<strong>Notas</strong> (opcional):
-si <span class="math inline">\(P\)</span> es el valor de perplejidad escogido, el valor de <span class="math inline">\(\sigma_i\)</span>
-escoge de manera que las <span class="math inline">\(p_{j|i}\)</span> obtenidas satisfagan
-<span class="math inline">\(2^{-\sum_{j} p_{j|i}\log_2 p_{j|i}}\approx P\)</span>. El valor de la izquierda en
-esta ecuación se puede interpretar como una medida suave del número
-de puntos donde se concentra la masa de probabilidad. Por ejemplo:</p>
-<div class="sourceCode" id="cb973"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb973-1"><a href="representación-de-palabras-y-word2vec.html#cb973-1" aria-hidden="true" tabindex="-1"></a>perp <span class="ot">&lt;-</span> <span class="cf">function</span>(x){<span class="dv">2</span><span class="sc">^</span><span class="fu">sum</span>(<span class="sc">-</span>x<span class="sc">*</span><span class="fu">log2</span>(x))}</span>
-<span id="cb973-2"><a href="representación-de-palabras-y-word2vec.html#cb973-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.02</span>, <span class="fl">0.95</span>)</span>
-<span id="cb973-3"><a href="representación-de-palabras-y-word2vec.html#cb973-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(p)</span></code></pre></div>
-<pre><code>## [1] 1</code></pre>
-<div class="sourceCode" id="cb975"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb975-1"><a href="representación-de-palabras-y-word2vec.html#cb975-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perp</span>(p)</span></code></pre></div>
-<pre><code>## [1] 1.303593</code></pre>
-<div class="sourceCode" id="cb977"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb977-1"><a href="representación-de-palabras-y-word2vec.html#cb977-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.18</span>, <span class="fl">0.01</span>, <span class="fl">0.4</span>, <span class="fl">0.4</span> )</span>
-<span id="cb977-2"><a href="representación-de-palabras-y-word2vec.html#cb977-2" aria-hidden="true" tabindex="-1"></a><span class="fu">perp</span>(p)</span></code></pre></div>
-<pre><code>## [1] 3.107441</code></pre>
-<div class="sourceCode" id="cb979"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb979-1"><a href="representación-de-palabras-y-word2vec.html#cb979-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>,<span class="dv">20</span>), <span class="fu">rep</span>(<span class="dv">20</span>,<span class="dv">20</span>))</span>
-<span id="cb979-2"><a href="representación-de-palabras-y-word2vec.html#cb979-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)</span>
-<span id="cb979-3"><a href="representación-de-palabras-y-word2vec.html#cb979-3" aria-hidden="true" tabindex="-1"></a><span class="fu">perp</span>(p)</span></code></pre></div>
-<pre><code>## [1] 24.21994</code></pre>
-
-</div>
-</div>
 </div>
 <h3>Referencias</h3>
 <div id="refs" class="references csl-bib-body hanging-indent">
@@ -1870,7 +1651,7 @@ Mikolov, Tomas, Kai Chen, Greg Corrado, and Jeffrey Dean. 2013. <span>“Efficie
         </div>
       </div>
 <a href="modelos-de-lenguaje-y-n-gramas.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="t-sne-y-reducción-de-dimensionalidad.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

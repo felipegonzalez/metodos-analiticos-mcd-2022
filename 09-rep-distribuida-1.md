@@ -665,7 +665,7 @@ if(!require(wordVectors)){
 ## crayon     (1.4.2  -> 1.5.1) [CRAN]
 ## clipr      (0.7.1  -> 0.8.0) [CRAN]
 ## readr      (2.1.1  -> 2.1.2) [CRAN]
-## * checking for file ‘/tmp/RtmpY6lmRo/remotes47ec4164594a/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
+## * checking for file ‘/tmp/RtmpzKpIeh/remotes494f1125c9ce/bmschmidt-wordVectors-7f1914c/DESCRIPTION’ ... OK
 ## * preparing ‘wordVectors’:
 ## * checking DESCRIPTION meta-information ... OK
 ## * cleaning src
@@ -733,7 +733,7 @@ if(!file.exists('./salidas/noticias_w2v.txt')){
 ```
 
 ```
-## Prepping /tmp/RtmpY6lmRo/file47ec2d1b5456
+## Prepping /tmp/RtmpzKpIeh/file494f3548c1e0
 ```
 
 ```
@@ -963,7 +963,7 @@ plural_1
 ##            [,1]       [,2]        [,3]       [,4]        [,5]       [,6]
 ## [1,] -0.2301596 -0.2543171 -0.04071745 -0.2292878 0.004059255 -0.2283908
 ## attr(,".cache")
-## <environment: 0x55d2460c4608>
+## <environment: 0x55ceaf54a520>
 ```
 
 que es un vector en el espacio de representación de palabras. Ahora sumamos este vector

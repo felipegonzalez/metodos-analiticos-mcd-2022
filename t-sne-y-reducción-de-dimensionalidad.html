@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 Detección de comunidades | Métodos analíticos, ITAM 2022</title>
+  <title>11 t-SNE y reducción de dimensionalidad | Métodos analíticos, ITAM 2022</title>
   <meta name="description" content="Notas para métodos analíticos 2022" />
   <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="8 Detección de comunidades | Métodos analíticos, ITAM 2022" />
+  <meta property="og:title" content="11 t-SNE y reducción de dimensionalidad | Métodos analíticos, ITAM 2022" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   <meta name="github-repo" content="felipexgonzalez/metodos-analiticos-mcd-2022" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 Detección de comunidades | Métodos analíticos, ITAM 2022" />
+  <meta name="twitter:title" content="11 t-SNE y reducción de dimensionalidad | Métodos analíticos, ITAM 2022" />
   
   <meta name="twitter:description" content="Notas para métodos analíticos 2022" />
   
@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="pagerank-y-análisis-de-redes.html"/>
-<link rel="next" href="modelos-de-lenguaje-y-n-gramas.html"/>
+<link rel="prev" href="representación-de-palabras-y-word2vec.html"/>
+<link rel="next" href="referencias.html"/>
 <script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
@@ -447,319 +447,232 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="detección-de-comunidades" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> Detección de comunidades</h1>
-<p>En esta parte consideramos algunos métodos de detección de comunidades, como una
-introducción a este tema amplio e importante.</p>
-<p>Las redes sociales y otras comunmente tienen subgrupos de vértices o nodos
-tales que hay una gran cantidad de conexiones entre ellos y menos conexiones
-fuera de ese grupo, o <em>comunidades</em> que es posible identificar. Existen distintas
-definiciones y algoritmos útiles para hacer análisis de comunidades: algunas particionan
-los nodos en clusters (como algoritmos de clustering), algunos otros permiten
-identificar comunidades traslapadas.</p>
-<p>Por ejemplo: en nuestra red personal de facebook o algo similar existen comunidades como
-familia, amigos de la secundaria o preparatoria, compañeros de trabajo, etc, y quizá
-algunos conocidos que no pertenecen a ninguna de estas comunidades. Naturalmente pertenecemos
-a todos estos grupos. Por otro lado, quizá si analizamos la red de retweets de un tema particular,
-podemos encontrar comunidades separadas (muchos retweets entre ellos, pocos retweets fuera del grupo)
-y cada persona se puede clasificar como de un “equipo.”</p>
-<div id="ejemplo-red-de-club-de-karate" class="section level4 unnumbered">
-<h4>Ejemplo: red de club de karate</h4>
-<p>De la descripción en <em>igraphdata</em> de estos datos:</p>
-<p>Social network between members of a university karate club, led by president John A. and karate instructor Mr. Hi (pseudonyms). The edge weights are the number of common activities the club members took part of. Zachary studied conflict and fission in this network, as the karate club was split into two separate clubs, after long disputes between two factions of the club, one led by <strong>John A.</strong>, the other by <strong>Mr. Hi</strong>.</p>
-<p>Hacemos cálculos y graficamos:</p>
-<div class="sourceCode" id="cb742"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb742-1"><a href="detección-de-comunidades.html#cb742-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb742-2"><a href="detección-de-comunidades.html#cb742-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidygraph)</span>
-<span id="cb742-3"><a href="detección-de-comunidades.html#cb742-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggraph)</span>
-<span id="cb742-4"><a href="detección-de-comunidades.html#cb742-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraphdata)</span>
-<span id="cb742-5"><a href="detección-de-comunidades.html#cb742-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(karate)</span>
-<span id="cb742-6"><a href="detección-de-comunidades.html#cb742-6" aria-hidden="true" tabindex="-1"></a>karate_red <span class="ot">&lt;-</span> karate <span class="sc">|&gt;</span> <span class="fu">as_tbl_graph</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb742-7"><a href="detección-de-comunidades.html#cb742-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(nodes) <span class="sc">|&gt;</span> </span>
-<span id="cb742-8"><a href="detección-de-comunidades.html#cb742-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grado =</span> <span class="fu">centrality_eigen</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb742-9"><a href="detección-de-comunidades.html#cb742-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grupo =</span> <span class="fu">group_fast_greedy</span>(<span class="at">weights =</span> weight)) <span class="sc">|&gt;</span> </span>
-<span id="cb742-10"><a href="detección-de-comunidades.html#cb742-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grupo =</span> <span class="fu">as.factor</span>(grupo)) <span class="sc">|&gt;</span> </span>
-<span id="cb742-11"><a href="detección-de-comunidades.html#cb742-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">name =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(name, <span class="st">&quot;Actor&quot;</span>), <span class="fu">str_sub</span>(name, <span class="dv">7</span>, <span class="dv">10</span>), name))</span></code></pre></div>
-<div class="sourceCode" id="cb743"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb743-1"><a href="detección-de-comunidades.html#cb743-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggraph</span>(karate_red, <span class="at">layout =</span> <span class="st">&#39;fr&#39;</span>) <span class="sc">+</span></span>
-<span id="cb743-2"><a href="detección-de-comunidades.html#cb743-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">alpha =</span> weight)) <span class="sc">+</span></span>
-<span id="cb743-3"><a href="detección-de-comunidades.html#cb743-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">size =</span> grado, <span class="at">colour =</span> grupo)) <span class="sc">+</span></span>
-<span id="cb743-4"><a href="detección-de-comunidades.html#cb743-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> name), <span class="at">repel =</span> <span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb743-5"><a href="detección-de-comunidades.html#cb743-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">&quot;sans&quot;</span>)</span></code></pre></div>
-<p><img src="07-comunidades_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<p>Este método identifica dos comunidades grandes, la de Mr Hi, la de John A, y otra más chica
-que está conectada solamente a la de Mr Hi. Nótese que las ligas entre elementos de la comunidad
-son densas dentro de la comunidad y menos densas hacia afuera, aunque hay unos individuos que están
-en las fronteras (como 3 y 9, por ejemplo).</p>
-<p>¿Cómo encontrar estos módulos?</p>
+<div id="t-sne-y-reducción-de-dimensionalidad" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> t-SNE y reducción de dimensionalidad</h1>
+<p>Existen otros métodos para reducir dimensionalidad, como MDS (multidimensional
+scaling, que se concentra en preservar distancias entre casos), o
+métodos de <em>embeddings</em> basados en redes neuronales (usar datos en capas
+ocultas con un número relativamente chico de unidades, cuando queremos
+que nuestra representación esté asociada a una variable respuesta).
+Aquí mostramos una de estas técnicas: <a href="http://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf">t-SNE</a>,
+<em>t-Stochastic Neighbor Embedding</em>.</p>
+<p>Como motivación a esta técnica, observemos primero que
+los métodos como componentes principales buscan obtener una representación que mantenga lejos casos que son muy diferentes (pues buscamos aproximar los datos, o encontrar direcciones de máxima varianza). Sin embargo, en algunos
+casos los que más nos puede interesar es una representación que <strong>mantenga
+casos similares cercanos</strong>, aún cuando perdamos información acerca de distancia de casos muy distintos.</p>
+<div id="ejemplo-34" class="section level3 unnumbered">
+<h3>Ejemplo</h3>
+<p>Consideremos los siguientes datos:</p>
+<div class="sourceCode" id="cb955"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb955-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb955-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8823</span>)</span>
+<span id="cb955-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb955-2" aria-hidden="true" tabindex="-1"></a>x_1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">100</span>, <span class="dv">0</span>, <span class="fl">0.5</span>), <span class="sc">-</span><span class="dv">20</span>, <span class="sc">-</span><span class="dv">25</span>, <span class="dv">20</span>, <span class="dv">22</span>)</span>
+<span id="cb955-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb955-3" aria-hidden="true" tabindex="-1"></a>x_2 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">50</span>, <span class="dv">1</span>, <span class="fl">0.2</span>), <span class="fu">rnorm</span>(<span class="dv">50</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="fl">0.1</span>), <span class="dv">5</span>, <span class="sc">-</span><span class="dv">10</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb955-4"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb955-4" aria-hidden="true" tabindex="-1"></a>color <span class="ot">&lt;-</span> <span class="fu">as.character</span>(<span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">50</span>), <span class="fu">rep</span>(<span class="dv">2</span>, <span class="dv">50</span>), <span class="fu">rep</span>(<span class="dv">3</span>, <span class="dv">4</span>)))</span>
+<span id="cb955-5"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb955-5" aria-hidden="true" tabindex="-1"></a>dat_ej <span class="ot">&lt;-</span> <span class="fu">data_frame</span>(x_1, x_2, color)</span></code></pre></div>
+<pre><code>## Warning: `data_frame()` was deprecated in tibble 1.1.0.
+## Please use `tibble()` instead.
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<div class="sourceCode" id="cb957"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb957-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb957-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_ej, <span class="fu">aes</span>(<span class="at">x =</span> x_1, <span class="at">y =</span> x_2, <span class="at">colour =</span> color)) <span class="sc">+</span> <span class="fu">geom_point</span>()</span></code></pre></div>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-1-1.png" width="480" />
+Notamos que la primera dimensión de svd va en dirección del eje 1,
+donde hay más dispersión en los datos alrededor del origen.</p>
+<div class="sourceCode" id="cb958"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb958-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb958-1" aria-hidden="true" tabindex="-1"></a><span class="fu">svd</span>(dat_ej <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>color)) <span class="sc">|&gt;</span> <span class="fu">pluck</span>(<span class="st">&quot;v&quot;</span>)</span></code></pre></div>
+<pre><code>##             [,1]        [,2]
+## [1,] -0.99595816  0.08981844
+## [2,] -0.08981844 -0.99595816</code></pre>
+<p>Los datos proyectados, sin embargo, ocultan la estructura de grupos que hay
+en los puntos cercanos al origen, pues la proyección es</p>
+<div class="sourceCode" id="cb960"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb960-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb960-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(<span class="fu">svd</span>(dat_ej[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])<span class="sc">$</span>u[,<span class="dv">1</span>], <span class="at">fill =</span> dat_ej<span class="sc">$</span>color) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">&#39;u&#39;</span>)</span></code></pre></div>
+<pre><code>## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.</code></pre>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-3-1.png" width="384" /></p>
+<p>Aunque es posible considerar las siguientes aproximaciones de la svd, en un problema
+de dimensión alta esto puede querer decir que nos costará más trabajo encontrar la estructura de casos similares usando estas técnicas lineales.</p>
+<p>En t-SNE construimos una medida de similitud entre puntos que busca concentrarse en puntos similares. Por ejemplo, la estructura de clusters
+de estos datos podemos recuperarla en una dimensión:</p>
+<div class="sourceCode" id="cb962"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb962-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;Rtsne&quot;</span>)</span>
+<span id="cb962-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Rtsne)</span>
+<span id="cb962-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-3" aria-hidden="true" tabindex="-1"></a>sne_ejemplo <span class="ot">&lt;-</span> <span class="fu">Rtsne</span>(<span class="fu">as.matrix</span>(dat_ej[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]), </span>
+<span id="cb962-4"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">dims =</span> <span class="dv">1</span>, <span class="at">perplexity=</span><span class="dv">32</span>, </span>
+<span id="cb962-5"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">theta =</span> <span class="dv">0</span>, <span class="at">eta =</span> <span class="dv">50</span>)</span>
+<span id="cb962-6"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-6" aria-hidden="true" tabindex="-1"></a>sne_coords <span class="ot">&lt;-</span> sne_ejemplo<span class="sc">$</span>Y</span>
+<span id="cb962-7"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-7" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(sne_coords) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;y_1&quot;</span>)</span>
+<span id="cb962-8"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-8" aria-hidden="true" tabindex="-1"></a>sne_coords <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(sne_coords)</span>
+<span id="cb962-9"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-9" aria-hidden="true" tabindex="-1"></a>sne_coords<span class="sc">$</span>color <span class="ot">&lt;-</span> dat_ej<span class="sc">$</span>color</span>
+<span id="cb962-10"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sne_coords, <span class="fu">aes</span>(<span class="at">x =</span> y_1, <span class="at">fill =</span> color)) <span class="sc">+</span> <span class="fu">geom_histogram</span>() <span class="sc">+</span></span>
+<span id="cb962-11"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb962-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&#39;u&#39;</span>)</span></code></pre></div>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-4-1.png" width="384" /></p>
 </div>
-<div id="modularidad" class="section level2" number="8.1">
-<h2><span class="header-section-number">8.1</span> Modularidad</h2>
-<p>El concepto de modularidad es uno básico para intentar cuantificar qué tan buena o “cohesiva” es una
-separación de nodos en grupos.</p>
-
-<div class="comentario">
-La <strong>modularidad</strong> mide que tan fuertemente puede dividirse una red en módulos (grupos, clusters o comunidades disjuntas). Una división en módulos es fuerte cuando los nodos de cada módulo están bien conectados entre ellos, y menos conectados a nodos fuera de su módulo.
-</div>
-<p>Para definir esta cantidad, comenzamos con la matriz de adyacencia <span class="math inline">\(A\)</span> de una
-gráfica <strong>no dirigida</strong>, y una agrupación de vértices en grupos.</p>
-<p>Para empezar, notamos que el número total de aristas en la gráfica es</p>
-<p><span class="math display">\[m = \frac{1}{2}\sum_{u,v} A_{u,v},\]</span></p>
-<p>donde dividimos entre dos para no contar doble las aristas no dirigidas.</p>
-<p>Ahora supongamos que <span class="math inline">\(g(v)\)</span> es un grupo al que pertenece el vértice <span class="math inline">\(v\)</span>. Calculamos <strong>el número de aristas
-de aristas conectan elementos del mismo grupo</strong>:</p>
-<p><span class="math display">\[\frac{1}{2}\sum_{u,v} A_{u, v} I(g(u), g(v))\]</span></p>
-<p>nótese que un elemento de esta suma es igual a 0 o 1, y solo es igual a 1 cuando <span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span> están
-conectados y <span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span> pertenecen al mismo grupo (<span class="math inline">\(I(g,h)\)</span> es la función indicadora de identidad, es decir
-vale 1 si <span class="math inline">\(g=h\)</span> y 0 en otro caso).</p>
-<p>Entonces la fracción de aristas del total de aristas que conecta vértices dentro del mismo grupo es</p>
-<p><span class="math display">\[\frac{\sum_{u,v} A_{u, v} I(g(u), g(v))}{\sum_{u,v} A_{u, v}} = \frac{1}{2m}\sum_{u,v} A_{u, v} I(g(u), g(v))\]</span></p>
-<p>donde <span class="math inline">\(m\)</span> es el número de aristas. Esta cantidad va a ser grande para particiones “cohesivas,” que agrupan vértices en comunidades densas, y chica en otro caso. En general, esta formulación también aplica
-a <em>multigrafos</em>, en cuyo caso puede <span class="math inline">\(A_{u,v}\)</span> cuenta el número de aristas entre los nodos <span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span>, y no
-solo vale 1 o 0.</p>
-<div id="ejemplo-25" class="section level4 unnumbered">
-<h4>Ejemplo</h4>
-<div class="sourceCode" id="cb744"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb744-1"><a href="detección-de-comunidades.html#cb744-1" aria-hidden="true" tabindex="-1"></a><span class="co">#funcion para graficar</span></span>
-<span id="cb744-2"><a href="detección-de-comunidades.html#cb744-2" aria-hidden="true" tabindex="-1"></a>graficar_red_nd <span class="ot">&lt;-</span> <span class="cf">function</span>(dat_g, <span class="at">layout =</span> <span class="st">&quot;nicely&quot;</span>, grupo, <span class="at">nombres =</span> <span class="cn">TRUE</span>){</span>
-<span id="cb744-3"><a href="detección-de-comunidades.html#cb744-3" aria-hidden="true" tabindex="-1"></a>  gg <span class="ot">&lt;-</span> <span class="fu">ggraph</span>(dat_g <span class="sc">|&gt;</span> <span class="fu">activate</span>(nodes), <span class="at">layout =</span> layout) <span class="sc">+</span></span>
-<span id="cb744-4"><a href="detección-de-comunidades.html#cb744-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_edge_link</span>(<span class="at">alpha=</span><span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb744-5"><a href="detección-de-comunidades.html#cb744-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> {{ grupo }}), <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb744-6"><a href="detección-de-comunidades.html#cb744-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">&quot;sans&quot;</span>)</span>
-<span id="cb744-7"><a href="detección-de-comunidades.html#cb744-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(nombres){</span>
-<span id="cb744-8"><a href="detección-de-comunidades.html#cb744-8" aria-hidden="true" tabindex="-1"></a>    gg <span class="ot">&lt;-</span> gg <span class="sc">+</span> <span class="fu">geom_node_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> nombre), <span class="at">size=</span><span class="dv">5</span>, <span class="at">repel =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb744-9"><a href="detección-de-comunidades.html#cb744-9" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb744-10"><a href="detección-de-comunidades.html#cb744-10" aria-hidden="true" tabindex="-1"></a>  gg</span>
-<span id="cb744-11"><a href="detección-de-comunidades.html#cb744-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb744-12"><a href="detección-de-comunidades.html#cb744-12" aria-hidden="true" tabindex="-1"></a>aristas <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">from =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">11</span>, <span class="dv">11</span>),</span>
-<span id="cb744-13"><a href="detección-de-comunidades.html#cb744-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">to =</span> <span class="fu">c</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">5</span>, <span class="dv">7</span>))</span>
-<span id="cb744-14"><a href="detección-de-comunidades.html#cb744-14" aria-hidden="true" tabindex="-1"></a>grupos <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&#39;a&#39;</span>, <span class="dv">3</span>), <span class="fu">rep</span>(<span class="st">&#39;b&#39;</span>, <span class="dv">3</span>), <span class="fu">rep</span>(<span class="st">&#39;c&#39;</span>, <span class="dv">5</span>))</span>
-<span id="cb744-15"><a href="detección-de-comunidades.html#cb744-15" aria-hidden="true" tabindex="-1"></a>ejemplo_mod_alta <span class="ot">&lt;-</span> <span class="fu">tbl_graph</span>(</span>
-<span id="cb744-16"><a href="detección-de-comunidades.html#cb744-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">nodes =</span> <span class="fu">tibble</span>(<span class="at">nombre =</span> <span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">11</span>, <span class="dv">1</span>), </span>
-<span id="cb744-17"><a href="detección-de-comunidades.html#cb744-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">grupo =</span> grupos), </span>
-<span id="cb744-18"><a href="detección-de-comunidades.html#cb744-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">edges =</span> aristas, <span class="at">directed =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb744-19"><a href="detección-de-comunidades.html#cb744-19" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">89</span>)</span>
-<span id="cb744-20"><a href="detección-de-comunidades.html#cb744-20" aria-hidden="true" tabindex="-1"></a><span class="fu">graficar_red_nd</span>(ejemplo_mod_alta, <span class="at">layout =</span> <span class="st">&quot;gem&quot;</span>, <span class="at">grupo =</span> grupo)</span></code></pre></div>
-<p><img src="07-comunidades_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Cuya matriz de adyacencia <span class="math inline">\(A\)</span> es</p>
-<div class="sourceCode" id="cb745"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb745-1"><a href="detección-de-comunidades.html#cb745-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">get.adjacency</span>(ejemplo_mod_alta)</span>
-<span id="cb745-2"><a href="detección-de-comunidades.html#cb745-2" aria-hidden="true" tabindex="-1"></a>A</span></code></pre></div>
-<pre><code>## 11 x 11 sparse Matrix of class &quot;dgCMatrix&quot;
-##                            
-##  [1,] . 1 1 . . . . . . 1 .
-##  [2,] 1 . 1 . . . . . . . .
-##  [3,] 1 1 . . . . . . . . .
-##  [4,] . . . . 1 1 . . . . .
-##  [5,] . . . 1 . 1 . . . . 1
-##  [6,] . . . 1 1 . . . . . .
-##  [7,] . . . . . . . 1 1 1 1
-##  [8,] . . . . . . 1 . 1 1 .
-##  [9,] . . . . . . 1 1 . 1 .
-## [10,] 1 . . . . . 1 1 1 . .
-## [11,] . . . . 1 . 1 . . . .</code></pre>
-<p>Nótense los bloques que se puede formar en la matriz de adyacencia (que es notable
-debido a cómo etiquetamos los nodos). Estas son las estructuras propias de una partición
-con modularidad alta.</p>
-<p>Podemos calcular la fracción de aristas que conectan vértices del mismo grupo como sigue:</p>
-<div class="sourceCode" id="cb747"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb747-1"><a href="detección-de-comunidades.html#cb747-1" aria-hidden="true" tabindex="-1"></a>g_a <span class="ot">&lt;-</span> A[grupos <span class="sc">==</span> <span class="st">&quot;a&quot;</span>, grupos <span class="sc">==</span> <span class="st">&quot;a&quot;</span>]</span>
-<span id="cb747-2"><a href="detección-de-comunidades.html#cb747-2" aria-hidden="true" tabindex="-1"></a>g_a</span></code></pre></div>
-<pre><code>## 3 x 3 sparse Matrix of class &quot;dgCMatrix&quot;
-##           
-## [1,] . 1 1
-## [2,] 1 . 1
-## [3,] 1 1 .</code></pre>
-<div class="sourceCode" id="cb749"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb749-1"><a href="detección-de-comunidades.html#cb749-1" aria-hidden="true" tabindex="-1"></a>g_b <span class="ot">&lt;-</span> A[grupos <span class="sc">==</span> <span class="st">&quot;b&quot;</span>, grupos <span class="sc">==</span> <span class="st">&quot;b&quot;</span>]</span>
-<span id="cb749-2"><a href="detección-de-comunidades.html#cb749-2" aria-hidden="true" tabindex="-1"></a>g_c <span class="ot">&lt;-</span> A[grupos <span class="sc">==</span> <span class="st">&quot;c&quot;</span>, grupos <span class="sc">==</span> <span class="st">&quot;c&quot;</span>]</span>
-<span id="cb749-3"><a href="detección-de-comunidades.html#cb749-3" aria-hidden="true" tabindex="-1"></a>frac_1 <span class="ot">&lt;-</span> (<span class="fu">sum</span>(g_a) <span class="sc">+</span> <span class="fu">sum</span>(g_b) <span class="sc">+</span> <span class="fu">sum</span>(g_c)) <span class="sc">/</span> <span class="fu">sum</span>(A)</span>
-<span id="cb749-4"><a href="detección-de-comunidades.html#cb749-4" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;Fracción de aristas dentro de mismo grupo: %0.3f&quot;</span>, frac_1)</span></code></pre></div>
-<pre><code>## [1] &quot;Fracción de aristas dentro de mismo grupo: 0.867&quot;</code></pre>
-<p>Ahora vemos un ejemplo de modularidad baja:</p>
-<div class="sourceCode" id="cb751"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb751-1"><a href="detección-de-comunidades.html#cb751-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12138</span>)</span>
-<span id="cb751-2"><a href="detección-de-comunidades.html#cb751-2" aria-hidden="true" tabindex="-1"></a>ejemplo_mod_baja <span class="ot">&lt;-</span> <span class="fu">play_erdos_renyi</span>(<span class="dv">11</span>, <span class="at">p =</span> <span class="fl">0.4</span>, <span class="at">directed =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb751-3"><a href="detección-de-comunidades.html#cb751-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(nodes) <span class="sc">|&gt;</span> </span>
-<span id="cb751-4"><a href="detección-de-comunidades.html#cb751-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grupo =</span> grupos, <span class="at">nombre =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">11</span>)</span>
-<span id="cb751-5"><a href="detección-de-comunidades.html#cb751-5" aria-hidden="true" tabindex="-1"></a><span class="fu">graficar_red_nd</span>(ejemplo_mod_baja, <span class="at">layout =</span> <span class="st">&quot;gem&quot;</span>, <span class="at">grupo =</span> grupo)</span></code></pre></div>
-<p><img src="07-comunidades_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-<div class="sourceCode" id="cb752"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb752-1"><a href="detección-de-comunidades.html#cb752-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">get.adjacency</span>(ejemplo_mod_baja)</span>
-<span id="cb752-2"><a href="detección-de-comunidades.html#cb752-2" aria-hidden="true" tabindex="-1"></a>g_a <span class="ot">&lt;-</span> A[grupos <span class="sc">==</span> <span class="st">&quot;a&quot;</span>, grupos <span class="sc">==</span> <span class="st">&quot;a&quot;</span>]</span>
-<span id="cb752-3"><a href="detección-de-comunidades.html#cb752-3" aria-hidden="true" tabindex="-1"></a>g_b <span class="ot">&lt;-</span> A[grupos <span class="sc">==</span> <span class="st">&quot;b&quot;</span>, grupos <span class="sc">==</span> <span class="st">&quot;b&quot;</span>]</span>
-<span id="cb752-4"><a href="detección-de-comunidades.html#cb752-4" aria-hidden="true" tabindex="-1"></a>g_c <span class="ot">&lt;-</span> A[grupos <span class="sc">==</span> <span class="st">&quot;c&quot;</span>, grupos <span class="sc">==</span> <span class="st">&quot;c&quot;</span>]</span>
-<span id="cb752-5"><a href="detección-de-comunidades.html#cb752-5" aria-hidden="true" tabindex="-1"></a>g_c</span></code></pre></div>
-<pre><code>## 5 x 5 sparse Matrix of class &quot;dgCMatrix&quot;
-##               
-## [1,] . 1 . . .
-## [2,] 1 . 1 . 1
-## [3,] . 1 . . .
-## [4,] . . . . 1
-## [5,] . 1 . 1 .</code></pre>
-<div class="sourceCode" id="cb754"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb754-1"><a href="detección-de-comunidades.html#cb754-1" aria-hidden="true" tabindex="-1"></a>frac_2 <span class="ot">&lt;-</span> (<span class="fu">sum</span>(g_a) <span class="sc">+</span> <span class="fu">sum</span>(g_b) <span class="sc">+</span> <span class="fu">sum</span>(g_c)) <span class="sc">/</span> <span class="fu">sum</span>(A)</span>
-<span id="cb754-2"><a href="detección-de-comunidades.html#cb754-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;Fracción de aristas dentro de mismo grupo: %0.3f&quot;</span>, frac_2)</span></code></pre></div>
-<pre><code>## [1] &quot;Fracción de aristas dentro de mismo grupo: 0.304&quot;</code></pre>
-<hr />
-<p><strong>Discusión</strong>: esta medida (fracción de aristas que conectan nodos en el mismo grupo) es una
-que podemos optimizar para buscar comunidades. Sin embargo, la modularidad no se define así,
-sino que consideramos una normalización adicional para hacerla más comparable de red a red.
-Nótese que:</p>
+<div id="sne" class="section level3" number="11.0.1">
+<h3><span class="header-section-number">11.0.1</span> SNE</h3>
+<p>t-SNE es una adaptación de SNE (Stochastic Neighbor Embedding). Veamos
+primero las ideas básicas de esta técnica:
+Para controlar las distancias que nos interesa preservar, primero
+introducimos una medida de similitud entre dos casos (renglones)
+<span class="math inline">\(x^{(i)}, x^{(j)}\)</span>:
+<span class="math display" id="eq:similitud">\[\begin{equation}
+p_{j|i} = \frac{1}{P_i}\exp\left(- ||x_j - x_i ||^2 / 2\sigma_i^2 \right)
+\tag{11.1}
+\end{equation}\]</span>
+donde <span class="math inline">\(P_i\)</span> es una constante de normalización tal que <span class="math inline">\(\sum_j {p_{j|i}} = 1\)</span>.
+Por el momento pensemos que la <span class="math inline">\(\sigma_i\)</span> está fija en algún valor arbitrario.</p>
 <ul>
-<li>Redes con nodos con grados más altos naturalmente tienden a tener calificaciones de modularidad más
-altas que redes con menos aristas.</li>
+<li>Notamos que <span class="math inline">\(p_{j|i}\)</span> toma valores cercanos a 1 cuando
+<span class="math inline">\(x_i\)</span> y <span class="math inline">\(x_j\)</span> están cercanos (su distancia es chica), y rápidamente
+decae a 0 cuando <span class="math inline">\(x_i\)</span> y <span class="math inline">\(x_j\)</span> se empiezan a alejar.</li>
+<li>Cuando la <span class="math inline">\(\sigma\)</span> es chica, si <span class="math inline">\(x_i\)</span> y <span class="math inline">\(x_j\)</span> están aunque sea un poco
+separados, <span class="math inline">\(p_{j|i}\approx 0\)</span>. Si <span class="math inline">\(\sigma\)</span> es grande, entonces esta
+cantidad decae más lentamente cuando los puntos se alejan</li>
+<li>Podemos pensar que tenemos una campana gaussiana centrada en <span class="math inline">\(x_i\)</span>, y
+la <span class="math inline">\(p_{j|i}\)</span> está dada por la densidad mostrada arriba evaluada en <span class="math inline">\(x_j\)</span></li>
 </ul>
-<p>Una manera de normalizar es entonces considerar la modularidad comparada con lo que esperaríamos
-si, dejando fijo número de aristas y grados de vértices, las aristas se conectaran al azar. El
-proceso aleatorio es:</p>
+<p>Ahora pensemos que buscamos convertir estos dos puntos a un nuevo
+espacio de dimensión menor. Denotamos por <span class="math inline">\(y_j\)</span> y <span class="math inline">\(y_i\)</span> a los puntos
+correpondientes en el nuevo espacio. Definimos análogamente :
+<span class="math display">\[q_{j|i} = \frac{1}{Q_i}\exp\left(- ||y_j - y_i ||^2  \right)\]</span>
+<strong>¿Cómo encontramos los valores <span class="math inline">\(y_j\)</span>?</strong> La idea es intentar aproximar las similitudes derivadas:
+<span class="math display">\[ p_{j|i} \approx q_{j|i},\]</span>
+Pensemos que <span class="math inline">\(i\)</span> está fija (que corresponden a los puntos <span class="math inline">\(x^{(i)}\)</span> y
+<span class="math inline">\(y^{(i)}\)</span>). Lo que queremos hacer es <strong>aproximar la estructura local</strong> alrededor de <span class="math inline">\(x^{(i)}\)</span> mediante los puntos <span class="math inline">\(y\)</span>. Y esto queremos hacerlo
+para cada caso <span class="math inline">\(i\)</span> en los datos.
+Nótese que estas similitudes son sensibles cuando los
+puntos están relativamente cerca, pero se hacen rápidamente cero cuando
+las distancias son más grandes. Esto permite que, al intentar hacer la
+aproximación, realmente nos concentremos en la estructura local alrededor de cada punto <span class="math inline">\(x^{(i)}\)</span></p>
 <ul>
-<li>Cortamos “a la mitad” todos las aristas de nuestra gráfica. Ahora conectamos
-mitades al azar.</li>
-<li>Calculamos la fracción de aristas que conectan nodos del mismo grupo.</li>
+<li>Nótese que usamos <span class="math inline">\(\sigma=1\)</span> en la definición de las <span class="math inline">\(q_{j|i}\)</span>, pues esto depende de la escala de la nueva representación (que vamos a encontrar).</li>
+<li>Dependiendo de la <span class="math inline">\(\sigma_i\)</span>, podemos afinar el método para definir qué
+tan local es la estructura que queremos aproximar.</li>
 </ul>
-<p>Y calculamos el valor esperado de esta cantidad, que restamos de la fracción que obtuvimos para
-la red original. El resultado es la <strong>modularidad</strong> de nuestra red: la diferencia de fracción de nodos
-que conectan al mismo grupo menos lo que pasaría si conectáramos al azar las aristas.</p>
-<p>Ahora podemos calcular directamente este valor esperado. Consideremos entonces dos aristas
-<span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span>, que tienen grado <span class="math inline">\(k(u)\)</span> y <span class="math inline">\(k(v)\)</span> respectivamente, y sea <span class="math inline">\(m\)</span> el número total de aristas. Entonces:</p>
+</div>
+<div id="minimización-para-sne" class="section level3" number="11.0.2">
+<h3><span class="header-section-number">11.0.2</span> Minimización para SNE</h3>
+<p>En SNE, el objetivo a minimizar es la divergencia de
+Kullback-Liebler, que es una especie de
+distancia entre distribuciones de probabilidad. Buscamos
+resolver
+<span class="math display">\[\min_{y^{1}, y^{2}, \ldots, y^{(n)}} \sum_{i,j} p_{j|i} \log \frac{p_{j|i}}{q_{j|i}}\]</span>
+Existen muchas maneras de entender esta cantidad. Por lo pronto,
+notemos que</p>
 <ul>
-<li>Una media arista dada de <span class="math inline">\(u\)</span> tiene probabilidad <span class="math inline">\(k(v)/(2m - 1)\)</span> de quedar conectada a <span class="math inline">\(v\)</span>.</li>
-<li>El número de pruebas independientes es <span class="math inline">\(k(u)\)</span>, para cada media arista de <span class="math inline">\(u\)</span>.</li>
-<li>El valor esperado del número de conexiones entre <span class="math inline">\(u\)</span> y <span class="math inline">\(v\)</span> es entonces <span class="math inline">\(k(u)k(v)/(2m -1)\)</span>.</li>
+<li>Si <span class="math inline">\(p_{j|i} = q_{j|i}\)</span>, entonces esta cantidad es 0
+(pues el logaritmo de 1 es cero).</li>
+<li>Para cada <span class="math inline">\(i\)</span>, <span class="math inline">\(\sum_{j} p_{j|i} \log \frac{p_{j|i}}{q_{j|i}}\geq 0\)</span>. Demuestra usando cálculo.</li>
+<li>Y <strong>más importante</strong>: <span class="math inline">\(p_{j|i} \log \frac{p_{j|i}}{q_{j|i}}\)</span> es muy grande
+cuando obtenemos una <span class="math inline">\(q_{j|i}\)</span> chica para una <span class="math inline">\(p_{j|i}\)</span> grande (representar lejos puntos cercanos), pero no aumenta
+tanto si obtenemos una <span class="math inline">\(q_{j|i}\)</span> grande para una <span class="math inline">\(p_{j|i}\)</span> chica. Puedes
+usar cálculo para convencerte de esto también, por ejemplo, derivando
+con respecto a las <span class="math inline">\(x\)</span> la cantidad <span class="math inline">\(\sum_i p_i \log p_i/x_i -\sum_i x_i\)</span>
+(donde <span class="math inline">\(q_i = x_i/\sum_i x_i\)</span>, <span class="math inline">\(\sum_i x_i\)</span> es la constante de normalización).
+Finalmente, la <strong>divergencia se minimiza usando descenso en gradiente</strong>.
+t-SNE se basa en las mismas ideas, con algunas mejoras (ver <a href="http://jmlr.org/papers/volume9/vandermaaten08a/vandermaaten08a.pdf">paper</a>):</li>
+<li>Utiliza una
+versión simétrica de la distancia de Kullback-Liebler (que simplifica
+el cálculo del gradiente para obtener un algoritmo más rápido), y utiliza
+una distribución t en el espacio de baja dimensión en lugar de una gaussiana. Esto último mejora el desempeño del algoritmo en dimensiones altas.</li>
 </ul>
-<p>La idea es entonces promediar los valores del número de conexiones observadas menos las esperadas
-según el modelo aleatorio:</p>
-<p><span class="math display">\[A_{u,v} - \frac{k(u)k(v)}{2m-1}\]</span></p>
-<p>para obtener:</p>
+</div>
+<div id="ejemplo-35" class="section level3 unnumbered">
+<h3>Ejemplo</h3>
+<p>Uno de los ejemplos clásicos es con imágenes de dígitos</p>
+<div class="sourceCode" id="cb963"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb963-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb963-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">288022</span>)</span>
+<span id="cb963-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb963-2" aria-hidden="true" tabindex="-1"></a>zip_train <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;../datos/zip-train.csv&quot;</span>)</span>
+<span id="cb963-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb963-3" aria-hidden="true" tabindex="-1"></a>muestra_dig <span class="ot">&lt;-</span> zip_train <span class="sc">|&gt;</span>  <span class="fu">sample_n</span>(<span class="dv">2500</span>)</span>
+<span id="cb963-4"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb963-4" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> <span class="fu">Rtsne</span>(muestra_dig[,<span class="dv">2</span><span class="sc">:</span><span class="dv">257</span>], <span class="at">max_iter=</span><span class="dv">2000</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb964"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb964-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb964-1" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> tsne_digitos<span class="sc">$</span>Y</span>
+<span id="cb964-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb964-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tsne_digitos) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>)</span>
+<span id="cb964-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb964-3" aria-hidden="true" tabindex="-1"></a>dat_tsne <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(tsne_digitos)</span>
+<span id="cb964-4"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb964-4" aria-hidden="true" tabindex="-1"></a>dat_tsne<span class="sc">$</span>digito <span class="ot">&lt;-</span> <span class="fu">as.character</span>(muestra_dig<span class="sc">$</span>X1)</span>
+<span id="cb964-5"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb964-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_tsne, <span class="fu">aes</span>(<span class="at">x=</span>V1, <span class="at">y=</span>V2, <span class="at">label=</span>digito, <span class="at">colour =</span> digito)) <span class="sc">+</span> <span class="fu">geom_text</span>()</span></code></pre></div>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><strong>Observación</strong>: algunos dígitos parecen estar cerca de un cluster que
+no les corresponde, podemos checar:</p>
+<div class="sourceCode" id="cb965"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb965-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb965-1" aria-hidden="true" tabindex="-1"></a>dat_tsne <span class="ot">&lt;-</span> <span class="fu">mutate</span>(dat_tsne, <span class="at">id =</span> <span class="fu">row_number</span>())</span>
+<span id="cb965-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb965-2" aria-hidden="true" tabindex="-1"></a>seises_tbl <span class="ot">&lt;-</span> <span class="fu">filter</span>(dat_tsne, </span>
+<span id="cb965-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb965-3" aria-hidden="true" tabindex="-1"></a>        digito <span class="sc">==</span> <span class="dv">6</span> <span class="sc">|</span> digito <span class="sc">==</span> <span class="dv">0</span>, V1 <span class="sc">&lt;</span> <span class="dv">6</span>, V1 <span class="sc">&gt;</span> <span class="dv">0</span>, V2 <span class="sc">&gt;</span> <span class="sc">-</span><span class="dv">25</span>)</span>
+<span id="cb965-4"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb965-4" aria-hidden="true" tabindex="-1"></a>seises_tbl <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(digito))</span></code></pre></div>
+<pre><code>## # A tibble: 46 × 4
+##       V1    V2 digito    id
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt;  &lt;int&gt;
+##  1 5.50  -22.2 6       1247
+##  2 5.47  -22.8 6       1834
+##  3 4.32  -21.9 0         86
+##  4 0.597 -21.0 0        260
+##  5 2.36  -20.7 0        276
+##  6 2.97  -23.3 0        314
+##  7 2.69  -19.8 0        348
+##  8 1.49  -20.7 0        416
+##  9 3.26  -23.1 0        436
+## 10 4.19  -18.9 0        445
+## # … with 36 more rows</code></pre>
+<div class="sourceCode" id="cb967"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb967-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb967-1" aria-hidden="true" tabindex="-1"></a>graficar_digito <span class="ot">&lt;-</span> <span class="cf">function</span>(indice, muestra_dig){</span>
+<span id="cb967-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb967-2" aria-hidden="true" tabindex="-1"></a>  mat <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(muestra_dig[indice,<span class="dv">2</span><span class="sc">:</span><span class="dv">257</span>]) <span class="sc">|&gt;</span> </span>
+<span id="cb967-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb967-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">matrix</span>(<span class="dv">16</span>,<span class="dv">16</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb967-4"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb967-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">t</span>()</span>
+<span id="cb967-5"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb967-5" aria-hidden="true" tabindex="-1"></a> <span class="fu">image</span>(mat[,<span class="dv">16</span><span class="sc">:</span><span class="dv">1</span>])</span>
+<span id="cb967-6"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb967-6" aria-hidden="true" tabindex="-1"></a> mat[,<span class="dv">16</span><span class="sc">:</span><span class="dv">1</span>]</span>
+<span id="cb967-7"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb967-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb967-8"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb967-8" aria-hidden="true" tabindex="-1"></a>mat <span class="ot">&lt;-</span> <span class="fu">graficar_digito</span>(<span class="dv">1247</span>, muestra_dig)</span></code></pre></div>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<div class="sourceCode" id="cb968"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb968-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb968-1" aria-hidden="true" tabindex="-1"></a>mat <span class="ot">&lt;-</span> <span class="fu">graficar_digito</span>(<span class="dv">1202</span>, muestra_dig)</span></code></pre></div>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-8-2.png" width="672" /></p>
+<p>Comparemos con componentes principales, que no logra separar muy
+bien los distintos dígitos:</p>
+<div class="sourceCode" id="cb969"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb969-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb969-1" aria-hidden="true" tabindex="-1"></a>comps <span class="ot">&lt;-</span> <span class="fu">princomp</span>(muestra_dig[,<span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb969-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb969-2" aria-hidden="true" tabindex="-1"></a>dat_comps_tsne <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(comps<span class="sc">$</span>scores[,<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>])</span>
+<span id="cb969-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb969-3" aria-hidden="true" tabindex="-1"></a>dat_comps_tsne<span class="sc">$</span>digito <span class="ot">&lt;-</span> <span class="fu">as.character</span>(muestra_dig<span class="sc">$</span>X1)</span>
+<span id="cb969-4"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb969-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_comps_tsne, <span class="fu">aes</span>(<span class="at">x=</span>Comp<span class="fl">.1</span>, <span class="at">y=</span>Comp<span class="fl">.2</span>, <span class="at">colour=</span>digito, <span class="at">label=</span>digito)) <span class="sc">+</span> <span class="fu">geom_text</span>()</span></code></pre></div>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+y vemos, por ejemplo, que la primera componente está separando
+principalmente ceros de unos. La primera dirección principal es:</p>
+<div class="sourceCode" id="cb970"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb970-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb970-1" aria-hidden="true" tabindex="-1"></a><span class="fu">image</span>(<span class="fu">matrix</span>(comps<span class="sc">$</span>loadings[,<span class="dv">1</span>], <span class="dv">16</span>,<span class="dv">16</span>))</span></code></pre></div>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-10-1.png" width="384" />
+### Perplexity</p>
+<p>El único parámetro que resta discutir es <span class="math inline">\(\sigma_i\)</span> en
+<a href="t-sne-y-reducción-de-dimensionalidad.html#eq:similitud">(11.1)</a>. La primera idea es que distintas regiones
+(vecindades de <span class="math inline">\(x^{(i)}\)</span>) pueden requerir distintas <span class="math inline">\(\sigma_i\)</span>. Este
+valor se escoge de forma que todos los puntos tengan aproximadamente un
+número fijo (aproximado) de vecinos, a través de un valor que se llama
+<em>perplexity</em>. De esta forma, <span class="math inline">\(\sigma_i\)</span> en regiones donde hay densidad
+alta de datos es más chica, y <span class="math inline">\(sigma_i\)</span> en regiones donde hay menos densidad
+es más grande (para mantener el número de vecinos aproximadamente similar).
+Antes de ver más detalles, veamos el ejemplo de los dígitos cambiando
+el valor de perplejidad:</p>
+<div class="sourceCode" id="cb971"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb971-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb971-1" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> <span class="fu">Rtsne</span>(muestra_dig[,<span class="dv">2</span><span class="sc">:</span><span class="dv">257</span>], <span class="at">perplexity =</span> <span class="dv">3</span>,</span>
+<span id="cb971-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb971-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">max_iter=</span><span class="dv">2000</span>)</span>
+<span id="cb971-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb971-3" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> tsne_digitos<span class="sc">$</span>Y</span>
+<span id="cb971-4"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb971-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tsne_digitos) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>)</span>
+<span id="cb971-5"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb971-5" aria-hidden="true" tabindex="-1"></a>dat_tsne <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(tsne_digitos)</span>
+<span id="cb971-6"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb971-6" aria-hidden="true" tabindex="-1"></a>dat_tsne<span class="sc">$</span>digito <span class="ot">&lt;-</span> <span class="fu">as.character</span>(muestra_dig<span class="sc">$</span>X1)</span>
+<span id="cb971-7"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb971-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_tsne, <span class="fu">aes</span>(<span class="at">x=</span>V1, <span class="at">y=</span>V2, <span class="at">colour=</span>digito, <span class="at">label=</span>digito)) <span class="sc">+</span> <span class="fu">geom_text</span>()</span></code></pre></div>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<div class="sourceCode" id="cb972"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb972-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb972-1" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> <span class="fu">Rtsne</span>(muestra_dig[,<span class="dv">2</span><span class="sc">:</span><span class="dv">257</span>], <span class="at">perplexity =</span> <span class="dv">100</span>,</span>
+<span id="cb972-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb972-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">max_iter=</span><span class="dv">2000</span>)</span>
+<span id="cb972-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb972-3" aria-hidden="true" tabindex="-1"></a>tsne_digitos <span class="ot">&lt;-</span> tsne_digitos<span class="sc">$</span>Y</span>
+<span id="cb972-4"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb972-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tsne_digitos) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;V1&quot;</span>, <span class="st">&quot;V2&quot;</span>)</span>
+<span id="cb972-5"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb972-5" aria-hidden="true" tabindex="-1"></a>dat_tsne <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(tsne_digitos)</span>
+<span id="cb972-6"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb972-6" aria-hidden="true" tabindex="-1"></a>dat_tsne<span class="sc">$</span>digito <span class="ot">&lt;-</span> <span class="fu">as.character</span>(muestra_dig<span class="sc">$</span>X1)</span>
+<span id="cb972-7"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb972-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_tsne, <span class="fu">aes</span>(<span class="at">x=</span>V1, <span class="at">y=</span>V2, <span class="at">colour=</span>digito, <span class="at">label=</span>digito)) <span class="sc">+</span> <span class="fu">geom_text</span>()</span></code></pre></div>
+<p><img src="10-tsne_files/figure-html/unnamed-chunk-12-1.png" width="672" />
+<strong>Notas</strong> (opcional):
+si <span class="math inline">\(P\)</span> es el valor de perplejidad escogido, el valor de <span class="math inline">\(\sigma_i\)</span>
+escoge de manera que las <span class="math inline">\(p_{j|i}\)</span> obtenidas satisfagan
+<span class="math inline">\(2^{-\sum_{j} p_{j|i}\log_2 p_{j|i}}\approx P\)</span>. El valor de la izquierda en
+esta ecuación se puede interpretar como una medida suave del número
+de puntos donde se concentra la masa de probabilidad. Por ejemplo:</p>
+<div class="sourceCode" id="cb973"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb973-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb973-1" aria-hidden="true" tabindex="-1"></a>perp <span class="ot">&lt;-</span> <span class="cf">function</span>(x){<span class="dv">2</span><span class="sc">^</span><span class="fu">sum</span>(<span class="sc">-</span>x<span class="sc">*</span><span class="fu">log2</span>(x))}</span>
+<span id="cb973-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb973-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.01</span>, <span class="fl">0.02</span>, <span class="fl">0.95</span>)</span>
+<span id="cb973-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb973-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(p)</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode" id="cb975"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb975-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb975-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perp</span>(p)</span></code></pre></div>
+<pre><code>## [1] 1.303593</code></pre>
+<div class="sourceCode" id="cb977"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb977-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb977-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.18</span>, <span class="fl">0.01</span>, <span class="fl">0.4</span>, <span class="fl">0.4</span> )</span>
+<span id="cb977-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb977-2" aria-hidden="true" tabindex="-1"></a><span class="fu">perp</span>(p)</span></code></pre></div>
+<pre><code>## [1] 3.107441</code></pre>
+<div class="sourceCode" id="cb979"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb979-1"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb979-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="dv">1</span>,<span class="dv">20</span>), <span class="fu">rep</span>(<span class="dv">20</span>,<span class="dv">20</span>))</span>
+<span id="cb979-2"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb979-2" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> p <span class="sc">/</span> <span class="fu">sum</span>(p)</span>
+<span id="cb979-3"><a href="t-sne-y-reducción-de-dimensionalidad.html#cb979-3" aria-hidden="true" tabindex="-1"></a><span class="fu">perp</span>(p)</span></code></pre></div>
+<pre><code>## [1] 24.21994</code></pre>
 
-<div class="comentario">
-La <strong>modularidad</strong> de una gráfica no dirigida y vértices con una agrupación dada <span class="math inline">\(g\)</span> se define como
-<span class="math display">\[Q = \frac{1}{2m}{\sum_{u,v} \left ( A_{u, v} - \frac{k(u)k(v)}{2m} \right )I(g(u), g(v))},\]</span>
-donde <span class="math inline">\(A\)</span> es la matriz de adyacencia y <span class="math inline">\(k(u)\)</span> es el grado de <span class="math inline">\(u\)</span>.
-</div>
-<p><strong>Observaciones</strong>:</p>
-<ol style="list-style-type: decimal">
-<li>Típicamente se usa la división entre <span class="math inline">\(2m\)</span> en lugar de <span class="math inline">\(2m-1\)</span>. Para gráficas no muy chicas esto
-no es muy importante.</li>
-<li>Si esta cantidad es cercana a cero, entonces la fracción de nodos intra-grupo es similar
-a la de una gráfica construida al azar.</li>
-<li>Esta cantidad puede ir de -0.5 a 1. Normalmente se consideran valores mayores a 0.3 como
-casos de modularidad fuerte, o de existencia de comunidades (ver <span class="citation"><a href="#ref-mmd" role="doc-biblioref">Leskovec, Rajaraman, and Ullman</a> (<a href="#ref-mmd" role="doc-biblioref">2014</a>)</span>).</li>
-<li>La modularidad puede entenderse entonces como sigue: es la fracción de aristas que conectan nodos
-del mismo grupo menos lo que esperaríamos si las aristas se distribuyeran al azar en la gráfica
-(respetando el grado de cada vértice).</li>
-</ol>
-</div>
-<div id="ejemplo-26" class="section level4 unnumbered">
-<h4>Ejemplo</h4>
-<p>Para nuestro primer ejemplo la modularidad es</p>
-<div class="sourceCode" id="cb756"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb756-1"><a href="detección-de-comunidades.html#cb756-1" aria-hidden="true" tabindex="-1"></a>igraph<span class="sc">::</span><span class="fu">modularity</span>(ejemplo_mod_alta, <span class="fu">as.factor</span>(grupos))</span></code></pre></div>
-<pre><code>## [1] 0.4733333</code></pre>
-<p>y para nuestro segundo ejemplo</p>
-<div class="sourceCode" id="cb758"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb758-1"><a href="detección-de-comunidades.html#cb758-1" aria-hidden="true" tabindex="-1"></a>igraph<span class="sc">::</span><span class="fu">modularity</span>(ejemplo_mod_baja, <span class="fu">as.factor</span>(grupos))</span></code></pre></div>
-<pre><code>## [1] -0.06805293</code></pre>
-<hr />
-<p><strong>Observación</strong>: la idea ahora es construir algoritmos para encontrar agrupaciones de modularidad
-máxima en una gráfica dada. Estas agrupaciones nos dan las comunidades si resultan tener modularidad
-alta.</p>
-</div>
-</div>
-<div id="algoritmo-miope-fast-greedy" class="section level2" number="8.2">
-<h2><span class="header-section-number">8.2</span> Algoritmo miope (fast greedy)</h2>
-<p>Hay varios algoritmos para encontrar agrupaciones de modularidad alta en una gráfica dada.
-Consideramos el algoritmo <em>fast greedy</em> (<span class="citation"><a href="#ref-fastgreedy" role="doc-biblioref">Clauset, Newman, and Moore</a> (<a href="#ref-fastgreedy" role="doc-biblioref">2004</a>)</span>, <a href="https://arxiv.org/abs/cond-mat/0408187">liga de arxiv</a>), que está diseñado para redes
-posiblemente muy grandes.</p>
-<p>Este algoritmo es similar a clustering jerárquico:</p>
-<ol style="list-style-type: decimal">
-<li>Comenzamos con todos los vértices un su propia comunidad.</li>
-<li>Buscamos el par de comunidades (al principio vértices) que <em>al unirse</em> da el mayor incremento (o menor decremento) en <span class="math inline">\(Q\)</span>.</li>
-<li>Repetimos 2 hasta que todos los puntos están en una sola comunidad.</li>
-<li>Escogemos el número de comunidades que maximiza el valor del <span class="math inline">\(Q\)</span> sobre todas las iteraciones.</li>
-</ol>
-<p>Existen varias particularidades de este algoritmo que lo hacen rápido y apropiado para
-redes grandes (ver referencia. Otro método similar es el algoritmo de louvain, por ejemplo).</p>
-<div id="ejemplo-27" class="section level4 unnumbered">
-<h4>Ejemplo</h4>
-<div class="sourceCode" id="cb760"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb760-1"><a href="detección-de-comunidades.html#cb760-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(igraphdata)</span>
-<span id="cb760-2"><a href="detección-de-comunidades.html#cb760-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(USairports)</span>
-<span id="cb760-3"><a href="detección-de-comunidades.html#cb760-3" aria-hidden="true" tabindex="-1"></a>airports <span class="ot">&lt;-</span> <span class="fu">as_tbl_graph</span>(USairports)</span>
-<span id="cb760-4"><a href="detección-de-comunidades.html#cb760-4" aria-hidden="true" tabindex="-1"></a><span class="co"># seleccionamos solo pasajeros</span></span>
-<span id="cb760-5"><a href="detección-de-comunidades.html#cb760-5" aria-hidden="true" tabindex="-1"></a>aristas <span class="ot">&lt;-</span> airports <span class="sc">|&gt;</span> </span>
-<span id="cb760-6"><a href="detección-de-comunidades.html#cb760-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(edges) <span class="sc">|&gt;</span> </span>
-<span id="cb760-7"><a href="detección-de-comunidades.html#cb760-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(to, from, Passengers) <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>()</span>
-<span id="cb760-8"><a href="detección-de-comunidades.html#cb760-8" aria-hidden="true" tabindex="-1"></a><span class="co"># agregar</span></span>
-<span id="cb760-9"><a href="detección-de-comunidades.html#cb760-9" aria-hidden="true" tabindex="-1"></a>aristas_agregados <span class="ot">&lt;-</span> aristas <span class="sc">|&gt;</span> </span>
-<span id="cb760-10"><a href="detección-de-comunidades.html#cb760-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(to <span class="sc">!=</span> from) <span class="sc">|&gt;</span> </span>
-<span id="cb760-11"><a href="detección-de-comunidades.html#cb760-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">to_u =</span> <span class="fu">ifelse</span>(to <span class="sc">&lt;</span> from, to, from)) <span class="sc">|&gt;</span> </span>
-<span id="cb760-12"><a href="detección-de-comunidades.html#cb760-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">from_u =</span> <span class="fu">ifelse</span>(to <span class="sc">&lt;</span> from, from, to)) <span class="sc">|&gt;</span> </span>
-<span id="cb760-13"><a href="detección-de-comunidades.html#cb760-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(to_u, from_u) <span class="sc">|&gt;</span> </span>
-<span id="cb760-14"><a href="detección-de-comunidades.html#cb760-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">pax =</span> <span class="fu">sum</span>(Passengers)) <span class="sc">|&gt;</span> </span>
-<span id="cb760-15"><a href="detección-de-comunidades.html#cb760-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">to =</span> to_u, <span class="at">from =</span> from_u)</span></code></pre></div>
-<pre><code>## `summarise()` has grouped output by &#39;to_u&#39;. You can override using the `.groups` argument.</code></pre>
-<div class="sourceCode" id="cb762"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb762-1"><a href="detección-de-comunidades.html#cb762-1" aria-hidden="true" tabindex="-1"></a><span class="co"># nodos, y agregar estado</span></span>
-<span id="cb762-2"><a href="detección-de-comunidades.html#cb762-2" aria-hidden="true" tabindex="-1"></a>nodos <span class="ot">&lt;-</span> airports <span class="sc">|&gt;</span> <span class="fu">activate</span>(nodes) <span class="sc">|&gt;</span> </span>
-<span id="cb762-3"><a href="detección-de-comunidades.html#cb762-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb762-4"><a href="detección-de-comunidades.html#cb762-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate</span>(City, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">&#39;ciudad_nombre&#39;</span>, <span class="st">&#39;estado&#39;</span>), <span class="at">sep =</span> <span class="st">&#39;, &#39;</span>)</span>
-<span id="cb762-5"><a href="detección-de-comunidades.html#cb762-5" aria-hidden="true" tabindex="-1"></a><span class="co"># construir nueva red</span></span>
-<span id="cb762-6"><a href="detección-de-comunidades.html#cb762-6" aria-hidden="true" tabindex="-1"></a>rutas <span class="ot">&lt;-</span> <span class="fu">tbl_graph</span>(<span class="at">nodes =</span> nodos, <span class="at">edges =</span> aristas_agregados,</span>
-<span id="cb762-7"><a href="detección-de-comunidades.html#cb762-7" aria-hidden="true" tabindex="-1"></a>                   <span class="at">directed =</span> <span class="cn">FALSE</span>) </span>
-<span id="cb762-8"><a href="detección-de-comunidades.html#cb762-8" aria-hidden="true" tabindex="-1"></a>rutas</span></code></pre></div>
-<pre><code>## # A tbl_graph: 755 nodes and 4623 edges
-## #
-## # An undirected simple graph with 6 components
-## #
-## # Node Data: 755 × 4 (active)
-##   name  ciudad_nombre estado Position        
-##   &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt;  &lt;chr&gt;           
-## 1 BGR   Bangor        ME     N444827 W0684941
-## 2 BOS   Boston        MA     N422152 W0710019
-## 3 ANC   Anchorage     AK     N611028 W1495947
-## 4 JFK   New York      NY     N403823 W0734644
-## 5 LAS   Las Vegas     NV     N360449 W1150908
-## 6 MIA   Miami         FL     N254736 W0801726
-## # … with 749 more rows
-## #
-## # Edge Data: 4,623 × 3
-##    from    to   pax
-##   &lt;int&gt; &lt;int&gt; &lt;dbl&gt;
-## 1     1     2     8
-## 2     1     4   481
-## 3     1     6     7
-## # … with 4,620 more rows</code></pre>
-<div class="sourceCode" id="cb764"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb764-1"><a href="detección-de-comunidades.html#cb764-1" aria-hidden="true" tabindex="-1"></a>rutas <span class="ot">&lt;-</span> rutas <span class="sc">|&gt;</span> </span>
-<span id="cb764-2"><a href="detección-de-comunidades.html#cb764-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">activate</span>(nodes) <span class="sc">|&gt;</span> </span>
-<span id="cb764-3"><a href="detección-de-comunidades.html#cb764-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">grupos =</span> <span class="fu">group_fast_greedy</span>())</span></code></pre></div>
-<div class="sourceCode" id="cb765"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb765-1"><a href="detección-de-comunidades.html#cb765-1" aria-hidden="true" tabindex="-1"></a>layout_rutas <span class="ot">&lt;-</span> <span class="fu">create_layout</span>(rutas, <span class="at">layout =</span> <span class="st">&quot;graphopt&quot;</span>, <span class="at">niter =</span> <span class="dv">500</span>)</span>
-<span id="cb765-2"><a href="detección-de-comunidades.html#cb765-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggraph</span>(layout_rutas) <span class="sc">+</span></span>
-<span id="cb765-3"><a href="detección-de-comunidades.html#cb765-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">alpha =</span> pax)) <span class="sc">+</span></span>
-<span id="cb765-4"><a href="detección-de-comunidades.html#cb765-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> <span class="fu">factor</span>(grupos))) <span class="sc">+</span></span>
-<span id="cb765-5"><a href="detección-de-comunidades.html#cb765-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">&quot;sans&quot;</span>)</span></code></pre></div>
-<p><img src="07-comunidades_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
-<p>Podemos ver la modularidad</p>
-<div class="sourceCode" id="cb766"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb766-1"><a href="detección-de-comunidades.html#cb766-1" aria-hidden="true" tabindex="-1"></a>igraph<span class="sc">::</span><span class="fu">modularity</span>(rutas, <span class="fu">as.factor</span>(rutas <span class="sc">|&gt;</span> <span class="fu">activate</span>(nodes) <span class="sc">|&gt;</span> <span class="fu">pull</span>(grupos)))</span></code></pre></div>
-<pre><code>## [1] 0.4287122</code></pre>
-<p>Podemos examinar algunas comunidades:</p>
-<div class="sourceCode" id="cb768"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb768-1"><a href="detección-de-comunidades.html#cb768-1" aria-hidden="true" tabindex="-1"></a>rutas_12 <span class="ot">&lt;-</span> rutas <span class="sc">|&gt;</span> <span class="fu">activate</span>(nodes) <span class="sc">|&gt;</span> <span class="fu">filter</span>(grupos <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>))</span>
-<span id="cb768-2"><a href="detección-de-comunidades.html#cb768-2" aria-hidden="true" tabindex="-1"></a>layout_rutas_12 <span class="ot">&lt;-</span> <span class="fu">create_layout</span>(rutas_12, <span class="at">layout =</span> <span class="st">&quot;graphopt&quot;</span>, <span class="at">niter =</span> <span class="dv">2000</span>)</span>
-<span id="cb768-3"><a href="detección-de-comunidades.html#cb768-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggraph</span>(layout_rutas_12) <span class="sc">+</span></span>
-<span id="cb768-4"><a href="detección-de-comunidades.html#cb768-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">alpha =</span> pax)) <span class="sc">+</span></span>
-<span id="cb768-5"><a href="detección-de-comunidades.html#cb768-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> <span class="fu">factor</span>(grupos))) <span class="sc">+</span></span>
-<span id="cb768-6"><a href="detección-de-comunidades.html#cb768-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">&quot;sans&quot;</span>)</span></code></pre></div>
-<p><img src="07-comunidades_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
-<p>Podemos examinar otras soluciones:</p>
-<div class="sourceCode" id="cb769"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb769-1"><a href="detección-de-comunidades.html#cb769-1" aria-hidden="true" tabindex="-1"></a>grupos_10 <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">fastgreedy.community</span>(rutas) <span class="sc">|&gt;</span> </span>
-<span id="cb769-2"><a href="detección-de-comunidades.html#cb769-2" aria-hidden="true" tabindex="-1"></a>  igraph<span class="sc">::</span><span class="fu">cut_at</span>(<span class="dv">10</span>)</span>
-<span id="cb769-3"><a href="detección-de-comunidades.html#cb769-3" aria-hidden="true" tabindex="-1"></a>rutas <span class="ot">&lt;-</span> rutas <span class="sc">|&gt;</span> <span class="fu">activate</span>(nodes) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">grupos_10 =</span> grupos_10)</span>
-<span id="cb769-4"><a href="detección-de-comunidades.html#cb769-4" aria-hidden="true" tabindex="-1"></a>igraph<span class="sc">::</span><span class="fu">modularity</span>(rutas, <span class="fu">as.factor</span>(grupos_10))</span></code></pre></div>
-<pre><code>## [1] 0.4213694</code></pre>
-<div class="sourceCode" id="cb771"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb771-1"><a href="detección-de-comunidades.html#cb771-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggraph</span>(layout_rutas) <span class="sc">+</span></span>
-<span id="cb771-2"><a href="detección-de-comunidades.html#cb771-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_edge_link</span>(<span class="fu">aes</span>(<span class="at">alpha =</span> pax)) <span class="sc">+</span></span>
-<span id="cb771-3"><a href="detección-de-comunidades.html#cb771-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> <span class="fu">factor</span>(grupos_10))) <span class="sc">+</span></span>
-<span id="cb771-4"><a href="detección-de-comunidades.html#cb771-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_graph</span>(<span class="at">base_family =</span> <span class="st">&quot;sans&quot;</span>)</span></code></pre></div>
-<p><img src="07-comunidades_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-
-</div>
-</div>
-</div>
-<h3>Referencias</h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-fastgreedy" class="csl-entry">
-Clauset, Aaron, Mark E. J. Newman, and Cristopher Moore. 2004. <span>“Finding Community Structure in Very Large Networks.”</span> <em>Physical Review. E, Statistical, Nonlinear, and Soft Matter Physics</em> 70 6 Pt 2: 066111.
-</div>
-<div id="ref-mmd" class="csl-entry">
-Leskovec, Jure, Anand Rajaraman, and Jeffrey David Ullman. 2014. <em>Mining of Massive Datasets</em>. 2nd ed. New York, NY, USA: Cambridge University Press. <a href="http://www.mmds.org">http://www.mmds.org</a>.
 </div>
 </div>
             </section>
@@ -767,8 +680,8 @@ Leskovec, Jure, Anand Rajaraman, and Jeffrey David Ullman. 2014. <em>Mining of M
           </div>
         </div>
       </div>
-<a href="pagerank-y-análisis-de-redes.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="modelos-de-lenguaje-y-n-gramas.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="representación-de-palabras-y-word2vec.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="referencias.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -789,7 +702,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/felipegonzalez/metodos-analiticos-mcd-2022/edit/master/notas/07-comunidades.Rmd",
+"link": "https://github.com/felipegonzalez/metodos-analiticos-mcd-2022/edit/master/notas/10-tsne.Rmd",
 "text": "Editar"
 },
 "history": {
