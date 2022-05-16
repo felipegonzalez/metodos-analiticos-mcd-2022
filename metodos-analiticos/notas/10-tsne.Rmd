@@ -78,6 +78,8 @@ p_{j|i} = \frac{1}{P_i}\exp\left(- ||x_j - x_i ||^2 / 2\sigma_i^2 \right)
 \end{equation}
 donde $P_i$ es una constante de normalización tal que $\sum_j {p_{j|i}} = 1$.
 Por el momento pensemos que la $\sigma_i$ está fija en algún valor arbitrario.
+
+
 - Notamos que $p_{j|i}$ toma valores cercanos a 1 cuando 
 $x_i$ y $x_j$ están cercanos (su distancia es chica), y rápidamente
 decae a 0 cuando $x_i$ y $x_j$ se empiezan a alejar.
@@ -86,6 +88,7 @@ separados, $p_{j|i}\approx 0$. Si $\sigma$ es grande, entonces esta
 cantidad decae más lentamente cuando los puntos se alejan
 - Podemos pensar que tenemos una campana gaussiana centrada en $x_i$, y
 la $p_{j|i}$ está dada por la densidad mostrada arriba evaluada en $x_j$
+
 Ahora pensemos que buscamos convertir estos dos puntos a un nuevo
 espacio de dimensión menor. Denotamos por $y_j$ y $y_i$ a los puntos
 correpondientes en el nuevo espacio. Definimos análogamente :
@@ -99,6 +102,8 @@ para cada caso $i$ en los datos.
 puntos están relativamente cerca, pero se hacen rápidamente cero cuando
 las distancias son más grandes. Esto permite que, al intentar hacer la 
 aproximación, realmente nos concentremos en la estructura local alrededor de cada punto $x^{(i)}$
+
+
 - Nótese que usamos $\sigma=1$ en la definición de las $q_{j|i}$, pues esto depende de la escala de la nueva representación (que vamos a encontrar).
 - Dependiendo de la $\sigma_i$, podemos afinar el método para definir qué
 tan local es la estructura que queremos aproximar.
@@ -111,6 +116,7 @@ resolver
 $$\min_{y^{1}, y^{2}, \ldots, y^{(n)}} \sum_{i,j} p_{j|i} \log \frac{p_{j|i}}{q_{j|i}}$$
 Existen muchas maneras de entender esta cantidad. Por lo pronto,
 notemos que 
+
 - Si $p_{j|i} = q_{j|i}$, entonces esta cantidad es 0 
 (pues el logaritmo de 1 es cero). 
 - Para cada $i$,  $\sum_{j} p_{j|i} \log \frac{p_{j|i}}{q_{j|i}}\geq 0$. Demuestra usando cálculo.
@@ -126,7 +132,11 @@ t-SNE se basa en las mismas ideas, con algunas mejoras (ver [paper](http://jmlr.
 versión simétrica de la distancia de Kullback-Liebler (que simplifica
 el cálculo del gradiente para obtener un algoritmo más rápido), y utiliza
 una distribución t en el espacio de baja dimensión en lugar de una gaussiana. Esto último mejora el desempeño del algoritmo en dimensiones altas.
+
+
+
 ### Ejemplo {-}
+
 Uno de los ejemplos clásicos es con imágenes de dígitos
 ```{r, message=FALSE, warning=FALSE}
 set.seed(288022)
