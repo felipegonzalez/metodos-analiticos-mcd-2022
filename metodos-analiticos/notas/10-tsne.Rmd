@@ -1,4 +1,4 @@
-## t-SNE y reducción de dimensionalidad
+# t-SNE y reducción de dimensionalidad
 
 ```{r setup, include = FALSE}
 library(tidyverse)
