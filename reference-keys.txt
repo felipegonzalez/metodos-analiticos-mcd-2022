@@ -3,6 +3,8 @@ eq:valor-propio-izquierdo
 eq:simprom
 eq:implicita
 eq:similitud
+eq:difcausal
+eq:estandar
 intro
 frecuentes
 datos-de-canastas
@@ -116,3 +118,18 @@ usos-de-representaciones-distribuidas
 t-sne-y-reducción-de-dimensionalidad
 sne
 minimización-para-sne
+experimentación-y-algoritmos-de-tragamonedas-bandits
+causalidad-y-contrafactuales
+experimentos-ab
+aleatorización-en-experimentos.
+costos-de-experimentación
+algoritmos-de-tragamonedas
+algoritmo-epsilon-miope
+comparación-con-experimentación-clásica
+algoritmo-softmax
+desventajas-del-algoritmo-softmax
+el-algoritmo-de-cota-superior-de-confianza-ucb
+tragamonedas-bayesianos
+ejemplo-bernoulli
+otros-aspectos-de-la-experimentación-y-máquinas-tragamonedas
+tragamonedas-contextuales
